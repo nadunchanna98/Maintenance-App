@@ -38,8 +38,8 @@ This app was developed by the Codewave team, which includes:
 - [Nadun Channa](https://github.com/nadunchanna98)
 - [Anuka Mithara](https://github.com/AnukaMithara)
 - [Ruvindya Sachinthani](https://github.com/Ruvindya)
-- [Team Member 4](https://github.com/TeamMember4)
-- [Team Member 2](https://github.com/TeamMember2)
-- [Team Member 3](https://github.com/TeamMember3)
-- [Team Member 4](https://github.com/TeamMember4)
+- [Sachira Heshan](https://github.com/Sachira-Heshan)
+- [Nipuna Wijayarathna](https://github.com/NipunHWE98)
+- [Thisaru Rathnayake](https://github.com/shanonline99)
+- [Chathura Sandeepa](https://github.com/Bandaranayake97)
 
