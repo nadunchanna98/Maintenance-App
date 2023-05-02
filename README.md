@@ -8,7 +8,7 @@ This app is built using the MERN stack, which includes:
 
 - **MongoDB**: a NoSQL database for storing and managing data
 - **Express.js**: a Node.js framework for building web applications
-- **React.js**: a front-end JavaScript library for building user interfaces
+- **React Native**: a front-end JavaScript library for building user interfaces
 - **Node.js**: a JavaScript runtime environment for executing server-side code
 
 ## Features
