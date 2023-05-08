@@ -18,6 +18,10 @@ app.use(bodyParser.json());  // for parsing application/json
 app.use(morgan('tiny'));  // for logging requests to the console (express4)
 
 // Routes
+const CompainerDetailsRoutes = require('./routes/ComplainerDetails');
+
+//api routes
+app.use(`${api}/complainer-details`, CompainerDetailsRoutes);
 
 //Server
 app.listen(3000, ()=>{
@@ -34,7 +38,7 @@ mongoose.connect(process.env.CONNECTION_STRING,
 
 .then(()=>{
    // res.json()
-   console.log('Maintenance Database is connected')
+   console.log('Maintenance-App Database is connected...')
 }).catch((err)=>{
     console.log('error :',err)
 })
