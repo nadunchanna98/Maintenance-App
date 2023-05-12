@@ -21,19 +21,30 @@ router.post('/add/', async (req, res) => {
 
  if(req.body.role === 'supervisor'){
 
-    let newSupervisor = new Supervisor_Details({
-        
-      userID: req.body.userID,
-      work_type: req.body.work_type,
-
-    })
-
-    newSupervisor = await newSupervisor.save();
-
-    if (!newSupervisor)
-    return res.status(400).send('new Superviser cannot be add!')
-
-  res.send(newSupervisor);
+  let newSupervisor = new Supervisor_Details({
+    userID: req.body.userID,
+    work_type: req.body.work_type,
+  });
+  
+  let newUser = new User_Details({
+    name: req.body.name,
+    mobile_no: req.body.mobile_no,
+    password: req.body.password,
+    email: req.body.email,
+    type: req.body.type,
+  });
+  
+  const [supervisor, user] = await Promise.all([
+    newSupervisor.save(),
+    newUser.save(),
+  ]);
+  
+  if (!supervisor || !user) {
+    return res.status(400).send('New supervisor or user cannot be added!');
+  }
+  
+  res.send({ supervisor, user });
+  
   }else{
     let newUser = new User_Details({
   
@@ -51,8 +62,8 @@ router.post('/add/', async (req, res) => {
   return res.status(400).send('new Conplainer cannot be add!')
 
 res.send(newUser);
-  }
   
+}
 
   })
 
