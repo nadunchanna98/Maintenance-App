@@ -19,9 +19,12 @@ app.use(morgan('tiny'));  // for logging requests to the console (express4)
 
 // Routes
 const CompainerDetailsRoutes = require('./routes/ComplainerDetails');
+const UserRoutes = require('./routes/User');
 
 //api routes
 app.use(`${api}/complainer-details`, CompainerDetailsRoutes);
+app.use(`${api}/user`, UserRoutes);
+
 
 //Server
 app.listen(3000, ()=>{
