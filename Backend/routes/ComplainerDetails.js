@@ -27,7 +27,7 @@ router.post('/add/', async (req, res) => {
         email: req.body.email,
         role: req.body.role,
         type: req.body.type,
-        image: req.body.image,
+        image: req.body.image, 
 
     })
 
