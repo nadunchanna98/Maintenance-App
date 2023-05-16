@@ -3,11 +3,11 @@ const { User_Details } = require('./User');
 const { Supervisor_Details } = require('./Supervisor');
 
 const ComplaintSchema = new mongoose.Schema({
-    user: { 
+    userID: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User_Details'
      },
-     supervisor: { 
+     supervisorID: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Supervisor_Details' 
     },

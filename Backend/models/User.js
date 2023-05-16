@@ -33,6 +33,7 @@ const UserSchema = new mongoose.Schema({
         enum: ['student', 'staff','supervisor','other'], //??
         default: 'other'
         },
+     
   });
   
 

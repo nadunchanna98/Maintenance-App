@@ -3,11 +3,11 @@ const express = require('express');
 const router = express.Router();
 require('dotenv/config');
 
-//get all complainer
+//get all Supervisors
 router.get('/', async (req, res) => {
     const SupervisorList = await Supervisor_Details.find();
 
-    if (!userList) {
+    if (!SupervisorList) {
         res.status(500).json({ success: false })
     }
 
