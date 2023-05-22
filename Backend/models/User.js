@@ -33,6 +33,11 @@ const UserSchema = new mongoose.Schema({
         enum: ['student', 'staff','supervisor','other'], //??
         default: 'other'
         },
+
+    complains: [{    //list of complains assigned by user ealiar 
+            type: mongoose.Schema.Types.ObjectId, ref: 'Complaine_Details'
+     }],
+
      
   });
   

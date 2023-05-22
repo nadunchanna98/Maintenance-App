@@ -78,7 +78,7 @@ router.post('/add/', async (req, res) => {
       mobile_no: req.body.mobile_no,
       password: req.body.password,
       email: req.body.email,
-      type: req.body.type,
+      complainer_type: req.body.complainer_type,
     });
 
     let supervisor = null;
@@ -111,55 +111,42 @@ router.post('/add/', async (req, res) => {
     res.status(500).send('Error adding user');
   }
 });
-// router.post('/add/', async (req, res) => {
 
-//   if (req.body.role === 'supervisor') {
+//change by id
+router.put('/user/edit/:id', async (req, res) => {
 
-//     let newSupervisor = new Supervisor_Details({
-//       userID: req.body.userID,
-//       work_type: req.body.work_type,
-//     });
+  const User = await User_Details.findOneAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        password: req.body.password,
+        email: req.body.email,
+        
+      },
+      { new: true }  // to get the updated data
+  )
 
-//     let newUser = new User_Details({
-//       name: req.body.name,
-//       mobile_no: req.body.mobile_no,
-//       password: req.body.password,
-//       email: req.body.email,
-//       type: req.body.type,
-//     });
+  if (!User)
+      return res.status(400).send('User cannot be edit!')
 
-//     const [supervisor, user] = await Promise.all([
-//       newSupervisor.save(),
-//       newUser.save(),
-//     ]);
+  res.send(User);
+ // console.log(Note);
+})
 
-//     if (!supervisor || !user) {
-//       return res.status(400).send('New supervisor or user cannot be added!');
-//     }
+//delete by id
+router.delete('/user/:id', (req, res) => {
 
-//     res.send({ supervisor, user });
+  User_Details.findByIdAndRemove(req.params.id).then(user => {
+      if (user) {
+          return res.status(200).json({ success: true, message: 'user deleted!' })
+      } else {
+          return res.status(404).json({ success: false, message: "user not found!" })
+      }
+  }).catch(err => {
+      return res.status(500).json({ success: false, error: err })
+  })
+})
 
-//   } else {
-//     let newUser = new User_Details({
-
-//       name: req.body.name,
-//       mobile_no: req.body.mobile_no,
-//       password: req.body.password,
-//       email: req.body.email,
-//       type: req.body.type,
-
-//     })
-
-//     newUser = await newUser.save();
-
-//     if (!newUser)
-//       return res.status(400).send('new Conplainer cannot be add!')
-
-//     res.send(newUser);
-
-//   }
-
-// })
 
 module.exports = router;
 

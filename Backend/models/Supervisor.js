@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const { User_Details } = require('./User');
-const { Complaine_Details } = require('./Complains');
 
 const SupervisorSchema = new mongoose.Schema({
     userID: {
