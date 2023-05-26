@@ -1,8 +1,15 @@
 import React from 'react'
+import { Text, View } from 'react-native'
 
 const UserProfile = () => {
   return (
-    <div>UserProfile</div>
+    <View>
+      <Text>
+      UserProfile
+      </Text>
+    
+      
+      </View>
   )
 }
 

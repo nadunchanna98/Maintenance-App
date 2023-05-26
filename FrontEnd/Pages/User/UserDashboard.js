@@ -1,8 +1,16 @@
 import React from 'react'
+import { Text , View } from 'react-native'
+
 
 const UserDashboard = () => {
   return (
-    <div>UserDashboard</div>
+    <View>
+      
+     <Text>
+     UserDashboard
+      </Text> 
+      
+      </View>
   )
 }
 

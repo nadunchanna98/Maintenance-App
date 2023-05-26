@@ -1,8 +1,15 @@
 import React from 'react'
+import { Text , View } from 'react-native'
 
 const ComplainForm = () => {
   return (
-    <div>ComplainForm</div>
+    <View>
+      
+     <Text>
+     ComplainForm
+      </Text> 
+      
+      </View>
   )
 }
 
