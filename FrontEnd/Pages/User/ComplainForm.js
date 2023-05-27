@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { View, TextInput, Button, TouchableOpacity, Text, Dimensions,Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
-import ImagePicker from 'react-native-image-picker';
+import ImagePickerModal from 'react-native-image-picker-modal';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+
 
 
 
@@ -11,7 +14,11 @@ const MyForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedOption, setSelectedOption] = useState('Option 1');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
+
+
+
+
 
   const handleNameChange = (text) => {
     setName(text);
@@ -23,38 +30,77 @@ const MyForm = () => {
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
-
-  const handleImageSelection = () => {
-    const options = {
-      title: 'Select Image',
-      cancelButtonTitle: 'Cancel',
-      takePhotoButtonTitle: 'Take Photo',
-      chooseFromLibraryButtonTitle: 'Choose from Library',
-      mediaType: 'photo',
-      quality: 1,
-      maxWidth: 500,
-      maxHeight: 500,
-    };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image selection');
-      } else if (response.error) {
-        console.log('ImagePicker Error:', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button:', response.customButton);
-      } else {
-        setSelectedImage(response.uri);
+  const [imageUri, setImageUri] = useState(null);
+  const handleImageCapture = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        throw new Error('Camera permission not granted');
       }
-    });
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        if (result.assets && result.assets.length > 0) {
+          setImageUri(result.assets[0].uri);
+        }
+      }
+    } catch (error) {
+      console.log(error); // Handle or log the error as needed
+    }
   };
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const openCamera = async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync();
+
+    // Explore the result
+    console.log(result);
+
+    if (!result.cancelled) {
+      setPickedImagePath(result.uri);
+      console.log(result.uri);
+    }
+  }
+  
+
+  
+
+
 
   const handleSubmit = () => {
     // Perform form submission logic here
     console.log('Name:', name);
     console.log('Email:', email);
     console.log('Selected Option:', selectedOption);
-    console.log('Selected Image:', selectedImage);
+    console.log('Selected Image:', image);
   };
 
   const windowHeight = Dimensions.get('window').height;
@@ -95,14 +141,20 @@ const MyForm = () => {
           onChangeText={handleEmailChange}
           style={styles.input}
         />
-
-        <TouchableOpacity onPress={handleImageSelection} style={styles.imageContainer}>
-          {selectedImage ? (
-            <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
-          ) : (
-            <Text style={styles.imagePlaceholder}>Select Image</Text>
-          )}
-        </TouchableOpacity>
+     
+      <Button title="Pick an image from camera roll" onPress={pickImage} />
+      {imageUri ? (
+        <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />
+      ) : (
+        <Image source={require('../../assets/icon.png')} style={{ width: 200, height: 200 }} />
+      )}
+      <Button title="Capture Image" onPress={handleImageCapture} />
+      
+        <Button onPress={openCamera} title="Open camera" />
+  
+        {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
+      <Button title="Capture Image" onPress={handleImageCapture} />
+        
         <Button title="Submit" onPress={handleSubmit} />
       </View>
     </View>

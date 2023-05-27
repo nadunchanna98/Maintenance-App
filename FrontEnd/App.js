@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 const StackScreens = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Screen1" component={UserDashboard} />
+      <Stack.Screen name="Screen1" component={ComplainForm} />
       <Stack.Screen name="Screen2" component={ComplainForm} />
     </Stack.Navigator>
   );
