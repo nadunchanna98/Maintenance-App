@@ -1,170 +1,196 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, TouchableOpacity, Text, Dimensions,Image} from 'react-native';
+import { View, TextInput, Button, TouchableOpacity, Text,ScrollView, Dimensions,Image,Modal,SafeView,StyleSheet} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
-import ImagePickerModal from 'react-native-image-picker-modal';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 
 
 
 const MyForm = () => {
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [selectedOption, setSelectedOption] = useState('Option 1');
-  const [image, setImage] = useState(null);
+  const [name, setName] = useState('Nipun Harsha');
+  const[title,setTitle]=useState('');
+  const[location,setLocation]=useState('FOE');
+  const [description,setDescription]=useState('');
+  const [titleError, setTitleError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
 
 
 
-
-  const handleNameChange = (text) => {
-    setName(text);
+  const handleTitleChange=(text)=>{
+    setTitle(text);
+    setTitleError(false);
   };
-
-  const handleEmailChange = (text) => {
-    setEmail(text);
+  const handleDescriptionChange=(text)=>{
+    setDescription(text);
+    setDescriptionError(false);
   };
   const handleOptionChange = (option) => {
-    setSelectedOption(option);
+    setLocation(option);
   };
-  const [imageUri, setImageUri] = useState(null);
-  const handleImageCapture = async () => {
-    try {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        throw new Error('Camera permission not granted');
-      }
+  
+  const handleAddPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        if (result.assets && result.assets.length > 0) {
-          setImageUri(result.assets[0].uri);
-        }
-      }
-    } catch (error) {
-      console.log(error); // Handle or log the error as needed
-    }
-  };
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const openCamera = async () => {
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+    if (status !== 'granted') {
+      // Handle permission denial
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
+    setModalVisible(true);
+  };
 
-    // Explore the result
-    console.log(result);
+  const handleChooseFromLibrary = async () => {
+    setModalVisible(false);
 
-    if (!result.cancelled) {
-      setPickedImagePath(result.uri);
-      console.log(result.uri);
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!pickerResult.canceled && pickerResult.uri) {
+      setImageUri(pickerResult.uri);
     }
-  }
-  
+  };
 
-  
+  const handleTakePhoto = async () => {
+    setModalVisible(false);
 
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (status !== 'granted') {
+      // Handle permission denial
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!pickerResult.canceled && pickerResult.uri) {
+      setImageUri(pickerResult.uri);
+    }
+  };
 
 
   const handleSubmit = () => {
-    // Perform form submission logic here
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Selected Option:', selectedOption);
-    console.log('Selected Image:', image);
+    let isFormValid = true;
+
+  
+  if (!title) {
+    setTitleError(true);
+    isFormValid = false;
+  }
+
+  if (!description) {
+    setDescriptionError(true);
+    isFormValid = false;
+  }
+
+
+  if (isFormValid) {
+   
+    console.log('Title:', title);
+    console.log('Location:', location);
+    console.log('Selected Image:', imageUri);
+    navigation.navigate('ComplainPreview', { title, location, description, imageUri, name });
+  } else {
+    console.log('Please fill in all required fields.');
+  }
   };
 
   const windowHeight = Dimensions.get('window').height;
-  const headerTextFontSize=windowHeight*0.03;
   const formTextFontSize=windowHeight*0.02;
 
   return (
-    
+    <ScrollView>
+    <SafeAreaView>
     <View style={styles.container}>
-      <View style={[styles.container, { borderColor: 'blue' }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButtonContainer}>
-          <Text style={styles.backButton}>&lt;</Text>
-        </TouchableOpacity>
-        <Text style={[styles.headerText, { fontSize: headerTextFontSize }]}>Send Your Complain</Text>
-      </View>
-      <View style={[styles.formContainer, { height: windowHeight * 0.8 }]}>
       <Text style={[styles.inputTitle,{ fontSize: formTextFontSize }]}>Complain Title</Text>
           <TextInput
-            placeholder="Enter your name"
-            value={name}
-            onChangeText={handleNameChange}
-            style={styles.input}
+            placeholder="Enter The Title"
+            value={title}
+            onChangeText={handleTitleChange}
+            style={[styles.input, titleError && styles.errorInput]}
           />
         
-          <Text style={styles.inputTitle}>Select an option:</Text>
+          <Text style={[styles.inputTitle,{ fontSize: formTextFontSize }]}>Location</Text>
           <Picker
-            selectedValue={selectedOption}
+            selectedValue={location}
             onValueChange={(itemValue, itemIndex) =>
-              setSelectedOption(itemValue)
-            }>
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
+              handleOptionChange(itemValue)
+            }
+            style={styles.picker}>
+            <Picker.Item label="Faculty Of Engineering" value="FOE" />
+            <Picker.Item label="Faculty Of Technology" value="FOT" />
+            <Picker.Item label="Faculty Of Agriculture" value="FOA" />
+            <Picker.Item label="Boys Hostel" value="BH" />
+            <Picker.Item label="GirlsHostel" value="GH" />
           </Picker>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={handleEmailChange}
-          style={styles.input}
-        />
-     
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {imageUri ? (
-        <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />
-      ) : (
-        <Image source={require('../../assets/icon.png')} style={{ width: 200, height: 200 }} />
-      )}
-      <Button title="Capture Image" onPress={handleImageCapture} />
-      
-        <Button onPress={openCamera} title="Open camera" />
-  
-        {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
-      <Button title="Capture Image" onPress={handleImageCapture} />
+          <Text style={[styles.inputTitle,{ fontSize: formTextFontSize }]}>Description</Text>
+          <TextInput
+            placeholder="Enter The description"
+            value={description}
+            onChangeText={handleDescriptionChange}
+            style={[styles.inputDescription, descriptionError && styles.errorInput]}
+          />
+        <Text style={[styles.inputTitle,{ fontSize: formTextFontSize }]}>Add a photo</Text>
+        <View>
+        <TouchableOpacity onPress={handleAddPhoto}>
+          
+          {imageUri ? (
+            <Image
+            source={{ uri: imageUri }}
+            style={{  height: 500 ,padding:10}} // Adjust the width and height as needed
+          />
+          ) : (
+            <Image source={require('../../assets/icon.png')}
+            style={{  height: 500,padding:10 }} />
+          )}
+        </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+
         
-        <Button title="Submit" onPress={handleSubmit} />
-      </View>
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity style={styles.optionButton} onPress={handleChooseFromLibrary}>
+            <Text>Upload Photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionButton} onPress={handleTakePhoto}>
+            <Text>Take Photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
-    </View>
+    
+    </SafeAreaView>
+  </ScrollView>
+
   );
 };
 
-const styles = {
+const styles =StyleSheet.create( {
   container: {
     flex: 1,
+    padding: 8,
   },
   header: {
     backgroundColor: '#19AFE2',
@@ -197,12 +223,31 @@ const styles = {
   formContainer: {
     paddingVertical: 40,
     paddingHorizontal: 20,
+  }, 
+  button: {
+    borderRadius: 30,
+    backgroundColor: '#19AFE2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding:20,
+    width: 400,
   },
+  buttonContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
   inputTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    textAlign: 'left', 
+    textAlign: 'left',
+    padding:25 
   },
   input: {
     
@@ -213,6 +258,44 @@ const styles = {
     
    
   },
-};
+  picker:{
+    backgroundColor: '#98E2FB'
+  },
+  inputDescription: {
+    
+      height: 240, 
+      borderWidth: 1,
+      borderColor: '#ccc',
+      paddingHorizontal: 10,
+      paddingTop: 10,
+      fontSize: 16,
+      backgroundColor: '#98E2FB',
+      textAlignVertical: 'top'
+    },
+  
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  optionButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginBottom: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  errorInput: {
+    borderWidth: 1,
+    borderColor: 'red',
+  }
+
+});
 
 export default MyForm;
