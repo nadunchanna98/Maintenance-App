@@ -7,6 +7,8 @@ import { Provider } from './Common/Context';
 import UserDashboard from './Pages/User/UserDashboard';
 import ComplainForm from './Pages/User/ComplainForm';
 import UserProfile from './Pages/User/UserProfile';
+import LoginScreen from './Pages/Other/LoginScreen';
+import SignUpScreen from './Pages/Other/SignUpScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -15,8 +17,10 @@ const Stack = createStackNavigator();
 const StackScreens = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Screen1" component={UserDashboard} />
-      <Stack.Screen name="Screen2" component={ComplainForm} />
+      <Stack.Screen name="Login" component={LoginScreen} options={ { headerShown: false }}/>
+      <Stack.Screen name="Screen1" component={UserDashboard} options={ { headerShown: false }} />
+      <Stack.Screen name="Screen2" component={ComplainForm} options={ { headerShown: false }}  />
+      <Stack.Screen name="SignUp" component={SignUpScreen} options={ { headerShown: false }}  />
     </Stack.Navigator>
   );
 };
@@ -28,7 +32,7 @@ const App = () => {
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
         <NavigationContainer>
           <Tab.Navigator>
-            <Tab.Screen name="Stack" component={StackScreens} />
+            <Tab.Screen name="Stack" component={StackScreens} options={ { headerShown: false }} />
             <Tab.Screen name="Profile" component={UserProfile} />
           </Tab.Navigator>
         </NavigationContainer>
