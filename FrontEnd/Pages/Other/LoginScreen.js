@@ -31,7 +31,7 @@ const LoginScreen = () => {
   };
 
   const handleForgotPassword = () => {
-    // navigation.navigate('ForgotPassword');
+   navigation.navigate('ForgotPassword');
   };
 
   const handleSignUp = () => {
