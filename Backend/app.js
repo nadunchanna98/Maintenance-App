@@ -18,13 +18,11 @@ app.use(bodyParser.json());  // for parsing application/json
 app.use(morgan('tiny'));  // for logging requests to the console (express4)
 
 // Routes
-const CompainerDetailsRoutes = require('./routes/ComplainerDetails');
 const UserRoutes = require('./routes/User');
 const SupervisorRoutes = require('./routes/Supervisor');
 const ComplainsRoutes = require('./routes/Complains');
 
 //api routes
-app.use(`${api}/complainer-details`, CompainerDetailsRoutes);
 app.use(`${api}/users`, UserRoutes);
 app.use(`${api}/supervisor`, SupervisorRoutes);
 app.use(`${api}/complains`, ComplainsRoutes);

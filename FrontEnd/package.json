@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "mainten",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -9,11 +9,15 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.7",
+    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/stack": "^6.3.16",
     "axios": "^1.4.0",
     "expo": "~48.0.15",
     "expo-status-bar": "~1.4.4",
+    "formik": "^2.4.0",
     "react": "18.2.0",
-    "react-native": "0.71.8"
+    "react-native": "0.71.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
