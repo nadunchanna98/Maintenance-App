@@ -39,7 +39,7 @@ const App = () => {
         <NavigationContainer>
           <Tab.Navigator>
             <Tab.Screen name="Stack" component={StackScreens} options={ { headerShown: false }} />
-            <Tab.Screen name="Profile" component={UserProfile} />
+            <Tab.Screen name="Profile" component={UserProfile} options={ { headerShown: false }} />
           </Tab.Navigator>
         </NavigationContainer>
       </View>
