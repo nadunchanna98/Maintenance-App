@@ -26,7 +26,7 @@ const CodeEnterScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.upperSection}>
-        <Image source={require('../../assets/icon.png')} style={styles.logo} />
+        <></>
       </View>
 
       <View style={styles.lowerSection}>

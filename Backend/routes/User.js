@@ -3,6 +3,52 @@ const { Supervisor_Details } = require('../models/Supervisor');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+
+// Login route
+router.post('/login', async (req, res) => {
+  const { mobile_no, password } = req.body;
+
+  try {
+    // Check if the user exists
+    const user = await User_Details.findOne({ mobile_no });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Compare the provided password with the hashed password stored in the database
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate a JSON Web Token (JWT)
+    const token = jwt.sign({ userId: user._id }, 'your_secret_key');
+
+    // Include user details in the response
+    const userDetails = {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      mobile_no: user.mobile_no,
+      role: user.role,
+
+      // Include other user details as needed
+    };
+
+    res.json({ token, user: userDetails });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
+// Register route
 
 
 //get complainers and supervisors all together
@@ -72,13 +118,17 @@ router.get('/complainers/', async (req, res) => {
 
 // //add new user 
 router.post('/add/', async (req, res) => {
+
+    hashedPassword = await bcrypt.hash(req.body.password, 10);
+
   try {
     let newUser = new User_Details({
       name: req.body.name,
       mobile_no: req.body.mobile_no,
-      password: req.body.password,
+      password: hashedPassword,
       email: req.body.email,
       complainer_type: req.body.complainer_type,
+      role: req.body.role,
     });
 
     let supervisor = null;
