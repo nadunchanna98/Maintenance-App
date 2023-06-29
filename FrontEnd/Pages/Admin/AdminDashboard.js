@@ -7,7 +7,8 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from '../../src/Context/UserContext';
@@ -67,17 +68,79 @@ const AdminDashboard = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{ height: "89.5%" }} // 89.9%
           >
-            <Text style={styles.dashboardText}>Dashboard Content</Text>
+            {/* <Text style={styles.dashboardText}>Dashboard Content</Text>
 
-            {/* <View style={[]}>
+            <View style={[]}>
               <Button title="Logout" onPress={() => logout()} />
 
               <TouchableOpacity onPress={() => { navigation.navigate('UserProfile') }}>
                 <Text style={styles.profile}>Profile</Text>
               </TouchableOpacity>
-            </View> */}
+            </View>
 
-            <Text>Testing Text</Text>
+            <Text>Testing Text</Text> */}
+
+            <View style={styles.cardContainer}>
+
+              <TouchableOpacity onPress={() => { navigation.navigate("NewRequests") }}>
+                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>New Requests</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("InProgressWorks") }}>
+                <View style={styles.count}><Text style={styles.countText}>3</Text></View>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>In Progress</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Completed</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("Supervisors") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Supervisors</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
 
           </ScrollView>
         </View>
@@ -138,8 +201,60 @@ const styles = StyleSheet.create({
     backgroundColor: "#8F8F8F",
   },
   dashboard: {
-    padding: width * 0.04,
+    // padding: width * 0.04,
   },
+  cardContainer: {
+    paddingHorizontal: width * 0.05,
+    paddingBottom: width * 0.05,
+    paddingTop: width * 0.02,
+  },
+  card: {
+    backgroundColor: "#B3B3B3",
+    width: "100%",
+    height: width * 0.4,
+    borderRadius: width * 0.04,
+    overflow: "hidden",
+    marginBottom: width * 0.05,
+  },
+  imageSection: {
+    backgroundColor: "#98E2FB", // Light blue: "#98E2FB"   Dark blue: "#19AFE2"
+    width: "100%",
+    height: "75%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  textSection: {
+    backgroundColor: "#19AFE2",
+    width: "100%",
+    height: "25%",
+    justifyContent: "center",
+  },
+  cardText: {
+    // backgroundColor: "black",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: width * 0.045,
+    textAlign: "right",
+    paddingHorizontal: width * 0.04,
+  },
+  count: {
+    backgroundColor: "#95A695",
+    width: width * 0.07,
+    height: width * 0.07,
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: -width * 0.035,
+    left: width * 0.86,
+    //right: -350, // width * 0.025 // -350  // -width * 0.945
+    zIndex: 2,
+    borderRadius: 100,
+  },
+  countText: {},
 });
 
 export default AdminDashboard;
