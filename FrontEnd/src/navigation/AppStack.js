@@ -27,7 +27,7 @@ const AppStack = () => {
           {/* Additional supervisor screens */}
 
         </>
-      ) : userInfo.role === 'laborer' ? (
+      ) : userInfo.role === 'labour' ? (
         <>
           <Stack.Screen name="LaborerDashboard" component={LaborerDashboard} options={{ headerShown: false }} />
           {/* Additional laborer screens */}

@@ -68,7 +68,7 @@ const UserProfile = () => {
       Alert.alert("User Updated Successfully!")
     } catch (error) {
       console.log(error)
-      Alert.alert("Something went wrong!")
+      Alert.alert("Something Went Wrong!")
     }
 
   }
