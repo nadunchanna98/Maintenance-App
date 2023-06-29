@@ -25,6 +25,7 @@ const AppStack = () => {
         <>
           <Stack.Screen name="SupervisorDashboard" component={SupervisorDashboard} options={{ headerShown: false }} />
           {/* Additional supervisor screens */}
+
         </>
       ) : userInfo.role === 'laborer' ? (
         <>
@@ -36,9 +37,14 @@ const AppStack = () => {
           {/* <Stack.Screen name="AdminDashboard" component={AdminDashboard} options={{ headerShown: false }} /> */}
           <Stack.Screen name="UserDashboard" component={UserDashboard} options={{ headerShown: false }} />
           <Stack.Screen name="ComplainForm" component={ComplainForm} options={{ headerShown: false }} />
-          <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} /> */}
         </>
       )}
+
+      {/*  */}
+      <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+      {/*  */}
+
     </Stack.Navigator>
   );
 };

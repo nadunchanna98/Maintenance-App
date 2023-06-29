@@ -21,7 +21,8 @@
     "react": "18.2.0",
     "react-native": "0.71.7",
     "react-native-dropdown-select-list": "^2.0.4",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "@react-native-community/datetimepicker": "6.7.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -1,4 +1,4 @@
-import React, { useState , useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -22,7 +22,7 @@ const LoginScreen = () => {
   const [notes, setNotes] = useState('');
   const navigation = useNavigation();
 
-  
+
   const { login } = useContext(AuthContext);
 
 
@@ -30,16 +30,17 @@ const LoginScreen = () => {
 
     login(values.phoneNumber, values.password);
 
-   
+
   };
 
   const handleForgotPassword = () => {
-   navigation.navigate('ForgotPassword');
+    navigation.navigate('ForgotPassword');
   };
 
   const handleSignUp = () => {
     navigation.navigate('SignUp');
   };
+
 
   return (
     <View style={styles.container}>
@@ -98,6 +99,7 @@ const LoginScreen = () => {
               <TouchableOpacity onPress={handleSignUp}>
                 <Text style={styles.signUpLink}>Sign up</Text>
               </TouchableOpacity>
+
             </View>
           </View>
         )}
