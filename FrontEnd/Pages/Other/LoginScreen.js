@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-
+import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
@@ -15,28 +15,32 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required('Password is required'),
 });
 
+
+
 const LoginScreen = () => {
+
   const [notes, setNotes] = useState('');
   const navigation = useNavigation();
 
+
+  const { login } = useContext(AuthContext);
+
+
   const handleFormSubmit = (values) => {
-    axios
-      .post(`${BASE_URL}login/`, values)
-      .then((res) => {
-        setNotes(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    login(values.phoneNumber, values.password);
+
+
   };
 
   const handleForgotPassword = () => {
-   navigation.navigate('ForgotPassword');
+    navigation.navigate('ForgotPassword');
   };
 
   const handleSignUp = () => {
     navigation.navigate('SignUp');
   };
+
 
   return (
     <View style={styles.container}>
@@ -95,6 +99,7 @@ const LoginScreen = () => {
               <TouchableOpacity onPress={handleSignUp}>
                 <Text style={styles.signUpLink}>Sign up</Text>
               </TouchableOpacity>
+
             </View>
           </View>
         )}

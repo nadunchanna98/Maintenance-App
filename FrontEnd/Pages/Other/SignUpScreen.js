@@ -5,13 +5,35 @@ import * as yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get('window');
 import { SelectList } from 'react-native-dropdown-select-list'
+import axios from 'axios';
+import BASE_URL from '../../src/Common/BaseURL';
+import { AuthContext } from '../../src/Context/AuthContext';
+import { UserContext } from '../../src/Context/UserContext';
 
 // Validation schema using Yup
 const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
     email: yup.string().email('Invalid email').required('Email is required'),
-    mobileNumber: yup.string().required('Mobile Number is required')
-        .matches(/^[0-9]{10}$/, 'Not a valid mobile number'),
+
+    mobileNumber: yup
+        .string()
+        .required('Mobile Number is required')
+        .matches(/^[0-9]{10}$/, 'Not a valid mobile number')
+        .test(
+            'Unique mobileNumber',
+            'Mobile Number already in use',
+            async (value) => {
+                try {
+                    const response = await axios.post(`${BASE_URL}users/user/checkMobileNo`, {
+                        mobileNo: value,
+                    });
+                    return response.data.message === 'Mobile number is available';
+                } catch (error) {
+                    console.log(`Error checking mobile number: ${error}`);
+                    return false;
+                }
+            }
+        ),
     password: yup.string().required('Password is required'),
     confirmPassword: yup
         .string()
@@ -21,14 +43,20 @@ const validationSchema = yup.object().shape({
 
 const SignUpScreen = () => {
 
+
+
+
+    // const { signUp } = React.useContext(AuthContext);
+
     const navigation = useNavigation();
     const [selected1, setSelected1] = React.useState("");
     const [selected2, setSelected2] = React.useState("");
 
     const data_role = [
         { key: '1', value: 'complainer' },
-        { key: '2', value: 'supervisor' },
-        { key: '3', value: 'admin' },
+        { key: '2', value: 'labour' },
+        { key: '3', value: 'supervisor'},
+        { key: '4', value: 'admin' },
     ]
 
     const complainer_type = [
@@ -39,15 +67,34 @@ const SignUpScreen = () => {
     ]
 
     const handleSignUp = (values) => {
-        console.log('Sign Up clicked!');
-        console.log('Name:', values.name);
-        console.log('Email:', values.email);
-        console.log('Mobile Number:', values.mobileNumber);
-        console.log('Password:', values.password);
-        console.log('Confirm Password:', values.confirmPassword);
-        console.log('Role:', selected1);
-        console.log('User Type:', selected2);
-    };
+        const { name, email, mobileNumber, password } = values;
+      
+        console.log(selected1);
+
+
+
+        const requestData = {
+          name,
+          email,
+          mobileNumber,
+          password,
+          role: selected1,
+          // userType: selected2,
+        };
+      
+        axios
+          .post(`${BASE_URL}users/user/register`, requestData)
+          .then((response) => {
+            console.log(response.data);
+            alert('User registered successfully!');
+            navigation.navigate('Login');
+          })
+          .catch((error) => {
+            console.log(error);
+            alert('User registration failed!');
+          });
+      };
+      
 
     return (
         <ScrollView style={styles.container}>
@@ -66,7 +113,7 @@ const SignUpScreen = () => {
                         password: '',
                         confirmPassword: '',
                         role: '',
-                        userType: '',
+                        // userType: '',
                     }}
                     validationSchema={validationSchema}
                     onSubmit={handleSignUp}
@@ -111,7 +158,7 @@ const SignUpScreen = () => {
                                 {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                             </View>
 
-                         
+
 
                             <View style={styles.inputContainer}>
                                 <TextInput
@@ -144,18 +191,19 @@ const SignUpScreen = () => {
                                     setSelected={(val) => setSelected1(val)}
                                     data={data_role}
                                     save="value"
-                                    defaultOption= {{ key:'1', value:'complainer'}}
+                                    defaultOption={{ key: '1', value: 'complainer' }}
+                                    search={false}
                                 />
                             </View>
 
-                            <View style={styles.inputContainer}>
+                            {/* <View style={styles.inputContainer}>
                                 <SelectList
                                     setSelected={(val) => setSelected2(val)}
                                     data={complainer_type}
                                     save="value"
                                     defaultOption= {{ key:'1', value:'Student'}}
                                 />
-                            </View>
+                            </View> */}
 
 
                             <TouchableOpacity style={styles.button} onPress={handleSubmit}>

@@ -1,9 +1,133 @@
 const { User_Details } = require('../models/User');
 const { Supervisor_Details } = require('../models/Supervisor');
+const { Supervisor_Pending } = require('../models/SupervisorPending');
+const { Labour_Pending } = require('../models/LabourPending');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
+
+// Login route
+router.post('/login', async (req, res) => {
+  const { mobile_no, password } = req.body;
+
+  
+
+  try {
+    // Check if the user exists
+    const user = await User_Details.findOne({ mobile_no });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Compare the provided password with the hashed password stored in the database
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate a JSON Web Token (JWT)
+    const token = jwt.sign({ userId: user._id }, 'your_secret_key');
+
+    // Include user details in the response
+    const userDetails = {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      mobile_no: user.mobile_no,
+      role: user.role,
+
+      // Include other user details as needed
+    };
+
+
+    res.json({ token, user: userDetails });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Check if mobile number is already registered
+router.post('/user/checkMobileNo', async (req, res) => {
+  const { mobileNo } = req.body;
+
+  try {
+    // Check if the user exists
+    const user = await User_Details.findOne({ mobile_no: mobileNo });
+    if (user) {
+      return res.status(200).json({ message: 'Mobile number already registered' });
+    }
+
+    res.status(200).json({ message: 'Mobile number is available' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+// Register route
+router.post('/user/register', async (req, res) => {
+
+  hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+try {
+  let newUser = new User_Details({
+    name: req.body.name,
+    mobile_no: req.body.mobileNumber,
+    password: hashedPassword,
+    email: req.body.email,
+    // complainer_type: req.body.complainer_type,
+    role: req.body.role,
+  });
+
+  console.log(newUser);
+
+  let supervisor = null;
+
+  if (req.body.role === 'supervisor') {
+    supervisor = new Supervisor_Pending({
+      userID: newUser._id, // Set the supervisor's userID as the newly created user's _id
+      work_type: req.body.work_type,
+    });
+  }
+
+  if(req.body.role === 'labour'){
+    labour = new Labour_Pending({
+      userID: newUser._id,
+    });
+  }
+  
+  newUser = await newUser.save();
+
+  if (supervisor) {
+    supervisor.userID = newUser._id; // Update the supervisor's userID to match the newUser's _id
+    supervisor = await supervisor.save();
+  }
+
+  if(labour){
+    labour.userID = newUser._id;
+    labour = await labour.save();
+  }
+
+  if (!newUser) {
+    return res.status(400).send('New user cannot be added!');
+  }
+
+  const combinedData = {
+    supervisor: supervisor ? supervisor.toObject() : null,
+    user: newUser.toObject(),
+  };
+
+  res.send(combinedData);
+} catch (error) {
+  res.status(500).send('Error adding user',error);
+}
+});
 
 //get complainers and supervisors all together
 router.get('/', async (req, res) => {
@@ -70,47 +194,7 @@ router.get('/complainers/', async (req, res) => {
 })
 
 
-// //add new user 
-router.post('/add/', async (req, res) => {
-  try {
-    let newUser = new User_Details({
-      name: req.body.name,
-      mobile_no: req.body.mobile_no,
-      password: req.body.password,
-      email: req.body.email,
-      complainer_type: req.body.complainer_type,
-    });
 
-    let supervisor = null;
-
-    if (req.body.role === 'supervisor') {
-      supervisor = new Supervisor_Details({
-        userID: newUser._id, // Set the supervisor's userID as the newly created user's _id
-        work_type: req.body.work_type,
-      });
-    }
-
-    newUser = await newUser.save();
-
-    if (supervisor) {
-      supervisor.userID = newUser._id; // Update the supervisor's userID to match the newUser's _id
-      supervisor = await supervisor.save();
-    }
-
-    if (!newUser) {
-      return res.status(400).send('New user cannot be added!');
-    }
-
-    const combinedData = {
-      supervisor: supervisor ? supervisor.toObject() : null,
-      user: newUser.toObject(),
-    };
-
-    res.send(combinedData);
-  } catch (error) {
-    res.status(500).send('Error adding user');
-  }
-});
 
 //change by id
 router.put('/user/edit/:id', async (req, res) => {
