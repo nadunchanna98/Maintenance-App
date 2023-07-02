@@ -68,17 +68,6 @@ const AdminDashboard = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{ height: "89.5%" }} // 89.9%
           >
-            {/* <Text style={styles.dashboardText}>Dashboard Content</Text>
-
-            <View style={[]}>
-              <Button title="Logout" onPress={() => logout()} />
-
-              <TouchableOpacity onPress={() => { navigation.navigate('UserProfile') }}>
-                <Text style={styles.profile}>Profile</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text>Testing Text</Text> */}
 
             <View style={styles.cardContainer}>
 

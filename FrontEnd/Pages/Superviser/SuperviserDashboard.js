@@ -63,16 +63,6 @@ const SuperviserDashboard = () => {
           >
             <Text style={styles.dashboardText}>Dashboard Content</Text>
 
-            {/* <View style={[]}>
-              <Button title="Logout" onPress={() => logout()} />
-
-              <TouchableOpacity onPress={() => { navigation.navigate('UserProfile') }}>
-                <Text style={styles.profile}>Profile</Text>
-              </TouchableOpacity>
-            </View> */}
-
-            <Text>Testing Text</Text>
-
           </ScrollView>
         </View>
 
@@ -80,24 +70,6 @@ const SuperviserDashboard = () => {
 
       </View>
 
-      {/* <View>
-        <Text> SuperviserDashboard </Text>
-        <Button title="Logout" onPress={() => logout()} />
-        <Text> </Text>
-        <Button title="Complain Form" onPress={() => navigation.navigate('ComplainForm')} />
-
-
-        <TouchableOpacity onPress={() => { navigation.navigate('UserProfile') }}>
-          <Text style={styles.profile}>Profile</Text>
-        </TouchableOpacity>
-
-
-        <Text> User details </Text>
-        <Text> {userInfo.name} </Text>
-        <Text> {userInfo.email} </Text>
-        <Text> {userInfo.role} </Text>
-        <Text> {userInfo.mobile_no} </Text>
-      </View> */}
     </SafeAreaView>
   );
 }
