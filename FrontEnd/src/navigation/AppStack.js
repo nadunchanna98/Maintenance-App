@@ -22,6 +22,8 @@ import PendingUserDetailView from '../../Pages/CommonScreens/PendingUserDetailVi
 import SuperviserDetailView from '../../Pages/Admin/SuperviserDetailView';
 import LaborerList from '../../Pages/Superviser/LabourList';
 import LaborerDetailView from '../../Pages/Superviser/LabourDetailView';
+import Instruction from '../../Pages/Other/Instruction';
+import AboutApp from '../../Pages/Other/AboutApp';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -174,6 +176,27 @@ const UserScreens = () => (
     />
   </Stack.Navigator>
 );
+
+const InstructionScreens = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Instruction"
+      component={Instruction}
+      options={{ headerShown: false }}
+      initialParams={{ initialRoute: true }}
+    />
+ 
+<Stack.Screen
+      name="AboutApp"
+      component={AboutApp}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+
+
+);
+
+
 const AppStack = () => {
   const { userInfo } = useContext(AuthContext);
 
@@ -196,6 +219,9 @@ const AppStack = () => {
                   } else if (route.name === 'UserProfile') {
                     iconName = 'account';
                   }
+                  else if (route.name === 'InstructionScreens') {
+                    iconName = 'book';
+                  }
 
                   return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
                 },
@@ -203,6 +229,7 @@ const AppStack = () => {
             >
               <Tab.Screen name="AdminScreens" component={AdminScreens} options={{ headerShown: false }} />
               <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="InstructionScreens" component={InstructionScreens} options={{ headerShown: false }} />
 
             </Tab.Navigator>
           )}
