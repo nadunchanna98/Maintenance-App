@@ -24,7 +24,7 @@ const ComplainsRoutes = require('./routes/Complains');
 
 //api routes
 app.use(`${api}/users`, UserRoutes);
-app.use(`${api}/supervisor`, SupervisorRoutes);
+app.use(`${api}/supervisors`, SupervisorRoutes);
 app.use(`${api}/complains`, ComplainsRoutes);
 
 

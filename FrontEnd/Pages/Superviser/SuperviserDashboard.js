@@ -1,15 +1,17 @@
-import React, { useState, useContext, useCallback } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import {
-  Text,
   View,
-  StyleSheet,
+  Text,
   TouchableOpacity,
+  StyleSheet,
   Dimensions,
-  ScrollView,
   SafeAreaView,
+  ScrollView,
   RefreshControl,
-} from 'react-native'
+  Image,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -26,33 +28,21 @@ const SuperviserDashboard = () => {
     }, 2000); //after 2s refreshing will stop 
   }, []);
 
-  const { logout, userInfo } = useContext(AuthContext);
-
   const navigation = useNavigation();
+
+  const { logout, userInfo } = useContext(AuthContext);
+  const { allusers } = useContext(UserContext);
+
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <SafeAreaView>
       <View>
         <View style={styles.dashboardHeader}>
-          <View style={styles.firstRow}>
-            <View style={styles.logout}>
-              <TouchableOpacity onPress={() => { logout() }}>
-                <Text style={styles.headerText}>Logout</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity onPress={() => { navigation.navigate('UserProfile') }}>
-                <View style={styles.userProfile}>
-                  <Text style={styles.headerText}>{userInfo.name}</Text>
-                  <View style={styles.profilePic}>
-                    <Ionicons name="md-person" size={18} color="white" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
           <View style={styles.secondRow}>
-            <Text style={styles.title}>Supervisor Dashboard</Text>
+            <Text style={styles.title}>Superviser Dashboard</Text>
           </View>
         </View>
         <View style={styles.dashboard}>
@@ -61,7 +51,82 @@ const SuperviserDashboard = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{ height: "89.5%" }} // 89.9%
           >
-            <Text style={styles.dashboardText}>Dashboard Content</Text>
+
+            <View style={styles.cardContainer}>
+
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedS' } )  }}>
+                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>New works</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedL' } )  }}>
+                <View style={styles.count}><Text style={styles.countText}>3</Text></View>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>In Progress</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'CompletedS' } )  }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Completed</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("LaborerList") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Labores</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("PendingList" , { PendingType:'labour' } )  }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Pending Labores</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
 
           </ScrollView>
         </View>
@@ -69,7 +134,6 @@ const SuperviserDashboard = () => {
 
 
       </View>
-
     </SafeAreaView>
   );
 }
@@ -77,7 +141,7 @@ const SuperviserDashboard = () => {
 const styles = StyleSheet.create({
   profile: {
     textDecorationLine: 'underline',
-    color: '#01A9E1',
+    color: '#19AFE2',
     fontSize: height * 0.025,
     textAlign: "center",
     paddingVertical: 30,
@@ -123,8 +187,60 @@ const styles = StyleSheet.create({
     backgroundColor: "#8F8F8F",
   },
   dashboard: {
-    padding: width * 0.04,
+    // padding: width * 0.04,
   },
+  cardContainer: {
+    paddingHorizontal: width * 0.05,
+    paddingBottom: width * 0.05,
+    paddingTop: width * 0.02,
+  },
+  card: {
+    backgroundColor: "#B3B3B3",
+    width: "100%",
+    height: width * 0.4,
+    borderRadius: width * 0.04,
+    overflow: "hidden",
+    marginBottom: width * 0.05,
+  },
+  imageSection: {
+    backgroundColor: "#98E2FB", // Light blue: "#98E2FB"   Dark blue: "#19AFE2"
+    width: "100%",
+    height: "75%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  textSection: {
+    backgroundColor: "#19AFE2",
+    width: "100%",
+    height: "25%",
+    justifyContent: "center",
+  },
+  cardText: {
+    // backgroundColor: "black",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: width * 0.045,
+    textAlign: "right",
+    paddingHorizontal: width * 0.04,
+  },
+  count: {
+    backgroundColor: "#95A695",
+    width: width * 0.07,
+    height: width * 0.07,
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: -width * 0.035,
+    left: width * 0.86,
+    //right: -350, // width * 0.025 // -350  // -width * 0.945
+    zIndex: 2,
+    borderRadius: 100,
+  },
+  countText: {},
 });
 
-export default SuperviserDashboard
+export default SuperviserDashboard;
