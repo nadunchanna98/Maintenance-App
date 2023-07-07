@@ -18,6 +18,21 @@ export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
 
 
+  const getUserInfo = async (id) => {
+
+  axios.get(`${BASE_URL}users/user/${id}`)
+    .then((res) => {
+      console.log(res.data);
+      setUserInfo(res.data);
+    })
+    .catch((err) => {
+      console.log(`get users error : ${err}`);
+    });
+
+  }
+
+
+
   // Define any other functions or state variables you need
   const login  = (mobile_no , password) => {
 
@@ -124,7 +139,7 @@ export const AuthProvider = ({ children }) => {
         userToken,
         setUserToken,
         userInfo,
-       
+       getUserInfo,
         
         
         // Pass any other functions or state variables to the value object
