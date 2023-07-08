@@ -88,6 +88,48 @@ router.post('/add/', async (req, res) => {
     res.send(newSupervisor);
   })
 
+// //delete by id
+// router.delete('/user/:id', (req, res) => {
+
+//   User_Details.findByIdAndRemove(req.params.id).then(user => {
+//       if (user) {
+//           return res.status(200).json({ success: true, message: 'user deleted!' })
+//       } else {
+//           return res.status(404).json({ success: false, message: "user not found!" })
+//       }
+//   }).catch(err => {
+//       return res.status(500).json({ success: false, error: err })
+//   })
+// })
+
+
+//delete by id
+
+router.delete('/user/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    Supervisor_Details.findByIdAndRemove(userId).then(user => {
+      if (user) {
+          return res.status(200).json({ success: true, message: 'user deleted!' })
+      } else {
+          return res.status(404).json({ success: false, message: "user not found!" })
+      }
+  }).catch(err => {
+
+
+      return res.status(500).json({ success: false, error: err })
+  })
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error deleting user');
+  }
+});
+
+
+
+
+
   module.exports = router;
 
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,6 @@ import {
   RefreshControl,
   Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -32,10 +31,6 @@ const SuperviserDashboard = () => {
 
   const { logout, userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
-
-  useEffect(() => {
-    
-  }, []);
 
   return (
     <SafeAreaView>

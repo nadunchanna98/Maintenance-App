@@ -58,7 +58,7 @@ const UserProfile = () => {
     setUpdatedUserInfo(updatedData)
     //Alert.alert(JSON.stringify(updatedData))
 
-    const dataToBeSend = { name: updatedData.name, password: "123", email: updatedData.email } //password: "123"
+    const dataToBeSend = { name: updatedData.name, email: updatedData.email } //password: "123"
     const url = `${BASE_URL}users/user/edit/${id}`
    
     // console.log(url)
