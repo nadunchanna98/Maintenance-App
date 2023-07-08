@@ -1,45 +1,46 @@
-import React, { useState , useEffect , useContext } from 'react';
-import { View, Text, StyleSheet, Image , ScrollView } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
-import BASE_URL  from '../../src/Common/BaseURL';
+import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation , useRoute  } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const PendingList = () => {
 
-    const { userInfo } = useContext(AuthContext);
-    const { allusers } = useContext(UserContext);
-    
-    const navigation = useNavigation();
-    const route = useRoute();
-    const PendingType = route.params.PendingType;
-    console.log("PendingType",PendingType);
+  const { userInfo } = useContext(AuthContext);
+  const { allusers } = useContext(UserContext);
 
-const [activeSections, setActiveSections] = useState([]);
-const [data , setData] = useState([]);
-const theme = useTheme();
+  const navigation = useNavigation();
+  const route = useRoute();
+  // const PendingType = route.params.PendingType;
+  const data = route.params.pendingLabourers;
+  // console.log("PendingType",PendingType);
 
-  useEffect(() => {
-    getListOfPending();
-  }, []);
+  const [activeSections, setActiveSections] = useState([]);
+  // const [data , setData] = useState([]);
+  const theme = useTheme();
 
-  const getListOfPending = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}users/pending/list`, {
-        params: {
-            PendingType : PendingType,
-        }
-      });
-      setData(response.data);
-      console.log(response.data[0]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
+  // useEffect(() => {
+  //   getListOfPending();
+  // }, []);
+
+  // const getListOfPending = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}users/pending/list`, {
+  //       params: {
+  //           PendingType : PendingType,
+  //       }
+  //     });
+  //     setData(response.data);
+  //     console.log(response.data[0]);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
 
   const renderHeader = (section, index, isActive) => (
     <List.Item
@@ -51,8 +52,8 @@ const theme = useTheme();
         <Button
           icon="arrow-right"
           mode="outlined"
-          onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id}) }
-          borderColor = '#01a9e1'
+          onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
+          borderColor='#01a9e1'
           color='#f08e25'
           labelStyle={{ color: "#01a9e1", fontSize: 15 }}
           style={[styles.button, { borderColor: theme.colors.primary }]} // Use theme colors for border color
@@ -76,20 +77,20 @@ const theme = useTheme();
 
   return (
 
-    <ScrollView> 
-    <View>
-      <List.Section>
-        <List.Subheader>New users List</List.Subheader>  
-        <Accordion
-          sections={data}
-          activeSections={activeSections}
-          renderHeader={renderHeader}
-          renderContent={renderContent}
-          onChange={updateSections}
-          underlayColor="transparent"
-        />
-      </List.Section>
-    </View>
+    <ScrollView>
+      <View>
+        <List.Section>
+          <List.Subheader>New users List</List.Subheader>
+          <Accordion
+            sections={data}
+            activeSections={activeSections}
+            renderHeader={renderHeader}
+            renderContent={renderContent}
+            onChange={updateSections}
+            underlayColor="transparent"
+          />
+        </List.Section>
+      </View>
     </ScrollView>
   );
 };
