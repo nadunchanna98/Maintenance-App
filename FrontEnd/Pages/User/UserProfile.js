@@ -10,7 +10,8 @@ import {
   TextInput,
   ScrollView,
   Alert
-} from 'react-native'
+} from 'react-native';
+import { Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AuthContext } from '../../src/Context/AuthContext';
@@ -40,7 +41,6 @@ const UserProfile = () => {
   let name = userInfo.name
   let email = userInfo.email
 
-
   //state to save the updated user information as object
   const [updatedUserInfo, setUpdatedUserInfo] = useState(userInfo)
 
@@ -48,16 +48,11 @@ const UserProfile = () => {
   const updateUserDetails = async (values) => {
     updatedData = { ...updatedUserInfo, name: values.name, email: values.email }
     setUpdatedUserInfo(updatedData)
-    //Alert.alert(JSON.stringify(updatedData))
 
     const dataToBeSend = { name: updatedData.name, email: updatedData.email }
-    const url = `${BASE_URL}users/user/edit/${id}`
-
-    // console.log(url)
 
     try {
-      const response = await axios.put(url, dataToBeSend)
-      // console.log(response.data)
+      const response = await axios.put(`${BASE_URL}users/user/edit/${id}`, dataToBeSend)
       getUserInfo(id)
       Alert.alert("User Updated Successfully!")
     } catch (error) {
@@ -82,25 +77,26 @@ const UserProfile = () => {
           </View>
           <View style={styles.detailsContainer}>
             <View style={styles.detail}>
-              <Ionicons name="person-outline" size={28} color="black" />
+              <Ionicons name="person-outline" size={24} color="black" />
               <Text style={styles.detailText}>{userInfo.name}</Text>
             </View>
             <View style={styles.detail}>
-              <Ionicons name="phone-portrait-outline" size={28} color="black" />
+              <Ionicons name="phone-portrait-outline" size={24} color="black" />
               <Text style={styles.detailText}>{phoneNumber}</Text>
             </View>
             <View style={styles.detail}>
-              <Ionicons name="mail-outline" size={28} color="black" />
+              <Ionicons name="mail-outline" size={24} color="black" />
               <Text style={styles.detailText}>{userInfo.email}</Text>
             </View>
             <View style={styles.detail}>
-              <FontAwesome5 name="user-cog" size={24} color="black" />
+              <FontAwesome5 name="user-cog" size={22} color="black" />
               <Text style={styles.detailText}>{userInfo.role}</Text>
             </View>
           </View>
-          <View style={styles.buttonContainer}>
+
+          {/* <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={show}><Text style={styles.buttonText}>Edit Profile</Text></TouchableOpacity>
-          </View>
+          </View> */}
 
           <Modal visible={visible} animationType="slide" onRequestClose={hide}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -115,26 +111,30 @@ const UserProfile = () => {
                   }}
                 >
                   {({ handleChange, handleSubmit, setFieldTouched, isValid, touched, values, errors }) => {
-                    return (<View>
+                    return (
                       <View>
-                        <Text style={styles.textInputTitle}>Name</Text>
-                        <TextInput style={styles.input} value={values.name} onBlur={() => { setFieldTouched('name') }} onChangeText={handleChange('name')} placeholder="Ex: David Boby" />
-                        {touched.name && errors.name && (<Text style={styles.errorText}>{errors.name}</Text>)}
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Phone Number</Text>
-                        <TextInput style={styles.input} value={phoneNumber} placeholder="0777123456" keyboardType="phone-pad" editable={false} />
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Email</Text>
-                        <TextInput style={styles.input} value={values.email} onBlur={() => { setFieldTouched('email') }} onChangeText={handleChange('email')} placeholder="sample@email.com" />
-                        {touched.email && errors.email && (<Text style={styles.errorText}>{errors.email}</Text>)}
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Role</Text>
-                        <TextInput style={styles.input} value={role} placeholder="Ex: Supervisor" editable={false} />
-                      </View>
-                      <View style={styles.buttonContainer}>
+                        <View style={styles.inputContainer}>
+                          <View>
+                            <Text style={styles.textInputTitle}>Name</Text>
+                            <TextInput style={styles.input} value={values.name} onBlur={() => { setFieldTouched('name') }} onChangeText={handleChange('name')} placeholder="Ex: David Boby" />
+                            {touched.name && errors.name && (<Text style={styles.errorText}>{errors.name}</Text>)}
+                          </View>
+                          <View>
+                            <Text style={styles.textInputTitle}>Phone Number</Text>
+                            <TextInput style={styles.input} value={phoneNumber} placeholder="0777123456" keyboardType="phone-pad" editable={false} />
+                          </View>
+                          <View>
+                            <Text style={styles.textInputTitle}>Email</Text>
+                            <TextInput style={styles.input} value={values.email} onBlur={() => { setFieldTouched('email') }} onChangeText={handleChange('email')} placeholder="sample@email.com" />
+                            {touched.email && errors.email && (<Text style={styles.errorText}>{errors.email}</Text>)}
+                          </View>
+                          <View>
+                            <Text style={styles.textInputTitle}>Role</Text>
+                            <TextInput style={styles.input} value={role} placeholder="Ex: Supervisor" editable={false} />
+                          </View>
+                        </View>
+
+                        {/* <View style={styles.buttonContainer}>
                         <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={hide}><Text style={styles.buttonText}>Cancel</Text></TouchableOpacity>
                         <TouchableOpacity
                           onPress={handleSubmit}
@@ -143,17 +143,40 @@ const UserProfile = () => {
                         >
                           <Text style={styles.buttonText}>Submit</Text>
                         </TouchableOpacity>
-                      </View>
-                    </View>);
+                      </View> */}
+
+                        {/*  */}
+                        <View style={styles.buttonContainer}>
+                          <Button style={{ width: "40%" }} mode='contained' buttonColor="#707070" onPress={hide}>Cancel</Button>
+                          <Button
+                            onPress={handleSubmit}
+                            mode='contained'
+                            buttonColor={isValid ? "#19AFE2" : "#7a7a7a"}
+                            disabled={!isValid}
+                            style={{ width: "40%", opacity: isValid ? 1 : 0.8 }}
+                          >
+                            Submit
+                          </Button>
+                        </View>
+                        {/*  */}
+
+                      </View>);
                   }}
                 </Formik>
               </View>
             </ScrollView>
           </Modal>
 
-          <View style={styles.buttonContainer}>
+          {/* <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button2} onPress={() => { logout() }}><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
+          </View> */}
+
+          {/*  */}
+          <View style={styles.buttonContainer}>
+            <Button style={{ width: "40%" }} mode='contained' buttonColor="red" onPress={() => { logout() }}>Logout</Button>
+            <Button style={{ width: "40%" }} mode='contained' buttonColor="#19AFE2" onPress={show}>Edit Profile</Button>
           </View>
+          {/*  */}
 
         </View>
       </ScrollView>
@@ -179,7 +202,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  detailsContainer: {},
+  detailsContainer: {
+    top: -windowWidth * 0.08,
+  },
   detail: {
     flexDirection: "row",
     alignItems: "center",
@@ -189,7 +214,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   detailText: {
-    fontSize: windowWidth * 0.05,
+    fontSize: windowWidth * 0.042,
     paddingLeft: windowWidth * 0.06,
   },
   buttonContainer: {
@@ -226,6 +251,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     marginVertical: windowWidth * 0.05,
+  },
+  inputContainer: {
+    marginBottom: windowWidth * 0.06,
   },
   input: {
     borderWidth: 1,
