@@ -20,6 +20,7 @@ const ViewComplain = () => {
     const [complain, setComplain] = useState([]);
     const [createdDate, setCreatedDate] = useState('');
     const [createdTime, setCreatedTime] = useState('');
+    const [visible,setVissible]=useState('');
 
     const handleDataSubmission = () => {
 
@@ -34,7 +35,8 @@ const ViewComplain = () => {
                 setComplain(response.data);
                 setCreatedDate(response.data.created_date.split('T')[0]);
                 setCreatedTime(response.data.created_date.split('T')[1].split('.')[0]);
-
+                setVissible (response.data.status === "AssignedA");
+            
                 
             })
             .catch((error) => {
@@ -45,6 +47,8 @@ const ViewComplain = () => {
 
     const { userInfo } = useContext(AuthContext);
     const { allusers } = useContext(UserContext);
+   
+    
 
     return (
         <View style={styles.container}>
@@ -71,9 +75,9 @@ const ViewComplain = () => {
             <Text style={styles.label}>Description:</Text>
             <Text style={styles.value}>{complain.description}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+          {visible&&(<TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
             <Text style={styles.buttonText}>Assign A Supervisor</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>)}
 
         
 
