@@ -1,0 +1,149 @@
+import React, { useContext } from 'react';
+import { Button, View } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import UserDashboard from '../../Pages/User/UserDashboard';
+import ComplainForm from '../../Pages/User/ComplainForm';
+import UserProfile from '../../Pages/User/UserProfile';
+import AdminDashboard from '../../Pages/Admin/AdminDashboard';
+import SupervisorDashboard from '../../Pages/Superviser/SuperviserDashboard';
+import LaborerDashboard from '../../Pages/Laborer/LaborerDashboard';
+import { UserContext } from '../Context/UserContext';
+import { AuthContext } from '../Context/AuthContext';
+import NewRequests from '../../Pages/Admin/NewRequests';
+import InProgressWorks from '../../Pages/Admin/InProgressWorks';
+import CompletedWorks from '../../Pages/Admin/CompletedWorks';
+import Supervisors from '../../Pages/Admin/Supervisors';
+
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const AdminScreens = () => (
+  <>
+    <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
+    <Drawer.Screen name="NewRequests" component={NewRequests} />
+    <Drawer.Screen name="InProgressWorks" component={InProgressWorks} />
+    <Drawer.Screen name="CompletedWorks" component={CompletedWorks} />
+    <Drawer.Screen name="Supervisors" component={Supervisors} />
+    {/* Additional admin screens */}
+  </>
+);
+
+const SupervisorScreens = () => (
+  <>
+    <Drawer.Screen name="SupervisorDashboard" 
+    
+    
+    component={SupervisorDashboard} />
+    {/* Additional supervisor screens */}
+  </>
+);
+
+const LaborerScreens = () => (
+  <>
+    <Drawer.Screen name="LaborerDashboard" component={LaborerDashboard} />
+    {/* Additional laborer screens */}
+  </>
+);
+
+const UserScreens = () => (
+  <>
+    <Drawer.Screen name="UserDashboard" component={UserDashboard} />
+    <Drawer.Screen name="ComplainForm" component={ComplainForm} />
+    {/* Additional user screens */}
+  </>
+);
+
+const CustomDrawerContent = ({ navigation }) => {
+  const { signOut } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    signOut();
+    navigation.closeDrawer();
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'space-between', paddingVertical: 16 }}>
+      {/* Drawer content */}
+      <View>
+        {/* Your drawer items here */}
+      </View>
+      {/* Logout button */}
+      <View>
+        <Button title="Logout" onPress={handleLogout} />
+      </View>
+    </View>
+  );
+};
+
+const AppStack = () => {
+  const { userInfo } = useContext(AuthContext);
+
+  return (
+    <Stack.Navigator>
+      {userInfo.role === 'admin' ? (
+        <Stack.Screen name="AdminDrawer"
+        options={{ headerShown: false }}
+        >
+          {() => (
+            <Drawer.Navigator
+            drawerContent={props => <CustomDrawerContent {...props} />}
+            screenOptions={{ headerShown: false }}
+            
+            >
+              <Drawer.Screen name="AdminScreens" component={AdminDashboard} />
+              <Drawer.Screen name="UserProfile" component={UserProfile} />
+            </Drawer.Navigator>
+          )}
+        </Stack.Screen>
+      ) : userInfo.role === 'supervisor' ? (
+        <Stack.Screen name="SupervisorDrawer"
+        options={{ headerShown: false }}
+        >
+          {() => (
+            <Drawer.Navigator
+            screenOptions={{ headerShown: false }}
+            >
+              <Drawer.Screen name="SupervisorScreens" component={SupervisorDashboard} />
+              <Drawer.Screen name="UserProfile" component={UserProfile} />
+            </Drawer.Navigator>
+          )}
+        </Stack.Screen>
+      ) : userInfo.role === 'labour' ? (
+        <Stack.Screen 
+        options={{ headerShown: false }}
+        name="LaborerDrawer">
+          {() => (
+            <Drawer.Navigator
+            screenOptions={{ headerShown: false }}
+            drawerContent={props => <CustomDrawerContent {...props} />}
+            >
+              <Drawer.Screen name="LaborerScreens" component={LaborerScreens} />
+              <Drawer.Screen name="UserProfile" component={UserProfile} />
+            </Drawer.Navigator>
+          )}
+        </Stack.Screen>
+      ) : (
+        <Stack.Screen name="UserDrawer"
+        options={{ headerShown: false }}
+        >
+          {() => (
+            <Drawer.Navigator
+            screenOptions={{ headerShown: false }}
+
+            >
+              <Drawer.Screen name="UserScreens" component={UserDashboard} />
+              <Drawer.Screen name="UserProfile" component={UserProfile} />
+            </Drawer.Navigator>
+          )}
+        </Stack.Screen>
+      )}
+    </Stack.Navigator>
+  );
+};
+
+export default AppStack;
+
+
+

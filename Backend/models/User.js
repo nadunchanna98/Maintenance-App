@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: { 
         type: String, 
-        enum: ['complainer','supervisor','admin'],
+        enum: ['complainer','labour','supervisor','admin'], 
         default: 'complainer'
      },
     accepted: {     //check wether the user is accepted by the admin as a supervisor
