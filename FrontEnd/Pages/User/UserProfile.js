@@ -30,7 +30,7 @@ let schema = yup.object().shape({
 const UserProfile = () => {
 
   // get the logged in user details from the context
-  const { getUserInfo, userInfo ,  logout } = useContext(AuthContext)
+  const { getUserInfo, userInfo, logout } = useContext(AuthContext)
 
   // current user details
   const id = userInfo.userId
@@ -50,9 +50,9 @@ const UserProfile = () => {
     setUpdatedUserInfo(updatedData)
     //Alert.alert(JSON.stringify(updatedData))
 
-    const dataToBeSend = { name: updatedData.name, password: "123", email: updatedData.email } //password: "123"
+    const dataToBeSend = { name: updatedData.name, email: updatedData.email }
     const url = `${BASE_URL}users/user/edit/${id}`
-   
+
     // console.log(url)
 
     try {
@@ -107,7 +107,7 @@ const UserProfile = () => {
               <View style={styles.modalContainer}>
                 <Text style={styles.editTitleText}>Edit Profile</Text>
                 <Formik
-                  initialValues={{ name: name, email: email }} /*{{  name: userInfo.name, birthday: userInfo.birthday, mobile: userInfo.mobile_no, email: userInfo.email, role: userInfo.role  }}*/
+                  initialValues={{ name: name, email: email }}
                   validationSchema={schema}
                   onSubmit={(values) => {
                     hide()
@@ -152,7 +152,7 @@ const UserProfile = () => {
           </Modal>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button2} onPress={ () => { logout() } }><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button2} onPress={() => { logout() }}><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
           </View>
 
         </View>

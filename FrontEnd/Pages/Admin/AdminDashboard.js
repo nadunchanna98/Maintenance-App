@@ -10,7 +10,6 @@ import {
   RefreshControl,
   Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -34,7 +33,7 @@ const AdminDashboard = () => {
   const { allusers } = useContext(UserContext);
 
   useEffect(() => {
-    
+
   }, []);
 
   return (
@@ -49,12 +48,12 @@ const AdminDashboard = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "89.5%" }} // 89.9%
+            style={{ height: "91.5%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedA' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'AssignedA' }) }}>
                 <View style={styles.count}><Text style={styles.countText}>2</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -69,7 +68,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedS' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'AssignedS' }) }}>
                 <View style={styles.count}><Text style={styles.countText}>3</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -84,7 +83,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'CompletedA' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'CompletedA' }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     {/* <Text>Image</Text> */}
@@ -112,12 +111,12 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("PendingList" , { PendingType:'supervisor' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { PendingType: 'supervisor' }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     {/* <Text>Image</Text> */}
                     <Image
-                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      source={{ uri: "https://images.pexels.com/photos/3769135/pexels-photo-3769135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
