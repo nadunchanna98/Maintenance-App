@@ -13,7 +13,6 @@ import {
 import { Badge } from 'react-native-paper';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
-import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -32,12 +31,10 @@ const LaborerDashboard = () => {
   }, []);
 
   const navigation = useNavigation();
-  const route = useRoute();
 
   const statusAssignedL = 'AssignedL';
 
-  const { logout, userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
+  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     getComplains();
@@ -195,7 +192,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  countText: {},
 });
 
 export default LaborerDashboard;

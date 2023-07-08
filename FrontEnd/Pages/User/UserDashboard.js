@@ -13,7 +13,6 @@ import {
 import BASE_URL from '../../src/Common/BaseURL';
 import axios from 'axios';
 import { Badge } from 'react-native-paper';
-import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -34,14 +33,12 @@ const UserDashboard = () => {
   }, []);
 
   const navigation = useNavigation();
-  const route = useRoute();
 
   const statusPending = 'Pending';
   const statusAssignedA = 'AssignedA';
   const statusCompleted = 'Completed';
 
   const { userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
 
   useEffect(() => {
     getPendingComplains();
@@ -129,9 +126,7 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              {/* Status: 'Pending' */}
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: pendingData }) }}>
-                {/* <View style={styles.count}><Text style={styles.countText}>2</Text></View> */}
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -145,9 +140,7 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              {/* Status: 'AssignedA' */}
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
-                {/* <View style={styles.count}><Text style={styles.countText}>3 backgroundColor: "yellow", color: "black"</Text></View> */}
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -161,9 +154,7 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              {/* Status: 'Completed' */}
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedData }) }}>
-                {/* <View style={styles.count}><Text style={styles.countText}>2</Text></View> */}
                 {/* <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8, backgroundColor: "green" }}>{noOfCompletedComplains}</Badge></View> */}
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -278,19 +269,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  count: {
-    backgroundColor: "#95A695",
-    width: width * 0.07,
-    height: width * 0.07,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: -width * 0.035,
-    left: width * 0.86,
-    //right: -350, // width * 0.025 // -350  // -width * 0.945
-    zIndex: 2,
-    borderRadius: 100,
-  },
-  countText: {},
 });
 
 export default UserDashboard;

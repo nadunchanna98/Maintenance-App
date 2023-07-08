@@ -10,7 +10,9 @@ import {
   RefreshControl,
   Image,
 } from 'react-native';
-import { UserContext } from '../../src/Context/UserContext';
+import BASE_URL from '../../src/Common/BaseURL';
+import axios from 'axios';
+import { Badge } from 'react-native-paper';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -18,7 +20,18 @@ const { height, width } = Dimensions.get("window")
 
 const AdminDashboard = () => {
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [assignedAData, setAssignedAData] = useState([]);
+  const [assignedSData, setAssignedSData] = useState([]);
+  const [completedAData, setCompletedAData] = useState([]);
+
+  const [pendingSupervisorsData, setPendingSupervisorsData] = useState([]);
+
+  const statusAssignedA = 'AssignedA';
+  const statusAssignedS = 'AssignedS';
+  const statusCompletedA = 'CompletedA';
+
+  const pendingType = 'supervisor';
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -29,12 +42,78 @@ const AdminDashboard = () => {
 
   const navigation = useNavigation();
 
-  const { logout, userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
+  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
-
+    getAssignedAComplains();
+    getAssignedSComplains();
+    getCompletedAComplains();
+    getListOfPendingSupervisors();
   }, []);
+
+  const getListOfPendingSupervisors = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}users/pending/list`, {
+        params: {
+          PendingType: pendingType,
+        }
+      });
+      setPendingSupervisorsData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAssignedAComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedA,
+          role: userInfo.role,
+        }
+      });
+      setAssignedAData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAssignedSComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedS,
+          role: userInfo.role,
+        }
+      });
+      setAssignedSData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getCompletedAComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusCompletedA,
+          role: userInfo.role,
+        }
+      });
+      setCompletedAData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const noOfAssignedAComplains = assignedAData.length;
+  const noOfAssignedSComplains = assignedSData.length;
+  const noOfCompletedAComplains = completedAData.length;
+
+  const noOfPendingSupervisors = pendingSupervisorsData.length;
 
   return (
     <SafeAreaView>
@@ -53,8 +132,8 @@ const AdminDashboard = () => {
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'AssignedA' }) }}>
-                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -63,12 +142,12 @@ const AdminDashboard = () => {
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>New Requests</Text>
+                    <Text style={styles.cardText}>New Complains</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'AssignedS' }) }}>
-                <View style={styles.count}><Text style={styles.countText}>3</Text></View>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -77,37 +156,12 @@ const AdminDashboard = () => {
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>In Progress</Text>
+                    <Text style={styles.cardText}>In Progress Works</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'CompletedA' }) }}>
-                <View style={styles.card}>
-                  <View style={styles.imageSection}>
-                    <Image
-                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
-                      style={styles.image}
-                    />
-                  </View>
-                  <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Completed</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList") }}>
-                <View style={styles.card}>
-                  <View style={styles.imageSection}>
-                    <Image
-                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
-                      style={styles.image}
-                    />
-                  </View>
-                  <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Supervisors</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { PendingType: 'supervisor' }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { pendingData: pendingSupervisorsData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingSupervisors}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -120,6 +174,33 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Registered Supervisors</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedAData }) }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Completed Works</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
             </View>
 
           </ScrollView>
@@ -222,19 +303,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  count: {
-    backgroundColor: "#95A695",
-    width: width * 0.07,
-    height: width * 0.07,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: -width * 0.035,
-    left: width * 0.86,
-    //right: -350, // width * 0.025 // -350  // -width * 0.945
-    zIndex: 2,
-    borderRadius: 100,
-  },
-  countText: {},
 });
 
 export default AdminDashboard;

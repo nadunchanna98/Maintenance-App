@@ -16,7 +16,7 @@ const PendingList = () => {
   const navigation = useNavigation();
   const route = useRoute();
   // const PendingType = route.params.PendingType;
-  const data = route.params.pendingLabourers;
+  const data = route.params.pendingData;
   // console.log("PendingType",PendingType);
 
   const [activeSections, setActiveSections] = useState([]);

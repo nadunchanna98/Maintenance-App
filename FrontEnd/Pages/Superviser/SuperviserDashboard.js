@@ -13,7 +13,6 @@ import {
 import BASE_URL from '../../src/Common/BaseURL';
 import axios from 'axios';
 import { Badge } from 'react-native-paper';
-import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -43,8 +42,7 @@ const SuperviserDashboard = () => {
 
   const navigation = useNavigation();
 
-  const { logout, userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
+  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     getAssignedSComplains();
@@ -61,7 +59,6 @@ const SuperviserDashboard = () => {
         }
       });
       setPendingLabourersData(response.data);
-      // console.log(response.data[0]);
     } catch (error) {
       console.error(error);
     }
@@ -136,7 +133,6 @@ const SuperviserDashboard = () => {
             <View style={styles.cardContainer}>
 
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
-                {/* <View style={styles.count}><Text style={styles.countText}>2</Text></View> */}
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -151,7 +147,6 @@ const SuperviserDashboard = () => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedLData }) }}>
-                {/* <View style={styles.count}><Text style={styles.countText}>3</Text></View> */}
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedLComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -165,7 +160,7 @@ const SuperviserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { pendingLabourers: pendingLabourersData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { pendingData: pendingLabourersData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingLabourers}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -307,19 +302,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  count: {
-    backgroundColor: "#95A695",
-    width: width * 0.07,
-    height: width * 0.07,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: -width * 0.035,
-    left: width * 0.86,
-    //right: -350, // width * 0.025 // -350  // -width * 0.945
-    zIndex: 2,
-    borderRadius: 100,
-  },
-  countText: {},
 });
 
 export default SuperviserDashboard;
