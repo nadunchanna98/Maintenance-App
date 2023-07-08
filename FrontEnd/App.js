@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
 import { View, StatusBar, StyleSheet } from 'react-native';
 import { AuthProvider } from './src/Context/AuthContext';

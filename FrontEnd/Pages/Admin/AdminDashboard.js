@@ -31,33 +31,16 @@ const AdminDashboard = () => {
   const navigation = useNavigation();
 
   const { logout, userInfo } = useContext(AuthContext);
-  const { allusers, getAllUsers } = useContext(UserContext);
+  const { allusers } = useContext(UserContext);
 
   useEffect(() => {
-    getAllUsers();
+    
   }, []);
 
   return (
     <SafeAreaView>
       <View>
         <View style={styles.dashboardHeader}>
-          <View style={styles.firstRow}>
-            <View style={styles.logout}>
-              <TouchableOpacity onPress={() => { logout() }}>
-                <Text style={styles.headerText}>Logout</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity onPress={() => { navigation.navigate('UserProfile') }}>
-                <View style={styles.userProfile}>
-                  <Text style={styles.headerText}>{userInfo.name}</Text>
-                  <View style={styles.profilePic}>
-                    <Ionicons name="md-person" size={18} color="white" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
           <View style={styles.secondRow}>
             <Text style={styles.title}>Admin Dashboard</Text>
           </View>
@@ -71,7 +54,7 @@ const AdminDashboard = () => {
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("NewRequests") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedA' } )  }}>
                 <View style={styles.count}><Text style={styles.countText}>2</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -86,7 +69,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("InProgressWorks") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedS' } )  }}>
                 <View style={styles.count}><Text style={styles.countText}>3</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -101,7 +84,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'CompletedA' } )  }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     {/* <Text>Image</Text> */}
@@ -115,7 +98,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("Supervisors") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList") }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     {/* <Text>Image</Text> */}
@@ -126,6 +109,20 @@ const AdminDashboard = () => {
                   </View>
                   <View style={styles.textSection}>
                     <Text style={styles.cardText}>Supervisors</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("PendingList" , { PendingType:'supervisor' } )  }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Pending Supervisors</Text>
                   </View>
                 </View>
               </TouchableOpacity>

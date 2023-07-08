@@ -30,7 +30,7 @@ let schema = yup.object().shape({
 const UserProfile = () => {
 
   // get the logged in user details from the context
-  const { userInfo } = useContext(AuthContext)
+  const { getUserInfo, userInfo ,  logout } = useContext(AuthContext)
 
   // current user details
   const id = userInfo.userId
@@ -52,11 +52,13 @@ const UserProfile = () => {
 
     const dataToBeSend = { name: updatedData.name, password: "123", email: updatedData.email } //password: "123"
     const url = `${BASE_URL}users/user/edit/${id}`
-    console.log(url)
+   
+    // console.log(url)
 
     try {
       const response = await axios.put(url, dataToBeSend)
-      console.log(response.data)
+      // console.log(response.data)
+      getUserInfo(id)
       Alert.alert("User Updated Successfully!")
     } catch (error) {
       console.log(error)
@@ -149,6 +151,10 @@ const UserProfile = () => {
             </ScrollView>
           </Modal>
 
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button2} onPress={ () => { logout() } }><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
+          </View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -194,6 +200,13 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#19AFE2",
     marginVertical: windowWidth * 0.1,
+    padding: windowWidth * 0.04,
+    paddingHorizontal: windowWidth * 0.1,
+    borderRadius: 500,
+  },
+  button2: {
+    backgroundColor: "red",
+    marginVertical: windowWidth * 0.001,
     padding: windowWidth * 0.04,
     paddingHorizontal: windowWidth * 0.1,
     borderRadius: 500,

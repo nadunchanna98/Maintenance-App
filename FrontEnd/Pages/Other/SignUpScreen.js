@@ -68,17 +68,31 @@ const SignUpScreen = () => {
 
     const handleSignUp = (values) => {
         const { name, email, mobileNumber, password } = values;
-      
+        
+        let Role = '';
         console.log(selected1);
 
+        if (selected1 === "1" | selected1 === "complainer") {
+            Role = 'complainer';
+        }
+        else if (selected1 === "2" | selected1 === "labour") {
+            Role = 'labour';
+        }
+        else if (selected1 === "3"  | selected1 === "supervisor") {
+            Role = 'supervisor';
+        }
+        else if (selected1 === "4" | selected1 === "admin"){
+            Role = 'admin';
+        }
 
+        console.log(Role);
 
         const requestData = {
           name,
           email,
           mobileNumber,
           password,
-          role: selected1,
+          role: Role,
           // userType: selected2,
         };
       
@@ -188,7 +202,7 @@ const SignUpScreen = () => {
 
                             <View style={styles.inputContainer}>
                                 <SelectList
-                                    setSelected={(val) => setSelected1(val)}
+                                    setSelected={(data) => setSelected1(data)}
                                     data={data_role}
                                     save="value"
                                     defaultOption={{ key: '1', value: 'complainer' }}
