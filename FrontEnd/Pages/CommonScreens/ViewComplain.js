@@ -75,6 +75,10 @@ const ViewComplain = () => {
             <Text style={styles.label}>Description:</Text>
             <Text style={styles.value}>{complain.description}</Text>
           </View>
+          {!visible &&(<View style={styles.dataContainer}>
+            <Text style={styles.label}>Assigned Supervisor :</Text>
+            <Text style={styles.value}>{complain.supervisorID}</Text>
+          </View>)}
           {visible&&(<TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
             <Text style={styles.buttonText}>Assign A Supervisor</Text>
           </TouchableOpacity>)}
