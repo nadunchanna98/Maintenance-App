@@ -57,7 +57,6 @@ const AdminDashboard = () => {
                 <View style={styles.count}><Text style={styles.countText}>2</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
@@ -72,7 +71,6 @@ const AdminDashboard = () => {
                 <View style={styles.count}><Text style={styles.countText}>3</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
@@ -86,7 +84,6 @@ const AdminDashboard = () => {
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'CompletedA' }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
@@ -100,7 +97,6 @@ const AdminDashboard = () => {
               <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList") }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
@@ -114,7 +110,6 @@ const AdminDashboard = () => {
               <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { PendingType: 'supervisor' }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/3769135/pexels-photo-3769135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}

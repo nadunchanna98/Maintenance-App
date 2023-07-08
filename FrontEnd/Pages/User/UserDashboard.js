@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,15 +10,21 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
+import BASE_URL from '../../src/Common/BaseURL';
+import axios from 'axios';
+import { Badge } from 'react-native-paper';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get("window")
 
 const UserDashboard = () => {
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [pendingData, setPendingData] = useState([]);
+  const [assignedAData, setAssignedAData] = useState([]);
+  const [completedData, setCompletedData] = useState([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -28,9 +34,69 @@ const UserDashboard = () => {
   }, []);
 
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const statusPending = 'Pending';
+  const statusAssignedA = 'AssignedA';
+  const statusCompleted = 'Completed';
 
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
+
+  useEffect(() => {
+    getPendingComplains();
+    getCompletedComplains();
+    getAssignedAComplains();
+  }, []);
+
+  const getPendingComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusPending,
+          role: userInfo.role,
+        }
+      });
+      setPendingData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAssignedAComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedA,
+          role: userInfo.role,
+        }
+      });
+      setAssignedAData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getCompletedComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusCompleted,
+          role: userInfo.role,
+        }
+      });
+      setCompletedData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const noOfPendingComplains = pendingData.length;
+  const noOfAssignedAComplains = assignedAData.length;
+  const noOfCompletedComplains = completedData.length;
 
   return (
     <SafeAreaView>
@@ -49,7 +115,7 @@ const UserDashboard = () => {
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("NewRequests") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainForm") }}>
 
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -63,8 +129,10 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'Pending' }) }}>
-                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+              {/* Status: 'Pending' */}
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: pendingData }) }}>
+                {/* <View style={styles.count}><Text style={styles.countText}>2</Text></View> */}
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -77,8 +145,10 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'AssignedA' }) }}>
-                <View style={styles.count}><Text style={styles.countText}>3</Text></View>
+              {/* Status: 'AssignedA' */}
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+                {/* <View style={styles.count}><Text style={styles.countText}>3 backgroundColor: "yellow", color: "black"</Text></View> */}
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -87,12 +157,14 @@ const UserDashboard = () => {
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>In Progress</Text>
+                    <Text style={styles.cardText}>In Progress Complains</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { Status: 'Completed' }) }}>
+              {/* Status: 'Completed' */}
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedData }) }}>
+                {/* <View style={styles.count}><Text style={styles.countText}>2</Text></View> */}
+                {/* <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8, backgroundColor: "green" }}>{noOfCompletedComplains}</Badge></View> */}
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
