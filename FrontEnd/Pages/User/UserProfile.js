@@ -8,8 +8,6 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Pressable,
-  Platform,
   ScrollView,
   Alert
 } from 'react-native'
@@ -20,14 +18,12 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios'
 import BASE_URL from '../../src/Common/BaseURL';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 let schema = yup.object().shape({
   name: yup.string().required("Name is required!"),
-  // birthday: yup.string().required("Birthday is required!"),
   email: yup.string().email("Enter a valid email!").required("Email is required!"),
 });
 
@@ -42,15 +38,11 @@ const UserProfile = () => {
   const role = userInfo.role
 
   let name = userInfo.name
-  let birthday = userInfo.birthday
   let email = userInfo.email
 
 
   //state to save the updated user information as object
   const [updatedUserInfo, setUpdatedUserInfo] = useState(userInfo)
-
-  const [date, setDate] = useState(new Date()); //use the default data as user's birthday {userInfo.birthday}
-  const [showPicker, setShowPicker] = useState(false);
 
   // update the user with new details
   const updateUserDetails = async (values) => {
@@ -73,31 +65,6 @@ const UserProfile = () => {
 
   }
 
-  const toggleDatePicker = () => {
-    setShowPicker(!showPicker);
-  }
-
-  const formatDate = (rawDate) => {
-    let date = new Date(rawDate);
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1; //this count the month from 0
-    let day = date.getDate();
-    return `${year}/${month}/${day}`
-  }
-
-  const onDateChange = ({ type }, selectedDate) => { //here type is even type from the event here it is destructing to get the type of event
-    if (type == "set") { //if the type is set, then the current date is set to the selected date
-      const currentDate = selectedDate;
-      setDate(currentDate);
-      if (Platform.OS === "android") {
-        toggleDatePicker();
-        setBirthday(formatDate(currentDate));
-      }
-    } else {
-      toggleDatePicker(); //if the type is "dismissed" then we have to toggle the date picker to hide it
-    }
-  }
-
   //Handling the edit profile modal
   const [visible, setVisible] = useState(false);
   const show = () => { setVisible(true) };
@@ -114,23 +81,19 @@ const UserProfile = () => {
           <View style={styles.detailsContainer}>
             <View style={styles.detail}>
               <Ionicons name="person-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Name: {userInfo.name}</Text>
-            </View>
-            <View style={styles.detail}>
-              <Ionicons name="calendar-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Birthday: {userInfo.birthday}</Text>
+              <Text style={styles.detailText}>{userInfo.name}</Text>
             </View>
             <View style={styles.detail}>
               <Ionicons name="phone-portrait-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Mobile: {phoneNumber}</Text>
+              <Text style={styles.detailText}>{phoneNumber}</Text>
             </View>
             <View style={styles.detail}>
               <Ionicons name="mail-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Email: {userInfo.email}</Text>
+              <Text style={styles.detailText}>{userInfo.email}</Text>
             </View>
             <View style={styles.detail}>
               <FontAwesome5 name="user-cog" size={24} color="black" />
-              <Text style={styles.detailText}>Role: {userInfo.role}</Text>
+              <Text style={styles.detailText}>{userInfo.role}</Text>
             </View>
           </View>
           <View style={styles.buttonContainer}>
@@ -151,18 +114,10 @@ const UserProfile = () => {
                 >
                   {({ handleChange, handleSubmit, setFieldTouched, isValid, touched, values, errors }) => {
                     return (<View>
-                      {/* <Field name="name" type="text" placeholder="David Boby" /> */}
                       <View>
                         <Text style={styles.textInputTitle}>Name</Text>
                         <TextInput style={styles.input} value={values.name} onBlur={() => { setFieldTouched('name') }} onChangeText={handleChange('name')} placeholder="Ex: David Boby" />
                         {touched.name && errors.name && (<Text style={styles.errorText}>{errors.name}</Text>)}
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Birthday</Text>
-                        {showPicker && (<DateTimePicker mode='date' display='spinner' value={date} onChange={onDateChange} />)}
-                        <Pressable onPress={toggleDatePicker}>
-                          <TextInput style={styles.input} value={/*userInfo.birthday*/birthday} /* onChangeText={changeBirthday} */ placeholder="1998/2/5" editable={false} />
-                        </Pressable>
                       </View>
                       <View>
                         <Text style={styles.textInputTitle}>Phone Number</Text>

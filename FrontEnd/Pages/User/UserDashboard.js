@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Image,
   RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -62,9 +63,50 @@ const UserDashboard = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{ height: "89.5%" }} // 89.9%
           >
-            <Text style={styles.dashboardText}>Dashboard Content</Text>
-
-
+            <View style={styles.cardContainer}>
+              <TouchableOpacity onPress={() => { navigation.navigate("Supervisors") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/4792511/pexels-photo-4792511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>New Complain</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("Supervisors") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/5974053/pexels-photo-5974053.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Complains</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("Supervisors") }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    {/* <Text>Image</Text> */}
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/5691511/pexels-photo-5691511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Completed</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
         </View>
 
@@ -126,6 +168,45 @@ const styles = StyleSheet.create({
   },
   dashboard: {
     padding: width * 0.04,
+  },
+  cardContainer: {
+    paddingHorizontal: width * 0.05,
+    paddingBottom: width * 0.05,
+    paddingTop: width * 0.02,
+  },
+  card: {
+    backgroundColor: "#B3B3B3",
+    width: "100%",
+    height: width * 0.4,
+    borderRadius: width * 0.04,
+    overflow: "hidden",
+    marginBottom: width * 0.05,
+  },
+  imageSection: {
+    backgroundColor: "#98E2FB", // Light blue: "#98E2FB"   Dark blue: "#19AFE2"
+    width: "100%",
+    height: "75%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  textSection: {
+    backgroundColor: "#19AFE2",
+    width: "100%",
+    height: "25%",
+    justifyContent: "center",
+  },
+  cardText: {
+    // backgroundColor: "black",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: width * 0.045,
+    textAlign: "right",
+    paddingHorizontal: width * 0.04,
   },
 });
 
