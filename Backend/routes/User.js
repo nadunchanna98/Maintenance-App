@@ -78,7 +78,7 @@ router.post('/user/register', async (req, res) => {
   try {
     let newUser = new User_Details({
       name: req.body.name,
-      mobile_no: req.body.mobileNumber,  
+      mobile_no: req.body.mobileNumber,
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
@@ -148,7 +148,7 @@ router.get('/user/:id', async (req, res) => {
 //get complainers and supervisors all together
 router.get('/', async (req, res) => {
   try {
-    const users = await User_Details.find().exec();   
+    const users = await User_Details.find().exec();
     const supervisors = await Supervisor_Details.find().exec();
 
     const userMap = new Map();
@@ -200,7 +200,7 @@ router.get('/', async (req, res) => {
 
 //get list of pending supervisors or labours
 router.get('/pending/list', async (req, res) => {
-  const role = req.query.PendingType ;
+  const role = req.query.PendingType;
 
   try {
     let pendingUsers = null;
@@ -269,7 +269,7 @@ router.get('/pendinguser/:id', async (req, res) => {
     };
 
     console.log(combinedData);
-  
+
     res.status(200).send(combinedData);
 
     console.log(combinedData);
@@ -308,8 +308,8 @@ router.get('/labour/:id', async (req, res) => {
 
 
 
-  
-  
+
+
 
 
 
@@ -335,7 +335,6 @@ router.put('/user/edit/:id', async (req, res) => {
     req.params.id,
     {
       name: req.body.name,
-      password: req.body.password,
       email: req.body.email,
     },
     { new: true } // to get the updated data
@@ -353,13 +352,13 @@ router.put('/user/edit/:id', async (req, res) => {
 router.delete('/user/:id', (req, res) => {
 
   User_Details.findByIdAndRemove(req.params.id).then(user => {
-      if (user) {
-          return res.status(200).json({ success: true, message: 'user deleted!' })
-      } else {
-          return res.status(404).json({ success: false, message: "user not found!" })
-      }
+    if (user) {
+      return res.status(200).json({ success: true, message: 'user deleted!' })
+    } else {
+      return res.status(404).json({ success: false, message: "user not found!" })
+    }
   }).catch(err => {
-      return res.status(500).json({ success: false, error: err })
+    return res.status(500).json({ success: false, error: err })
   })
 })
 
