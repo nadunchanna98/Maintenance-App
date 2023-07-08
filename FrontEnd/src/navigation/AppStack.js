@@ -214,12 +214,11 @@ const AppStack = () => {
                 tabBarIcon: ({ color, size }) => {
                   let iconName;
 
-                  if (route.name === 'AdminScreens') {
+                  if (route.name === 'Dashboard') {
                     iconName = 'home';
-                  } else if (route.name === 'UserProfile') {
+                  } else if (route.name === 'Profile') {
                     iconName = 'account';
-                  }
-                  else if (route.name === 'InstructionScreens') {
+                  }else if (route.name === 'Instruction') {
                     iconName = 'book';
                   }
 
@@ -227,9 +226,9 @@ const AppStack = () => {
                 },
               })}
             >
-              <Tab.Screen name="AdminScreens" component={AdminScreens} options={{ headerShown: false }} />
-              <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
-              <Tab.Screen name="InstructionScreens" component={InstructionScreens} options={{ headerShown: false }} />
+              <Tab.Screen name="Dashboard" component={AdminScreens} options={{ headerShown: false }} />
+              <Tab.Screen name="Profile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Instruction" component={InstructionScreens} options={{ headerShown: false }} />
 
             </Tab.Navigator>
           )}
@@ -245,18 +244,22 @@ const AppStack = () => {
                 tabBarIcon: ({ color, size }) => {
                   let iconName;
 
-                  if (route.name === 'SupervisorScreens') {
+                  if (route.name === 'Dashboard') {
                     iconName = 'home';
-                  } else if (route.name === 'UserProfile') {
+                  } else if (route.name === 'Profile') {
                     iconName = 'account';
+                  }else if (route.name === 'Instruction') {
+                    iconName = 'book';
                   }
 
                   return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
                 },
               })}
             >
-              <Tab.Screen name="SupervisorScreens" component={SupervisorScreens} options={{ headerShown: false }} />
-              <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Dashboard" component={SupervisorScreens} options={{ headerShown: false }} />
+              <Tab.Screen name="Profile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Instruction" component={InstructionScreens} options={{ headerShown: false }} />
+
             </Tab.Navigator>
           )}
         </Stack.Screen>
@@ -271,18 +274,22 @@ const AppStack = () => {
                 tabBarIcon: ({ color, size }) => {
                   let iconName;
 
-                  if (route.name === 'LaborerScreens') {
+                  if (route.name === 'Dashboard') {
                     iconName = 'home';
-                  } else if (route.name === 'UserProfile') {
+                  } else if (route.name === 'Profile') {
                     iconName = 'account';
+                  }else if (route.name === 'Instruction') {
+                    iconName = 'book';
                   }
 
                   return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
                 },
               })}
             >
-              <Tab.Screen name="LaborerScreens" component={LaborerScreens} options={{ headerShown: false }} />
-              <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Dashboard" component={LaborerScreens} options={{ headerShown: false }} />
+              <Tab.Screen name="Profile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Instruction" component={InstructionScreens} options={{ headerShown: false }} />
+
             </Tab.Navigator>
           )}
         </Stack.Screen>
@@ -297,18 +304,22 @@ const AppStack = () => {
                 tabBarIcon: ({ color, size }) => {
                   let iconName;
 
-                  if (route.name === 'UserScreens') {
+                  if (route.name === 'Dashboard') {
                     iconName = 'home';
-                  } else if (route.name === 'UserProfile') {
+                  } else if (route.name === 'Profile') {
                     iconName = 'account';
+                  }else if (route.name === 'Instruction') {
+                    iconName = 'book';
                   }
 
                   return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
                 },
               })}
             >
-              <Tab.Screen name="UserScreens" component={UserScreens} options={{ headerShown: false }} />
-              <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Dashboard" component={UserScreens} options={{ headerShown: false }} />
+              <Tab.Screen name="Profile" component={UserProfile} options={{ headerShown: false }} />
+              <Tab.Screen name="Instruction" component={InstructionScreens} options={{ headerShown: false }} />
+
             </Tab.Navigator>
           )}
         </Stack.Screen>
