@@ -70,7 +70,13 @@ const AdminScreens = () => (
     <Stack.Screen
       name="PendingList"
       component={PendingList}
-      options={{ headerShown: true, title: "New Supervisor Requests" }}
+      options={{
+        headerShown: true,
+        title: "New Supervisor Requests",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="PendingUserDetailView"
@@ -96,7 +102,13 @@ const SupervisorScreens = () => (
     <Stack.Screen
       name="PendingList"
       component={PendingList}
-      options={{ headerShown: true, title: "New Labour Requests" }}
+      options={{
+        headerShown: true,
+        title: "New Labour Requests",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="PendingUserDetailView"

@@ -1,68 +1,116 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
-import { Button, List, Surface, useTheme } from 'react-native-paper';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, RefreshControl, Dimensions, Linking, Platform } from 'react-native';
+import { Button, List, Surface, IconButton, Dialog, Portal, Provider } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
-import axios from 'axios';
-import BASE_URL from '../../src/Common/BaseURL';
-import { UserContext } from '../../src/Context/UserContext';
+import { useRoute } from '@react-navigation/native';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation, useRoute } from '@react-navigation/native';
+
+const { width } = Dimensions.get("window");
 
 const PendingList = () => {
 
-  const { userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
-
-  const navigation = useNavigation();
   const route = useRoute();
-  // const PendingType = route.params.PendingType;
   const data = route.params.pendingData;
-  // console.log("PendingType",PendingType);
+
+  const role = data[0].role;
+
+  const { userInfo } = useContext(AuthContext);
 
   const [activeSections, setActiveSections] = useState([]);
-  // const [data , setData] = useState([]);
-  const theme = useTheme();
+  const [activeRequest, setActiveRequest] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
-  // useEffect(() => {
-  //   getListOfPending();
-  // }, []);
+  const [visibleDelete, setVisibleDelete] = useState(false); //visibility of the delete dialog
+  const [visibleAccept, setVisibleAccept] = useState(false); //visibility of the accept dialog
 
-  // const getListOfPending = async () => {
-  //   try {
-  //     const response = await axios.get(`${BASE_URL}users/pending/list`, {
-  //       params: {
-  //           PendingType : PendingType,
-  //       }
-  //     });
-  //     setData(response.data);
-  //     console.log(response.data[0]);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  // this will set the active request
+  useEffect(() => {
+    if (activeSections.length != 0) {
+      setActiveRequest(data[activeSections[0]])
+    }
+  }, [activeSections])
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500); //after 1.5s refreshing will stop 
+  }, []);
+
+  // to delete a request from the pending list
+  const deleteRequest = () => {
+    setVisibleDelete(false)
+    console.log("Deleted!")
+  };
+
+  // to accept a request from the pending list
+  const acceptRequest = () => {
+    setVisibleAccept(false)
+    console.log("Accepted!")
+  };
+
+  // open dial pad with the user mobile number dialed when click call button
+  const dialCall = () => {
+    phoneNum = activeRequest.user.mobile_no;
+    if (Platform.OS === 'android') {
+      phoneNum = `tel:${phoneNum}`;
+    } else {
+      phoneNum = `telprompt:${phoneNum}`;
+    }
+    Linking.openURL(phoneNum);
+  }
 
   const renderHeader = (section, index, isActive) => (
     <Surface style={[isActive ? styles.activeSurface : styles.inactiveSurface, styles.surface]} elevation={2}>
+
       <List.Item
         title={section.user.name}
+        titleStyle={{ width: width * 0.28 }}
         description={section.user.role === 'supervisor' ? section.pendingUser.work_type : section.user.mobile_no}
+        descriptionStyle={{ width: width * 0.28 }}
         style={[isActive ? styles.activeHeader : styles.inactiveHeader, { borderRadius: 8 }]}
-        left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.avatar} />}
+        left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={[styles.avatar, { alignSelf: "center" }]} />}
         right={() => (
-          <Button
-            icon="arrow-right"
-            mode="outlined"
-            onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
-            borderColor='#01a9e1'
-            color='#f08e25'
-            labelStyle={{ color: "#01a9e1", fontSize: 15 }}
-            style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
-          >
-            View
-          </Button>
+          <View style={styles.labourRequest}>
+            <IconButton
+              icon={"delete"}
+              iconColor='white' size={18}
+              style={{ backgroundColor: 'red' }}
+              onPress={() => {
+                setVisibleDelete(!visibleDelete);
+              }}
+            />
+            <Button
+              icon="check"
+              mode="outlined"
+              // onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
+              onPress={() => {
+                setVisibleAccept(!visibleAccept);
+              }}
+              borderColor='#01a9e1'
+              labelStyle={{ color: "green", fontSize: 14 }}
+              style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
+            >
+              Accept
+            </Button>
+
+            {/* <IconButton icon={"delete"} iconColor='white' size={18} style={{ backgroundColor: 'red' }} onPress={() => { console.log("Delete Pressed!") }} /> */}
+
+          </View>
+          // <Button
+          //   icon="arrow-right"
+          //   mode="outlined"
+          //   onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
+          //   borderColor='#01a9e1'
+          //   color='#f08e25'
+          //   labelStyle={{ color: "#01a9e1", fontSize: 15 }}
+          //   style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
+          // >
+          //   View
+          // </Button>
         )}
-      /></Surface>
+      />
+    </Surface>
   );
 
   const renderContent = (section, index, isActive) => (
@@ -70,6 +118,8 @@ const PendingList = () => {
       <View style={styles.content}>
         <Text style={styles.description}>Name: {section.user.name}</Text>
         <Text style={styles.description}>Work Type: {section.pendingUser.work_type}</Text>
+        <Text style={styles.description}>Mobile No: {section.user.mobile_no}</Text>
+        <Button icon={"phone"} mode='contained' buttonColor={"#19AFE2"} style={styles.callButton} onPress={dialCall}>Call</Button>
       </View>
     </Surface>
   );
@@ -79,22 +129,51 @@ const PendingList = () => {
   };
 
   return (
-
-    <ScrollView>
-      <View style={styles.requestList}>
-        <List.Section>
-          {/* <List.Subheader>New users List</List.Subheader> */}
-          <Accordion
-            sections={data}
-            activeSections={activeSections}
-            renderHeader={renderHeader}
-            renderContent={renderContent}
-            onChange={updateSections}
-            underlayColor="transparent"
-          />
-        </List.Section>
-      </View>
-    </ScrollView>
+    <Provider>
+      <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <View style={styles.requestList}>
+          <List.Section>
+            {/* <List.Subheader>New users List</List.Subheader> */}
+            <Accordion
+              sections={data}
+              activeSections={activeSections}
+              renderHeader={renderHeader}
+              renderContent={renderContent}
+              onChange={updateSections}
+              underlayColor="transparent"
+            />
+          </List.Section>
+        </View>
+        <Portal>
+          <Dialog visible={visibleDelete} dismissable={false}>
+            <Dialog.Icon icon={"alert"} />
+            <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role === 'supervisor' ? "supervisor" : "labour"} request?</Dialog.Title>
+            <Dialog.Content>
+              <Text>Delete this new {role === 'supervisor' ? "supervisor" : "labour"} request from the pending list</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => { setVisibleDelete(false) }}>Cancel</Button>
+              <Button onPress={deleteRequest}>Delete</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+        <Portal>
+          <Dialog visible={visibleAccept} dismissable={false}>
+            <Dialog.Icon icon={"alert"} />
+            <Dialog.Title style={styles.dialogTitle} >Are you sure to accept he/she as a new {role === 'supervisor' ? "supervisor" : "labour"}?</Dialog.Title>
+            <Dialog.Content>
+              <Text>Accept this request and add to registered {role === 'supervisor' ? "supervisors" : "labourers"}</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => { setVisibleAccept(false) }}>Cancel</Button>
+              <Button onPress={acceptRequest}>Accept</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </ScrollView>
+    </Provider>
   );
 };
 
@@ -103,31 +182,23 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   activeHeader: {
-    backgroundColor: 'white',  //#F5F5F5     #ffd000
-    // marginBottom: 0,
-    // marginHorizontal: 15,
+    backgroundColor: 'white',
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
   inactiveHeader: {
-    backgroundColor: 'white',   //white
-    // marginHorizontal: 15,
-    // marginBottom: 15,
+    backgroundColor: 'white',
   },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 10,
     marginLeft: 15,
   },
   content: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: 'white',   //#F5F5F5   #14ff2c
-    // marginHorizontal: 15,
-    // marginBottom: 15,
-    // borderRadius: 8,
+    backgroundColor: 'white',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     borderTopWidth: 1,
@@ -136,14 +207,11 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: 'gray',
+    paddingVertical: width * 0.005,
   },
-  button: {
-    marginTop: 6,
-    alignSelf: 'flex-end',
-  },
+  button: {},
   surface: {
     marginHorizontal: 15,
-    // marginBottom: 15,
     borderRadius: 8,
   },
   contentSurface: {
@@ -157,6 +225,17 @@ const styles = StyleSheet.create({
   },
   inactiveSurface: {
     marginBottom: 15,
+  },
+  labourRequest: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: width * 0.39,
+    overflow: 'hidden',
+  },
+  callButton: {
+    width: width * 0.3,
+    marginVertical: width * 0.02,
   },
 });
 
