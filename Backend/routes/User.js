@@ -118,7 +118,7 @@ router.post('/user/register', async (req, res) => {
   try {
     let newUser = new User_Details({
       name: req.body.name,
-      mobile_no: req.body.mobileNumber,  
+      mobile_no: req.body.mobileNumber,
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
@@ -188,7 +188,7 @@ router.get('/user/:id', async (req, res) => {
 //get complainers and supervisors all together
 router.get('/', async (req, res) => {
   try {
-    const users = await User_Details.find().exec();   
+    const users = await User_Details.find().exec();
     const supervisors = await Supervisor_Details.find().exec();
 
     const userMap = new Map();
@@ -240,7 +240,7 @@ router.get('/', async (req, res) => {
 
 //get list of pending supervisors or labours
 router.get('/pending/list', async (req, res) => {
-  const role = req.query.PendingType ;
+  const role = req.query.PendingType;
 
   try {
     let pendingUsers = null;
@@ -309,7 +309,7 @@ router.get('/pendinguser/:id', async (req, res) => {
     };
 
     console.log(combinedData);
-  
+
     res.status(200).send(combinedData);
 
     console.log(combinedData);
@@ -348,8 +348,8 @@ router.get('/labour/:id', async (req, res) => {
 
 
 
-  
-  
+
+
 
 
 
@@ -446,6 +446,7 @@ router.post('/user/development/add', async (req, res) => {
     console.log(error);
   }
 });
+
 
 
 module.exports = router;
