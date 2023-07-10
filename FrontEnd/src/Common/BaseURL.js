@@ -12,7 +12,6 @@ let BASE_URL = "";
 
 
 //nadun mobile
-if (Platform.OS === "android") {
 
 
 // if (Platform.OS === "android") {
@@ -20,6 +19,7 @@ if (Platform.OS === "android") {
 // } else {
 //     BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
 // }
+
 
 
 // // //nadun wifi
