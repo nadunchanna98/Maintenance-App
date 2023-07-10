@@ -20,12 +20,7 @@ const CompletedComplainsListById = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const Status = route.params.Status;
-
-  const [activeSections, setActiveSections] = useState([]);
-  const [data, setData] = useState([]);
-  const theme = useTheme();
-
+  const data = route.params.data;
 
   const [activeSections, setActiveSections] = useState([]);
   // const [data, setData] = useState([]);
@@ -55,20 +50,20 @@ const CompletedComplainsListById = () => {
   // };
 
 
-  const getComplains = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}complains/list`, {
-        params: {
-          id: userInfo.userId,
-          status: Status,
-          role: userInfo.role,
-        },
-      });
-      setData(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getComplains = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}complains/list`, {
+  //       params: {
+  //         id: userInfo.userId,
+  //         status: Status,
+  //         role: userInfo.role,
+  //       },
+  //     });
+  //     setData(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const renderHeader = (section, index, isActive) => {
     const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
@@ -157,7 +152,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     flex: 1,
-    marginLeft: windowRatio - 24* windowRatio,
+    marginLeft: windowRatio - 24 * windowRatio,
     marginRight: 10 * windowRatio,
     textAlign: 'center',
   },
