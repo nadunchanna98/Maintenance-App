@@ -1,7 +1,7 @@
 // for admin view perpose
 
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -9,6 +9,9 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const SuperviserDetailView = () => {
     const navigation = useNavigation();
@@ -39,17 +42,60 @@ const SuperviserDetailView = () => {
     }
   
     return (
-      <View>
-        <Text>View detail of all supervisers</Text>
-        <Text>{pendingUser.user.name}</Text>
-        <Text>{pendingUser.user.email}</Text>
-        <Text>{pendingUser.user.mobile_no}</Text>
-        <Text>{pendingUser.user.role}</Text>
-        <Text>{pendingUser.Data.work_type}</Text>
-        <Text>{pendingUser.Data.approved_date}</Text>
-      </View>
+      <SafeAreaView>
+        <ScrollView>
+          <View style={styles.topbar}>
+            <Text style={styles.text}>Superviser Details</Text>
+          </View>
+          <View style={styles.circle}></View>
+            <View>
+              <Text style={styles.nameText}>Supervisor's Name</Text>
+              <Text style={styles.joinDate}>Joined 23 July 2023</Text>
+            </View>
+          
+            
+        </ScrollView>
+      </SafeAreaView>
     );
   };
+
+  const styles = StyleSheet.create({
+    topbar: {
+      backgroundColor: "#19AFE2",
+      width: "100%",
+      height: 67,
+    },
+    text: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: 'white',
+      textAlign: 'center',
+      marginTop:15,
+    },
+    circle: {
+      width: 80,
+      height: 80,
+      backgroundColor: '#D9D9D9',
+      borderRadius: 40,
+      marginTop: 20,
+      marginBottom: 20,
+      left: windowWidth*0.4,
+     
+    },
+    nameText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 4,
+
+    },
+    joinDate: {
+      textAlign: 'center',
+      fontSize: 12,
+      fontWeight: 'regular',
+      
+    },
+  })
   
   export default SuperviserDetailView;
   
