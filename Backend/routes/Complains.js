@@ -48,6 +48,8 @@ router.get('/', async (req, res) => {
 router.get('/list', async (req, res) => {
   let { id, status,role } = req.query;
   let ComplaineList = [];
+
+  // console.log("id: ", id);
   
   if(status === 'Pending') {
     status = ['Pending']
@@ -60,6 +62,7 @@ router.get('/list', async (req, res) => {
   {
     status = ['CompletedA', 'Completed']
     ComplaineList = await Complaine_Details.find({status});
+    
   }
   else if(status === 'CompletedS')   //Supervisor   
   {
@@ -115,14 +118,12 @@ router.get('/list', async (req, res) => {
     ComplaineList = await Complaine_Details.find({ userID: id, status});
   }
 
-  console.log(id, status);
-
 
   if (!ComplaineList) {
     res.status(500).json({ success: false });
   }
   res.send(ComplaineList);
-  console.log(ComplaineList);
+ 
 });
 
 
