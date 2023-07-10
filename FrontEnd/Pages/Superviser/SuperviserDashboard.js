@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,12 @@ import {
   RefreshControl,
   Image,
 } from 'react-native';
+
 import BASE_URL from '../../src/Common/BaseURL';
 import axios from 'axios';
 import { Badge } from 'react-native-paper';
+
+
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -43,6 +46,7 @@ const SuperviserDashboard = () => {
   const navigation = useNavigation();
 
   const { userInfo } = useContext(AuthContext);
+
 
   useEffect(() => {
     getAssignedSComplains();
@@ -114,6 +118,7 @@ const SuperviserDashboard = () => {
   const noOfCompletedSComplains = completedSData.length;
 
   const noOfPendingLabourers = pendingLabourersData.length;
+
 
   return (
     <SafeAreaView>

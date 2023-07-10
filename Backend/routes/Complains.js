@@ -24,8 +24,8 @@ router.post('/add/', async (req, res) => {
     return res.status(400).send('New complaint cannot be added!');
 
   // Update the Supervisor_Details collection with the new complaint
-  await Supervisor_Details.findOneAndUpdate(
-    { _id: req.body.supervisorID },
+  await User_Details.findOneAndUpdate(
+    { _id: req.body.userID },
     { $push: { complains: newComplaint._id } }
   );
 
