@@ -49,6 +49,7 @@ const UserProfile = () => {
     updatedData = { ...updatedUserInfo, name: values.name, email: values.email }
     setUpdatedUserInfo(updatedData)
 
+
     const dataToBeSend = { name: updatedData.name, email: updatedData.email }
 
     try {

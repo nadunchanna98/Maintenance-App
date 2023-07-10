@@ -8,6 +8,46 @@ require('dotenv/config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// //delete by id
+// router.delete('/user/:id', (req, res) => {
+
+//   User_Details.findByIdAndRemove(req.params.id).then(user => {
+//       if (user) {
+//           return res.status(200).json({ success: true, message: 'user deleted!' })
+//       } else {
+//           return res.status(404).json({ success: false, message: "user not found!" })
+//       }
+//   }).catch(err => {
+//       return res.status(500).json({ success: false, error: err })
+//   })
+// })
+
+router.delete('/user/:id', (req, res) => {
+  const userId = req.params.id;
+
+  // Delete from User_Details collection
+  User_Details.findByIdAndRemove(userId)
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found!' });
+      }
+
+      // Delete from Supervisor_Details collection
+      Supervisor_Details.deleteMany({ userID: userId }).exec();
+
+      // Delete from Supervisor_Pending collection
+      Supervisor_Pending.deleteMany({ userID: userId }).exec();
+
+      // Delete from Labour_Pending collection
+      Labour_Pending.deleteMany({ userID: userId }).exec();
+
+      return res.status(200).json({ success: true, message: 'User and related data deleted!' });
+    })
+    .catch(err => {
+      return res.status(500).json({ success: false, error: err });
+    });
+});
+
 
 // Login route
 router.post('/login', async (req, res) => {
@@ -348,19 +388,65 @@ router.put('/user/edit/:id', async (req, res) => {
 });
 
 
-//delete by id
-router.delete('/user/:id', (req, res) => {
+// development perpose
+router.post('/user/development/add', async (req, res) => {
+  hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-  User_Details.findByIdAndRemove(req.params.id).then(user => {
-    if (user) {
-      return res.status(200).json({ success: true, message: 'user deleted!' })
-    } else {
-      return res.status(404).json({ success: false, message: "user not found!" })
+  try {
+    let newUser = new User_Details({
+      name: req.body.name,
+      mobile_no: req.body.mobileNumber,  
+      password: hashedPassword,
+      email: req.body.email,
+      role: req.body.role,
+    });
+
+    console.log(newUser);
+
+    let supervisor = null;
+    let labour = null;
+
+    if (req.body.role === 'supervisor') {
+      supervisor = new Supervisor_Details({
+        userID: newUser._id, // Set the supervisor's userID as the newly created user's _id
+        work_type: req.body.work_type,
+      });
     }
-  }).catch(err => {
-    return res.status(500).json({ success: false, error: err })
-  })
-})
+
+    if (req.body.role === 'labour') {
+      labour = new Labour_Pending({
+        userID: newUser._id,
+      });
+    }
+
+    newUser = await newUser.save();
+
+    if (supervisor) {
+      supervisor.userID = newUser._id; // Update the supervisor's userID to match the newUser's _id
+      supervisor = await supervisor.save();
+    }
+
+    if (labour) {
+      labour.userID = newUser._id;
+      labour = await labour.save();
+    }
+
+    if (!newUser) {
+      return res.status(400).send('New user cannot be added!');
+    }
+
+    const combinedData = {
+      supervisor: supervisor ? supervisor.toObject() : null,
+      user: newUser.toObject(),
+    };
+
+    res.send(combinedData);
+  } catch (error) {
+    res.status(500).send('Error adding user ' + error);
+    console.log(error);
+  }
+});
+
 
 
 module.exports = router;
