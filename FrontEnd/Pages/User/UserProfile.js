@@ -8,11 +8,10 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Pressable,
-  Platform,
   ScrollView,
   Alert
-} from 'react-native'
+} from 'react-native';
+import { Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AuthContext } from '../../src/Context/AuthContext';
@@ -20,21 +19,19 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios'
 import BASE_URL from '../../src/Common/BaseURL';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 let schema = yup.object().shape({
   name: yup.string().required("Name is required!"),
-  // birthday: yup.string().required("Birthday is required!"),
   email: yup.string().email("Enter a valid email!").required("Email is required!"),
 });
 
 const UserProfile = () => {
 
   // get the logged in user details from the context
-  const { getUserInfo, userInfo ,  logout } = useContext(AuthContext)
+  const { getUserInfo, userInfo, logout } = useContext(AuthContext)
 
   // current user details
   const id = userInfo.userId
@@ -42,30 +39,21 @@ const UserProfile = () => {
   const role = userInfo.role
 
   let name = userInfo.name
-  let birthday = userInfo.birthday
   let email = userInfo.email
-
 
   //state to save the updated user information as object
   const [updatedUserInfo, setUpdatedUserInfo] = useState(userInfo)
-
-  const [date, setDate] = useState(new Date()); //use the default data as user's birthday {userInfo.birthday}
-  const [showPicker, setShowPicker] = useState(false);
 
   // update the user with new details
   const updateUserDetails = async (values) => {
     updatedData = { ...updatedUserInfo, name: values.name, email: values.email }
     setUpdatedUserInfo(updatedData)
-    //Alert.alert(JSON.stringify(updatedData))
 
-    const dataToBeSend = { name: updatedData.name, email: updatedData.email } //password: "123"
-    const url = `${BASE_URL}users/user/edit/${id}`
-   
-    // console.log(url)
+
+    const dataToBeSend = { name: updatedData.name, email: updatedData.email }
 
     try {
-      const response = await axios.put(url, dataToBeSend)
-      // console.log(response.data)
+      const response = await axios.put(`${BASE_URL}users/user/edit/${id}`, dataToBeSend)
       getUserInfo(id)
       Alert.alert("User Updated Successfully!")
     } catch (error) {
@@ -73,31 +61,6 @@ const UserProfile = () => {
       Alert.alert("Something Went Wrong!")
     }
 
-  }
-
-  const toggleDatePicker = () => {
-    setShowPicker(!showPicker);
-  }
-
-  const formatDate = (rawDate) => {
-    let date = new Date(rawDate);
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1; //this count the month from 0
-    let day = date.getDate();
-    return `${year}/${month}/${day}`
-  }
-
-  const onDateChange = ({ type }, selectedDate) => { //here type is even type from the event here it is destructing to get the type of event
-    if (type == "set") { //if the type is set, then the current date is set to the selected date
-      const currentDate = selectedDate;
-      setDate(currentDate);
-      if (Platform.OS === "android") {
-        toggleDatePicker();
-        setBirthday(formatDate(currentDate));
-      }
-    } else {
-      toggleDatePicker(); //if the type is "dismissed" then we have to toggle the date picker to hide it
-    }
   }
 
   //Handling the edit profile modal
@@ -115,36 +78,33 @@ const UserProfile = () => {
           </View>
           <View style={styles.detailsContainer}>
             <View style={styles.detail}>
-              <Ionicons name="person-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Name: {userInfo.name}</Text>
+              <Ionicons name="person-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{userInfo.name}</Text>
             </View>
             <View style={styles.detail}>
-              <Ionicons name="calendar-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Birthday: {userInfo.birthday}</Text>
+              <Ionicons name="phone-portrait-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{phoneNumber}</Text>
             </View>
             <View style={styles.detail}>
-              <Ionicons name="phone-portrait-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Mobile: {phoneNumber}</Text>
+              <Ionicons name="mail-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{userInfo.email}</Text>
             </View>
             <View style={styles.detail}>
-              <Ionicons name="mail-outline" size={28} color="black" />
-              <Text style={styles.detailText}>Email: {userInfo.email}</Text>
-            </View>
-            <View style={styles.detail}>
-              <FontAwesome5 name="user-cog" size={24} color="black" />
-              <Text style={styles.detailText}>Role: {userInfo.role}</Text>
+              <FontAwesome5 name="user-cog" size={22} color="black" />
+              <Text style={styles.detailText}>{userInfo.role}</Text>
             </View>
           </View>
-          <View style={styles.buttonContainer}>
+
+          {/* <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={show}><Text style={styles.buttonText}>Edit Profile</Text></TouchableOpacity>
-          </View>
+          </View> */}
 
           <Modal visible={visible} animationType="slide" onRequestClose={hide}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.modalContainer}>
                 <Text style={styles.editTitleText}>Edit Profile</Text>
                 <Formik
-                  initialValues={{ name: name, email: email }} /*{{  name: userInfo.name, birthday: userInfo.birthday, mobile: userInfo.mobile_no, email: userInfo.email, role: userInfo.role  }}*/
+                  initialValues={{ name: name, email: email }}
                   validationSchema={schema}
                   onSubmit={(values) => {
                     hide()
@@ -152,34 +112,30 @@ const UserProfile = () => {
                   }}
                 >
                   {({ handleChange, handleSubmit, setFieldTouched, isValid, touched, values, errors }) => {
-                    return (<View>
-                      {/* <Field name="name" type="text" placeholder="David Boby" /> */}
+                    return (
                       <View>
-                        <Text style={styles.textInputTitle}>Name</Text>
-                        <TextInput style={styles.input} value={values.name} onBlur={() => { setFieldTouched('name') }} onChangeText={handleChange('name')} placeholder="Ex: David Boby" />
-                        {touched.name && errors.name && (<Text style={styles.errorText}>{errors.name}</Text>)}
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Birthday</Text>
-                        {showPicker && (<DateTimePicker mode='date' display='spinner' value={date} onChange={onDateChange} />)}
-                        <Pressable onPress={toggleDatePicker}>
-                          <TextInput style={styles.input} value={/*userInfo.birthday*/birthday} /* onChangeText={changeBirthday} */ placeholder="1998/2/5" editable={false} />
-                        </Pressable>
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Phone Number</Text>
-                        <TextInput style={styles.input} value={phoneNumber} placeholder="0777123456" keyboardType="phone-pad" editable={false} />
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Email</Text>
-                        <TextInput style={styles.input} value={values.email} onBlur={() => { setFieldTouched('email') }} onChangeText={handleChange('email')} placeholder="sample@email.com" />
-                        {touched.email && errors.email && (<Text style={styles.errorText}>{errors.email}</Text>)}
-                      </View>
-                      <View>
-                        <Text style={styles.textInputTitle}>Role</Text>
-                        <TextInput style={styles.input} value={role} placeholder="Ex: Supervisor" editable={false} />
-                      </View>
-                      <View style={styles.buttonContainer}>
+                        <View style={styles.inputContainer}>
+                          <View>
+                            <Text style={styles.textInputTitle}>Name</Text>
+                            <TextInput style={styles.input} value={values.name} onBlur={() => { setFieldTouched('name') }} onChangeText={handleChange('name')} placeholder="Ex: David Boby" />
+                            {touched.name && errors.name && (<Text style={styles.errorText}>{errors.name}</Text>)}
+                          </View>
+                          <View>
+                            <Text style={styles.textInputTitle}>Phone Number</Text>
+                            <TextInput style={styles.input} value={phoneNumber} placeholder="0777123456" keyboardType="phone-pad" editable={false} />
+                          </View>
+                          <View>
+                            <Text style={styles.textInputTitle}>Email</Text>
+                            <TextInput style={styles.input} value={values.email} onBlur={() => { setFieldTouched('email') }} onChangeText={handleChange('email')} placeholder="sample@email.com" />
+                            {touched.email && errors.email && (<Text style={styles.errorText}>{errors.email}</Text>)}
+                          </View>
+                          <View>
+                            <Text style={styles.textInputTitle}>Role</Text>
+                            <TextInput style={styles.input} value={role} placeholder="Ex: Supervisor" editable={false} />
+                          </View>
+                        </View>
+
+                        {/* <View style={styles.buttonContainer}>
                         <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={hide}><Text style={styles.buttonText}>Cancel</Text></TouchableOpacity>
                         <TouchableOpacity
                           onPress={handleSubmit}
@@ -188,17 +144,40 @@ const UserProfile = () => {
                         >
                           <Text style={styles.buttonText}>Submit</Text>
                         </TouchableOpacity>
-                      </View>
-                    </View>);
+                      </View> */}
+
+                        {/*  */}
+                        <View style={styles.buttonContainer}>
+                          <Button style={{ width: "40%" }} mode='contained' buttonColor="#707070" onPress={hide}>Cancel</Button>
+                          <Button
+                            onPress={handleSubmit}
+                            mode='contained'
+                            buttonColor={isValid ? "#19AFE2" : "#7a7a7a"}
+                            disabled={!isValid}
+                            style={{ width: "40%", opacity: isValid ? 1 : 0.8 }}
+                          >
+                            Submit
+                          </Button>
+                        </View>
+                        {/*  */}
+
+                      </View>);
                   }}
                 </Formik>
               </View>
             </ScrollView>
           </Modal>
 
+          {/* <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button2} onPress={() => { logout() }}><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
+          </View> */}
+
+          {/*  */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button2} onPress={ () => { logout() } }><Text style={styles.buttonText}>Logout</Text></TouchableOpacity>
+            <Button style={{ width: "40%" }} mode='contained' buttonColor="red" onPress={() => { logout() }}>Logout</Button>
+            <Button style={{ width: "40%" }} mode='contained' buttonColor="#19AFE2" onPress={show}>Edit Profile</Button>
           </View>
+          {/*  */}
 
         </View>
       </ScrollView>
@@ -224,7 +203,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  detailsContainer: {},
+  detailsContainer: {
+    top: -windowWidth * 0.08,
+  },
   detail: {
     flexDirection: "row",
     alignItems: "center",
@@ -234,7 +215,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   detailText: {
-    fontSize: windowWidth * 0.05,
+    fontSize: windowWidth * 0.042,
     paddingLeft: windowWidth * 0.06,
   },
   buttonContainer: {
@@ -271,6 +252,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     marginVertical: windowWidth * 0.05,
+  },
+  inputContainer: {
+    marginBottom: windowWidth * 0.06,
   },
   input: {
     borderWidth: 1,
