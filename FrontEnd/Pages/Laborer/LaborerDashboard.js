@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,16 +10,18 @@ import {
   RefreshControl,
   Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { UserContext } from '../../src/Context/UserContext';
+import { Badge } from 'react-native-paper';
+import axios from 'axios';
+import BASE_URL from '../../src/Common/BaseURL';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get("window")
 
 const LaborerDashboard = () => {
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [data, setData] = useState([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -30,12 +32,30 @@ const LaborerDashboard = () => {
 
   const navigation = useNavigation();
 
-  const { logout, userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
+  const statusAssignedL = 'AssignedL';
+
+  const { userInfo } = useContext(AuthContext);
 
   useEffect(() => {
-    
+    getComplains();
   }, []);
+
+  const getComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedL,
+          role: userInfo.role,
+        }
+      });
+      setData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const noOfAssignedTasks = data.length;
 
   return (
     <SafeAreaView>
@@ -49,26 +69,27 @@ const LaborerDashboard = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "89.5%" }} // 89.9%
+            style={{ height: "91.5%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedL' } )  }}>
-                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: data }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedTasks}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>My works</Text>
+                    <Text style={styles.cardText}>Tasks Assigned</Text>
                   </View>
                 </View>
               </TouchableOpacity>
+
+
             </View>
 
           </ScrollView>
@@ -171,19 +192,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  count: {
-    backgroundColor: "#95A695",
-    width: width * 0.07,
-    height: width * 0.07,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: -width * 0.035,
-    left: width * 0.86,
-    //right: -350, // width * 0.025 // -350  // -width * 0.945
-    zIndex: 2,
-    borderRadius: 100,
-  },
-  countText: {},
 });
 
 export default LaborerDashboard;

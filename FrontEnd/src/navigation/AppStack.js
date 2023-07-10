@@ -42,12 +42,12 @@ const AdminScreens = () => (
       component={NewRequests}
       options={{ headerShown: false }}
     />
-     <Stack.Screen
+    <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
       options={{ headerShown: false }}
     />
-    
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -71,7 +71,13 @@ const AdminScreens = () => (
     <Stack.Screen
       name="PendingList"
       component={PendingList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "New Supervisor Requests",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="PendingUserDetailView"
@@ -94,22 +100,28 @@ const SupervisorScreens = () => (
       options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
-     <Stack.Screen
+    <Stack.Screen
       name="PendingList"
       component={PendingList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "New Labour Requests",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
-     <Stack.Screen
+    <Stack.Screen
       name="PendingUserDetailView"
       component={PendingUserDetailView}
       options={{ headerShown: false }}
     />
-      <Stack.Screen
+    <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
       options={{ headerShown: false }}
     />
-    
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -136,18 +148,18 @@ const LaborerScreens = () => (
       options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
-       <Stack.Screen
+    <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
       options={{ headerShown: false }}
     />
-    
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
       options={{ headerShown: false }}
     />
-    
+
   </Stack.Navigator>
 );
 
@@ -174,7 +186,7 @@ const UserScreens = () => (
       component={CompletedComplainsList}
       options={{ headerShown: false }}
     />
-    
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -191,8 +203,8 @@ const InstructionScreens = () => (
       options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
- 
-<Stack.Screen
+
+    <Stack.Screen
       name="AboutApp"
       component={AboutApp}
       options={{ headerShown: false }}
@@ -241,8 +253,8 @@ const AppStack = () => {
         </Stack.Screen>
       ) : userInfo.role === 'supervisor' ? (
         <Stack.Screen
-        options={{ headerShown: false }}
-        name="SupervisorTab">
+          options={{ headerShown: false }}
+          name="SupervisorTab">
           {() => (
             <Tab.Navigator
               options={{ headerShown: false }}
@@ -270,9 +282,9 @@ const AppStack = () => {
           )}
         </Stack.Screen>
       ) : userInfo.role === 'labour' ? (
-        <Stack.Screen 
-        options={{ headerShown: false }}
-        name="LaborerTab">
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="LaborerTab">
           {() => (
             <Tab.Navigator
               options={{ headerShown: false }}
@@ -301,11 +313,11 @@ const AppStack = () => {
         </Stack.Screen>
       ) : (
         <Stack.Screen
-        options={{ headerShown: false }}
-        name="UserTab">
+          options={{ headerShown: false }}
+          name="UserTab">
           {() => (
             <Tab.Navigator
-             
+
               screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                   let iconName;
