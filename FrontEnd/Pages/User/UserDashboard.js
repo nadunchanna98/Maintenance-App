@@ -7,19 +7,23 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
-  RefreshControl,
   Image,
+  RefreshControl,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { UserContext } from '../../src/Context/UserContext';
+import BASE_URL from '../../src/Common/BaseURL';
+import axios from 'axios';
+import { Badge } from 'react-native-paper';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get("window")
 
 const UserDashboard = () => {
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [pendingData, setPendingData] = useState([]);
+  const [assignedAData, setAssignedAData] = useState([]);
+  const [completedData, setCompletedData] = useState([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -30,87 +34,137 @@ const UserDashboard = () => {
 
   const navigation = useNavigation();
 
+  const statusPending = 'Pending';
+  const statusAssignedA = 'AssignedA';
+  const statusCompleted = 'Completed';
+
   const { userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
 
   useEffect(() => {
-    // getAllUsers();
+    getPendingComplains();
+    getCompletedComplains();
+    getAssignedAComplains();
   }, []);
+
+  const getPendingComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusPending,
+          role: userInfo.role,
+        }
+      });
+      setPendingData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAssignedAComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedA,
+          role: userInfo.role,
+        }
+      });
+      setAssignedAData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getCompletedComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusCompleted,
+          role: userInfo.role,
+        }
+      });
+      setCompletedData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const noOfPendingComplains = pendingData.length;
+  const noOfAssignedAComplains = assignedAData.length;
+  const noOfCompletedComplains = completedData.length;
 
   return (
     <SafeAreaView>
       <View>
         <View style={styles.dashboardHeader}>
           <View style={styles.secondRow}>
-            {/* <Text style={styles.title}>Hello {userInfo.name}</Text> */}
-           <Text style={styles.title}>User Dashboard</Text> 
+            <Text style={styles.title}>User Dashboard</Text>
           </View>
         </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "89.5%" }} // 89.9%
+            style={{ height: "91.5%", paddingTop: 15 }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainForm") }}>
-                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Send new complain</Text>
+                    <Text style={styles.cardText}>Lodge a New Complain</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'Pending' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: pendingData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>30 minutes waitning Complaines</Text>
+                    <Text style={styles.cardText}>Editable Complains (Within 30 Mins)</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedA' } )  }}>
-                <View style={styles.count}><Text style={styles.countText}>3</Text></View>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>In Progress</Text>
+                    <Text style={styles.cardText}>In Progress Complains</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'Completed' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedData }) }}>
+                {/* <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8, backgroundColor: "green" }}>{noOfCompletedComplains}</Badge></View> */}
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>My Completed complaines</Text>
+                    <Text style={styles.cardText}>Completed Complains</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -119,8 +173,6 @@ const UserDashboard = () => {
 
           </ScrollView>
         </View>
-
-
 
       </View>
     </SafeAreaView>
@@ -217,19 +269,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  count: {
-    backgroundColor: "#95A695",
-    width: width * 0.07,
-    height: width * 0.07,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: -width * 0.035,
-    left: width * 0.86,
-    //right: -350, // width * 0.025 // -350  // -width * 0.945
-    zIndex: 2,
-    borderRadius: 100,
-  },
-  countText: {},
 });
 
 export default UserDashboard;
