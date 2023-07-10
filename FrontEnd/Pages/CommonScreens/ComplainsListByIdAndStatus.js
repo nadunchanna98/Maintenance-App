@@ -27,9 +27,8 @@ const CompletedComplainsListById = () => {
   const theme = useTheme();
 
 
-  const [activeSections, setActiveSections] = useState([]);
-  // const [data, setData] = useState([]);
-  const theme = useTheme();
+  
+ 
 
   // useEffect(() => {
   //   getComplains();
