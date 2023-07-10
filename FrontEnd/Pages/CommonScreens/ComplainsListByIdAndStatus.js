@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -8,18 +9,18 @@ import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-const CompletedComplainsListById = () => {
+import moment from 'moment';
+import { ScrollView as GestureScrollView } from 'react-native-gesture-handler';
 
+
+const CompletedComplainsListById = () => {
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
+
 
   const navigation = useNavigation();
   const route = useRoute();
   const data = route.params.data;
-  // const Status = route.params.Status;
-  // console.log("Status",Status);
-
-  // console.log("userInfo",userInfo.userId);
 
   const [activeSections, setActiveSections] = useState([]);
   // const [data, setData] = useState([]);
@@ -49,34 +50,48 @@ const CompletedComplainsListById = () => {
   // };
 
 
-  const renderHeader = (section, index, isActive) => (
-    <List.Item
-      title={section.description}
-      description={section.status}
-      style={isActive ? styles.activeHeader : styles.inactiveHeader}
-      left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.avatar} />}
-      right={() => (
-        <Button
-          icon="arrow-right"
-          mode="outlined"
-          onPress={() => navigation.navigate('ViewComplain', { complainId: section._id })}
-          borderColor='#01a9e1'
-          color='#f08e25'
-          labelStyle={{ color: "#01a9e1", fontSize: 15 }}
-          style={[styles.button, { borderColor: theme.colors.primary }]} // Use theme colors for border color
-        >
-          View
-        </Button>
-      )}
-    />
-  );
+  // const getComplains = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}complains/list`, {
+  //       params: {
+  //         id: userInfo.userId,
+  //         status: Status,
+  //         role: userInfo.role,
+  //       },
+  //     });
+  //     setData(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-  const renderContent = (section, index, isActive) => (
-    <View style={styles.content}>
-      <Text style={styles.description}>description : {section.description}</Text>
-      <Text style={styles.description}>Date: {section.data}</Text>
-    </View>
-  );
+  const renderHeader = (section, index, isActive) => {
+    const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
+
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.headerContainer,
+        ]}
+        onPress={() => navigation.navigate('ViewComplain', { complainId: section._id })}
+      >
+        <View style={styles.headerContent}>
+          <Image
+            source={{
+              uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg',
+            }}
+            style={styles.avatar}
+          />
+          <View style={styles.headerText}>
+            <Text style={styles.title}>{section.description}</Text>
+            <Text style={styles.description}>{section.status}</Text>
+            <Text style={styles.date}>{formattedDate}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const updateSections = (activeSections) => {
     setActiveSections(activeSections);
@@ -84,50 +99,120 @@ const CompletedComplainsListById = () => {
 
   return (
 
-    <ScrollView>
-      <View>
-        <List.Section>
-          <List.Subheader>Complains List</List.Subheader>
-          <Accordion
-            sections={data}
-            activeSections={activeSections}
-            renderHeader={renderHeader}
-            renderContent={renderContent}
-            onChange={updateSections}
-            underlayColor="transparent"
-          />
-        </List.Section>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={require('../../assets/backButton.png')} style={styles.backButton} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Complains</Text>
       </View>
-    </ScrollView>
+      <GestureScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.contentContainer}>
+          <List.Section>
+            <Accordion
+              sections={data}
+              activeSections={activeSections}
+              renderHeader={renderHeader}
+              renderContent={() => null} // Render an empty content
+              onChange={updateSections}
+              underlayColor="transparent"
+            />
+          </List.Section>
+        </View>
+      </GestureScrollView>
+    </View>
+
   );
 };
 
+const windowWidth = Dimensions.get('window').width;
+const windowRatio = windowWidth / 425;
+
 const styles = StyleSheet.create({
-  activeHeader: {
-    backgroundColor: '#F5F5F5',
-  },
-  inactiveHeader: {
+  container: {
+    flex: 1,
     backgroundColor: 'white',
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-    marginLeft: 10,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10 * windowRatio,
+    height: 80 * windowRatio,
+    backgroundColor: '#19AFE2',
   },
-  content: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: '#F5F5F5',
+  backButton: {
+    width: 24 * windowRatio,
+    height: 24 * windowRatio,
+    tintColor: 'white',
+    left: 10 * windowRatio,
+    marginRight: 10 * windowRatio,
+  },
+  headerTitle: {
+    fontSize: 30 * windowRatio,
+    fontWeight: 'bold',
+    color: 'white',
+    flex: 1,
+    marginLeft: windowRatio - 24 * windowRatio,
+    marginRight: 10 * windowRatio,
+    textAlign: 'center',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  contentContainer: {
+    margin: 10 * windowRatio,
+    borderRadius: 10 * windowRatio,
+    backgroundColor: 'white',
+  },
+  headerContainer: {
+    top: 10 * windowRatio,
+    flex: 1,
+    borderRadius: 10 * windowRatio,
+    margin: 5 * windowRatio,
+    padding: 15 * windowRatio,
+    backgroundColor: '#19AFE2',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2 * windowRatio,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84 * windowRatio,
+    elevation: 5 * windowRatio,
+  },
+  avatar: {
+    width: 65 * windowRatio,
+    height: 65 * windowRatio,
+    borderRadius: 10 * windowRatio,
+    marginRight: 10 * windowRatio,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerText: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 18 * windowRatio,
+    color: 'white',
+    lineHeight: 26 * windowRatio,
+    left: 10 * windowRatio,
   },
   description: {
-    fontSize: 14,
-    color: 'gray',
+    fontSize: 14 * windowRatio,
+    color: 'black',
+    top: 2 * windowRatio,
+    left: 10 * windowRatio,
   },
-  button: {
-    marginTop: 6,
-    alignSelf: 'flex-end',
+  date: {
+    fontSize: 15 * windowRatio,
+    color: 'white',
+    marginTop: 4 * windowRatio,
+    left: 10 * windowRatio,
   },
 });
 
