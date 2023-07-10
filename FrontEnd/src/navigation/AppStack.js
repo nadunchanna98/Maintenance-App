@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import UserDashboard from '../../Pages/User/UserDashboard';
 import ComplainForm from '../../Pages/User/ComplainForm';
+import ComplainPreview from '../../Pages/User/ComplainPreview';
 import UserProfile from '../../Pages/User/UserProfile';
 import AdminDashboard from '../../Pages/Admin/AdminDashboard';
 import SupervisorDashboard from '../../Pages/Superviser/SuperviserDashboard';
@@ -161,6 +162,11 @@ const UserScreens = () => (
     <Stack.Screen
       name="ComplainForm"
       component={ComplainForm}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ComplainPreview"
+      component={ComplainPreview}
       options={{ headerShown: false }}
     />
     <Stack.Screen

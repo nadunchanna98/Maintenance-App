@@ -55,7 +55,7 @@ const UserDashboard = () => {
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("NewRequests") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainForm") }}>
                 <View style={styles.count}><Text style={styles.countText}>2</Text></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
