@@ -13,6 +13,7 @@ const PendingList = () => {
   const data = route.params.pendingData;
 
   const role = data[0].role;
+  // setActiveRequest.user.role
 
   const { userInfo } = useContext(AuthContext);
 
