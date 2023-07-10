@@ -316,12 +316,7 @@ title: {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  optionButton: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginBottom: 10,
-  },
+ 
   optionButton: {
     backgroundColor: '#fff',
     paddingHorizontal: 20,

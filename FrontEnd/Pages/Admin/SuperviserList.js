@@ -8,7 +8,9 @@ import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation , useRoute  } from '@react-navigation/native';
 
-const SuperviserList = () => {
+const SuperviserList = ({ route }) => {
+  const { complainID } = route.params;
+  console.log("complainId",complainID);
 
     const { userInfo } = useContext(AuthContext);
     const { allusers } = useContext(UserContext);
@@ -32,29 +34,53 @@ const theme = useTheme();
       console.log(error);
     }
   };
+  const handleAssignButton =() =>{
+    console.log("Supervisor Assigned");
+    // logic to assign the supervisor
+  }
 
   
-  const renderHeader = (section, index, isActive) => (
-    <List.Item
-      title={section.description}
-      description={section.status}
-      style={isActive ? styles.activeHeader : styles.inactiveHeader}
-      left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.avatar} />}
-      right={() => (
-        <Button
-          icon="arrow-right"
-          mode="outlined"
-          onPress={() => navigation.navigate('SuperviserDetailView', { userId: section.userID }) }
-          borderColor = '#01a9e1'
-          color='#f08e25'
-          labelStyle={{ color: "#01a9e1", fontSize: 15 }}
-          style={[styles.button, { borderColor: theme.colors.primary }]} // Use theme colors for border color
-        >
-          View
-        </Button>
-      )}
-    />
-  );
+  const renderHeader = (section, index, isActive) => {
+    const renderAssignButton = complainID !== null;
+  
+    return (
+      <List.Item
+        title={section.description}
+        description={section.status}
+        style={isActive ? styles.activeHeader : styles.inactiveHeader}
+        left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.avatar} />}
+        right={() => (
+          <View style={styles.buttonContainer}>
+            <Button
+              icon="arrow-right"
+              mode="outlined"
+              onPress={() => navigation.navigate('SuperviserDetailView', { userId: section.userID,complainId:complainID })}
+              borderColor="#01a9e1"
+              color="#f08e25"
+              labelStyle={{ color: "#01a9e1", fontSize: 15 }}
+              style={[styles.button, { borderColor: theme.colors.primary }]}
+            >
+              View
+            </Button>
+            {renderAssignButton && (
+              <Button
+                icon="account"
+                mode="outlined"
+                onPress={() => handleAssignButton(section.complainID)}
+                borderColor="#01a9e1"
+                color="#f08e25"
+                labelStyle={{ color: "#01a9e1", fontSize: 15 }}
+                style={[styles.button, { borderColor: theme.colors.primary }]}
+              >
+                Assign
+              </Button>
+            )}
+          </View>
+        )}
+      />
+    );
+  };
+  
 
   const renderContent = (section, index, isActive) => (
     <View style={styles.content}>
