@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,12 @@ import {
   RefreshControl,
   Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { UserContext } from '../../src/Context/UserContext';
+
+import BASE_URL from '../../src/Common/BaseURL';
+import axios from 'axios';
+import { Badge } from 'react-native-paper';
+
+
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -19,7 +23,18 @@ const { height, width } = Dimensions.get("window")
 
 const SuperviserDashboard = () => {
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [assignedSData, setAssignedSData] = useState([]);
+  const [assignedLData, setAssignedLData] = useState([]);
+  const [completedSData, setCompletedSData] = useState([]);
+
+  const [pendingLabourersData, setPendingLabourersData] = useState([]);
+
+  const statusAssignedS = 'AssignedS';
+  const statusAssignedL = 'AssignedL';
+  const statusCompletedS = 'CompletedS';
+
+  const pendingType = 'labour';
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -30,99 +45,163 @@ const SuperviserDashboard = () => {
 
   const navigation = useNavigation();
 
-  const { logout, userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
+  const { userInfo } = useContext(AuthContext);
+
 
   useEffect(() => {
-    
+    getAssignedSComplains();
+    getAssignedLComplains();
+    getCompletedSComplains();
+    getListOfPendingLabourers();
   }, []);
+
+  const getListOfPendingLabourers = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}users/pending/list`, {
+        params: {
+          PendingType: pendingType,
+        }
+      });
+      setPendingLabourersData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAssignedSComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedS,
+          role: userInfo.role,
+        }
+      });
+      setAssignedSData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAssignedLComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedL,
+          role: userInfo.role,
+        }
+      });
+      setAssignedLData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getCompletedSComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusCompletedS,
+          role: userInfo.role,
+        }
+      });
+      setCompletedSData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const noOfAssignedSComplains = assignedSData.length;
+  const noOfAssignedLComplains = assignedLData.length;
+  const noOfCompletedSComplains = completedSData.length;
+
+  const noOfPendingLabourers = pendingLabourersData.length;
+
 
   return (
     <SafeAreaView>
       <View>
         <View style={styles.dashboardHeader}>
           <View style={styles.secondRow}>
-            <Text style={styles.title}>Superviser Dashboard</Text>
+            <Text style={styles.title}>Supervisor Dashboard</Text>
           </View>
         </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "89.5%" }} // 89.9%
+            style={{ height: "91.5%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedS' } )  }}>
-                <View style={styles.count}><Text style={styles.countText}>2</Text></View>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>New works</Text>
+                    <Text style={styles.cardText}>Newly Assigned Works</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'AssignedL' } )  }}>
-                <View style={styles.count}><Text style={styles.countText}>3</Text></View>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedLData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedLComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
                       source={{ uri: "https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>In Progress</Text>
+                    <Text style={styles.cardText}>In Progress Works</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus" , { Status:'CompletedS' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("PendingList", { pendingData: pendingLabourersData }) }}>
+                <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingLabourers}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
-                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      source={{ uri: "https://images.pexels.com/photos/2381463/pexels-photo-2381463.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Completed</Text>
+                    <Text style={styles.cardText}>Pending Labourers</Text>
                   </View>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => { navigation.navigate("LaborerList") }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
-                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      source={{ uri: "https://images.pexels.com/photos/6474343/pexels-photo-6474343.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Labores</Text>
+                    <Text style={styles.cardText}>Registered Labourers</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("PendingList" , { PendingType:'labour' } )  }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedSData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
-                    {/* <Text>Image</Text> */}
                     <Image
-                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
                       style={styles.image}
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Pending Labores</Text>
+                    <Text style={styles.cardText}>Completed Works</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -228,19 +307,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     paddingHorizontal: width * 0.04,
   },
-  count: {
-    backgroundColor: "#95A695",
-    width: width * 0.07,
-    height: width * 0.07,
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: -width * 0.035,
-    left: width * 0.86,
-    //right: -350, // width * 0.025 // -350  // -width * 0.945
-    zIndex: 2,
-    borderRadius: 100,
-  },
-  countText: {},
 });
 
 export default SuperviserDashboard;

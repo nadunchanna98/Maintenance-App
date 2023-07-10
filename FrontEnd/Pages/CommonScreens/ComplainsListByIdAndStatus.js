@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -7,12 +8,15 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
 import moment from 'moment';
 import { ScrollView as GestureScrollView } from 'react-native-gesture-handler';
+
 
 const CompletedComplainsListById = () => {
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
+
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -22,9 +26,34 @@ const CompletedComplainsListById = () => {
   const [data, setData] = useState([]);
   const theme = useTheme();
 
-  useEffect(() => {
-    getComplains();
-  }, []);
+
+  const [activeSections, setActiveSections] = useState([]);
+  // const [data, setData] = useState([]);
+  const theme = useTheme();
+
+  // useEffect(() => {
+  //   getComplains();
+  //   // console.log("Route: ", route);
+  //   // console.log("Data: ", data);
+  //   // console.log("Status: ", Status);
+  //   console.log("Length of data: ", data.length);
+  // }, []);
+
+  // const getComplains = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}complains/list`, {
+  //       params: {
+  //         id: userInfo.userId,
+  //         status: Status,
+  //         role: userInfo.role,
+  //       }
+  //     });
+  //     setData(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
 
   const getComplains = async () => {
     try {
@@ -43,6 +72,7 @@ const CompletedComplainsListById = () => {
 
   const renderHeader = (section, index, isActive) => {
     const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
+
 
     return (
       <TouchableOpacity
@@ -73,6 +103,7 @@ const CompletedComplainsListById = () => {
   };
 
   return (
+
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -95,6 +126,7 @@ const CompletedComplainsListById = () => {
         </View>
       </GestureScrollView>
     </View>
+
   );
 };
 
