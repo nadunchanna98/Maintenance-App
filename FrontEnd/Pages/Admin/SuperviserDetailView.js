@@ -9,6 +9,7 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -45,13 +46,38 @@ const SuperviserDetailView = () => {
       <SafeAreaView>
         <ScrollView>
           <View style={styles.topbar}>
-            <Text style={styles.text}>Superviser Details</Text>
+            <Text style={styles.text}>Supervisor's Details</Text>
           </View>
           <View style={styles.circle}></View>
             <View>
-              <Text style={styles.nameText}>Supervisor's Name</Text>
-              <Text style={styles.joinDate}>Joined 23 July 2023</Text>
+              <Text style={styles.nameText}>{pendingUser.user.name}</Text>
+              <Text style={styles.joinDate}>Signed on {pendingUser.Data.approved_date}</Text>
             </View>
+          <Text style={styles.info}>Informations</Text>
+            <View style={styles.DetailsContainer}>
+              <View style={styles.detail}>
+                  <Ionicons name="person-circle-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.name}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="mail-unread-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.email}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="call-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.mobile_no}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="settings-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.role}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="hammer-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.Data.work_type}</Text>
+              </View>
+              
+            </View>
+          <Text style={styles.info}>In Progress Works</Text>
           
             
         </ScrollView>
@@ -95,6 +121,26 @@ const SuperviserDetailView = () => {
       fontWeight: 'regular',
       
     },
+    info: {
+      fontSize: 20,
+      fontWeight: 'medium',
+      paddingTop:20,
+      paddingHorizontal:20,
+
+    },
+    DetailsContainer:{},
+    detail: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 40,
+      paddingTop: 10,
+    },
+    detailText: {
+      paddingLeft: 40,
+      textAlign : 'left',
+    },
+    
+
   })
   
   export default SuperviserDetailView;
