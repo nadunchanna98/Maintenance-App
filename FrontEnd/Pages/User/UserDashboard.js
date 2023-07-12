@@ -26,10 +26,16 @@ const UserDashboard = () => {
   const [completedData, setCompletedData] = useState([]);
 
   const onRefresh = useCallback(() => {
+    
     setRefreshing(true);
+    getPendingComplains();
+    getCompletedComplains();
+    getAssignedAComplains();
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000); //after 2s refreshing will stop 
+
   }, []);
 
   const navigation = useNavigation();
@@ -54,6 +60,7 @@ const UserDashboard = () => {
           status: statusPending,
           role: userInfo.role,
         }
+
       });
       setPendingData(response.data);
     } catch (error) {

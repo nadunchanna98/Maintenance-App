@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View,Alert, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
+import axios from 'axios';
+import BASE_URL from '../../src/Common/BaseURL';
 
 
 const { width, height } = Dimensions.get('window');
@@ -19,12 +21,36 @@ const ComplainPreview = ({ route }) => {
   
     const handleDataSubmission = () => {
       console.log('Data submitted:', {
+        userID : userInfo.userId,
         title,
         location,
         description,
+        status: 'Pending',
         imageUri,
-        loggedInUser: userInfo,
       });
+
+      // console.log('Data submitted:', userInfo.userId );  
+
+
+      // API call to submit data
+        axios.post(`${BASE_URL}complains/add`, {
+          userID : userInfo.userId,
+          title,
+          location,
+          description,
+          status: 'Pending',
+          imageUri,
+        })
+        .then((res) => {
+          Alert.alert('Complain Submitted Successfully');
+          navigation.navigate('ViewComplain', { complainId: res.data._id });
+        }
+        )
+        .catch((err) => {
+          console.log(`get users error : ${err}`);
+        //  Alert.alert('Complain Submission Failed');
+        }
+        );
     
       
     };
