@@ -1,10 +1,14 @@
-import React, { createContext, useState , useEffect } from 'react';
+import React, { createContext, useState , useEffect , useContext ,useCallback  } from 'react';
 import  BASE_URL  from '../Common/BaseURL';
 import axios from 'axios';
+import { Alert } from 'react-native';
+
 
 export const UserContext = React.createContext();
 
 export const UserProvider = ({ children }) => {
+
+
 
   const [userRole, setUserRole] = useState('');
   const [ allusers , setAllusers ] = useState([]);
@@ -24,11 +28,13 @@ export const UserProvider = ({ children }) => {
 
     }
 
+   
+
+
+
   return (
     <UserContext.Provider value={{
       
-      userRole, 
-      setUserRole,
       allusers,
       getAllUsers
       

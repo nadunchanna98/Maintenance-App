@@ -27,11 +27,10 @@ const [imageUri, setImageUri] = useState(null);
 const handleFormSubmit = (values) => {
   const { location, description, title } = values;
 
-  console.log('Location:', location);
-  console.log('Description:', description);
-  console.log('Title:', title);
-  console.log('Image:', imageUri);
-
+  // console.log('Location:', location);
+  // console.log('Description:', description);
+  // console.log('Title:', title);
+  // console.log('Image:', imageUri);
   navigation.navigate('ComplainPreview', { title, location, description, imageUri });
 };
   const handleAddPhoto = async () => {
