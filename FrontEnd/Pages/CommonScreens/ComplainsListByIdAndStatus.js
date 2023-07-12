@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image,  TouchableOpacity, Dimensions } from 'react-native';
-import {  List } from 'react-native-paper';
+import {  List,useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
@@ -17,13 +17,15 @@ const CompletedComplainsListById = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const data = route.params.data;
+
+  const data=route.params.data;
+  
 
   // console.log("Status: ", data);
 
   const [activeSections, setActiveSections] = useState([]);
-<<<<<<< HEAD
-  const [data, setData] = useState([]);
+
+  //const [data, setData] = useState([]);
   const theme = useTheme();
 
 
@@ -38,9 +40,7 @@ const CompletedComplainsListById = () => {
   //   console.log("Length of data: ", data.length);
   // }, []);
 
-=======
- 
->>>>>>> main
+
   // const getComplains = async () => {
   //   try {
   //     const response = await axios.get(`${BASE_URL}complains/list`, {
