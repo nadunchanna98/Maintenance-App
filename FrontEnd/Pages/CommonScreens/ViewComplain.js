@@ -20,12 +20,23 @@ const ViewComplain = () => {
     const [complain, setComplain] = useState([]);
     const [createdDate, setCreatedDate] = useState('');
     const [createdTime, setCreatedTime] = useState('');
+    const[resolvedDate,setResolvedDate]=useState('');
+    const[resolvedTime,setResolvedTime]=useState('');
     const [visible,setVissible]=useState('');
+    
 
+      const handleComplete=()=>{
+        navigation.navigate("AdminFeedback",{ complainID: complainId });
+        
+      }
     const handleDataSubmission = () => {
 
         console.log("Supervisor Assign");
         navigation.navigate("SuperviserList", { complainID: complainId })
+    }
+    const AssignLabour=()=>{
+        console.log("Labour Assigned");
+        navigation.navigate("LaborerList",{complainID:complainId})
     }
 
     useEffect(() => {
@@ -35,6 +46,8 @@ const ViewComplain = () => {
                 setComplain(response.data);
                 setCreatedDate(response.data.created_date.split('T')[0]);
                 setCreatedTime(response.data.created_date.split('T')[1].split('.')[0]);
+               // setResolvedDate(response.data.resolved_date.split('T')[0]);
+                //setCreatedTime(response.data.resolved_date.split('T')[1].split('.')[0]);
                 setVissible (response.data.status === "AssignedA");
             
                 
@@ -47,6 +60,8 @@ const ViewComplain = () => {
 
     const { userInfo } = useContext(AuthContext);
     const { allusers } = useContext(UserContext);
+   const role=userInfo.role;
+   console.log(visible);
    
     
 
@@ -75,13 +90,29 @@ const ViewComplain = () => {
             <Text style={styles.label}>Description:</Text>
             <Text style={styles.value}>{complain.description}</Text>
           </View>
-          {!visible &&(<View style={styles.dataContainer}>
+          {(!visible||role==='supervisor')&&(<View style={styles.dataContainer}>
             <Text style={styles.label}>Assigned Supervisor :</Text>
             <Text style={styles.value}>{complain.supervisorID}</Text>
           </View>)}
-          {visible&&(<TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+          {role==='admin' && complain.status==='Completed'&&(
+          <View style={styles.dataContainer}>
+            <Text style={styles.label}>supervisor Feedback :</Text>
+            <Text style={styles.value}>{complain.supervisor_feedback}</Text>
+            </View>
+    
+            )&&(
+              <View style={styles.dataContainer}>
+              <Text style={styles.label}>resolved_date :</Text>
+            <Text style={styles.value}>{resolvedDate}</Text></View>
+            )&&(<Button onPress={handleComplete}>Confirm Completion</Button>)}
+            
+          {(visible && role==='admin')&&(<TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
             <Text style={styles.buttonText}>Assign A Supervisor</Text>
           </TouchableOpacity>)}
+          {role==='supervisor'&&(<Button icon={"account-hard-hat"} onPress={AssignLabour} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Assign Labour
+          </Button>)}
+          
+
 
         
 
