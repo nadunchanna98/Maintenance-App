@@ -125,88 +125,88 @@ router.put('/edit/:complaintId', async (req, res) => {
 
 //get all complains
 router.get('/', async (req, res) => {
-    const ComplaineList = await Complaine_Details.find();
+  const ComplaineList = await Complaine_Details.find();
 
-    if (!ComplaineList) {
-        res.status(500).json({ success: false })
-    }
+  if (!ComplaineList) {
+    res.status(500).json({ success: false })
+  }
 
-    res.send(ComplaineList);
+  res.send(ComplaineList);
 })
 
 
 //get complains list by id and status
 router.get('/list', async (req, res) => {
-  let { id, status,role } = req.query;
+  let { id, status, role } = req.query;
   let ComplaineList = [];
   console.log('id: ', id);
 
-  if(status === 'Pending') {
+  if (status === 'Pending') {
     status = ['Pending']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-   
-  } else if(status === 'Completed') {  // Complainer 
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+
+  } else if (status === 'Completed') {  // Complainer 
     status = ['Completed']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  } 
-  else if(status === 'CompletedA')   //Admin   --> only check status
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  }
+  else if (status === 'CompletedA')   //Admin   --> only check status
   {
     status = ['CompletedA', 'Completed']
-    ComplaineList = await Complaine_Details.find({status}).sort({ createdAt: -1 });;
-    
+    ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
+
   }
-  else if(status === 'CompletedS')   //Supervisor   
+  else if (status === 'CompletedS')   //Supervisor   
   {
     status = ['CompletedS']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
   }
-  else if(status === 'AssignedA' &  role !== 'admin' )  // Complainer
+  else if (status === 'AssignedA' & role !== 'admin')  // Complainer
   {
     status = ['AssignedA', 'AssignedS', 'AssignedL', 'CompletedL', 'CompletedS', 'CompletedA', 'DeclinedL', 'DeclinedS', 'DeclinedA']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  } 
-  else if(status === 'AssignedS' &  role === 'supervisor' )  // Supervisor new complains
-  {
-    status = ['AssignedS']                
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
   }
-  else if(status === 'AssignedA' &  role === 'admin' )  // Complainer
+  else if (status === 'AssignedS' & role === 'supervisor')  // Supervisor new complains
+  {
+    status = ['AssignedS']
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  }
+  else if (status === 'AssignedA' & role === 'admin')  // Complainer
   {
     status = ['AssignedA']
-    ComplaineList = await Complaine_Details.find({status}).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
   }
 
-  else if(status === 'AssignedS' &  role !== 'supervisor'  )  //Admin  --> only check status
+  else if (status === 'AssignedS' & role !== 'supervisor')  //Admin  --> only check status
   {
-    status = ['AssignedS', 'AssignedL', 'CompletedL', 'CompletedS','DeclinedL', 'DeclinedS', 'DeclinedA']
-    ComplaineList = await Complaine_Details.find({status}).sort({ createdAt: -1 });;
-  } 
+    status = ['AssignedS', 'AssignedL', 'CompletedL', 'CompletedS', 'DeclinedL', 'DeclinedS', 'DeclinedA']
+    ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
+  }
 
-  else if(status === 'AssignedL' &  role === 'supervisor')  // supervisor
+  else if (status === 'AssignedL' & role === 'supervisor')  // supervisor
   {
     status = ['AssignedL', 'CompletedL', 'DeclinedL']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  } 
-  else if(status === 'AssignedL' &  role !== 'supervisor')  // supervisor
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  }
+  else if (status === 'AssignedL' & role !== 'supervisor')  // supervisor
   {
     status = ['AssignedL']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  } 
-  else if(status === 'CompletedL') {
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  }
+  else if (status === 'CompletedL') {
     status = ['CompletedL', 'CompletedS', 'CompletedA', 'DeclinedL', 'DeclinedS', 'DeclinedA']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  }  else if(status === 'DeclinedL') {
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  } else if (status === 'DeclinedL') {
     status = ['DeclinedL', 'DeclinedS', 'DeclinedA']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  } else if(status === 'DeclinedS') {
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  } else if (status === 'DeclinedS') {
     status = ['DeclinedS', 'DeclinedA']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
-  } else if(status === 'DeclinedA') {
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+  } else if (status === 'DeclinedA') {
     status = ['DeclinedA']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
   } else {
     status = ['Declined']
-    ComplaineList = await Complaine_Details.find({ userID: id, status}).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
   }
 
 
@@ -217,39 +217,82 @@ router.get('/list', async (req, res) => {
   // console.log("ComplaineList: ", ComplaineList);
   res.send(ComplaineList);
 
- 
+
 });
 
 
 //get 1 complain by id 
 router.get('/complainbyid/:complainId', async (req, res) => {
 
-  const   Complaine = await Complaine_Details.findById(req.params.complainId);
-   
+  const Complaine = await Complaine_Details.findById(req.params.complainId);
+
   if (!Complaine) {
-      res.status(500).json({ success: false })
+    res.status(500).json({ success: false })
   }
   res.send(Complaine);
-//  console.log(ComplaineList);
-  })
+  //  console.log(ComplaineList);
+})
 
 
-  //delete complain by id
+//delete complain by id
 router.delete('/delete/:complainId', async (req, res) => {
   const complain = await Complaine_Details.findByIdAndRemove(req.params.complainId);
 
   if (!complain) {
-      return res.status(500).json({ success: false, message: 'The complain with the given ID was not found.' });
+    return res.status(500).json({ success: false, message: 'The complain with the given ID was not found.' });
   }
 
   res.status(200).json({ success: true, message: 'The complain was deleted.' });
 });
-    
+
+//assign complain to supervisor
+router.put('/update/:complainId/:userId', async (req, res) => {
+  try {
+    const complainId = req.params.complainId;
+    const userId = req.params.userId;
+
+    console.log("complainId: ", complainId);
+    console.log("userId: ", userId);
+
+    const complaint = await Complaine_Details.findById(complainId);
+
+    if (!complaint) {
+      return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    // Update the complaint with the assigned user ID
+    complaint.supervisorID = userId;
+    complaint.status = 'AssignedS';
+    complaint.assigned_date = Date.now();
+
+    await complaint.save();
+
+    // Add the complaint to the supervisor's complains array
+    const supervisor = await Supervisor_Details.findOne({ userID: userId });
+    if (!supervisor) {
+      return res.status(404).json({ success: false, message: 'Supervisor not found' });
+    }
+    supervisor.complains.push(complainId);
+    await supervisor.save();
+
+    console.log("complaint: ", complaint);
+
+    return res.status(200).json({ success: true, message: 'Complaint assigned successfully' });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
 
 
 
 
-  module.exports = router;
+
+
+
+
+module.exports = router;
 
 
 

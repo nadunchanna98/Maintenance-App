@@ -43,7 +43,8 @@ const ComplainPreview = ({ route }) => {
         })
         .then((res) => {
           Alert.alert('Complain Submitted Successfully');
-          navigation.navigate('ViewComplain', { complainId: res.data._id });
+          // navigation.navigate('ViewComplain', { complainId: res.data._id });
+          navigation.navigate('UserDashboard');
         }
         )
         .catch((err) => {

@@ -26,7 +26,8 @@ const ViewComplain = () => {
   const [visible, setVissible] = useState('');
 
   const handleDataSubmission = () => {
-    console.log("Supervisor Assign");
+    // console.log("Supervisor Assign");
+    // console.log("Complain ID: ", complainId);
     navigation.navigate("SuperviserList", { complainID: complainId })
   }
 
@@ -82,8 +83,8 @@ const ViewComplain = () => {
       <View style={styles.dataContainer}>
         <Text style={styles.label}>Status:</Text>
         {
-          complain.status !== "Completed" ? ( <Text style={styles.value}>In Progress</Text>
-           ) : ( <Text style={styles.value}>Completed</Text> )
+          complain.status !== "Completed" ? (<Text style={styles.value}>In Progress</Text>
+          ) : (<Text style={styles.value}>Completed</Text>)
         }
       </View>
 
@@ -98,27 +99,29 @@ const ViewComplain = () => {
 
       {userInfo.role === "admin" ? (
         <View style={styles.dataContainer}>
-          <Text style={styles.label}>Assigned Supervisor :</Text>
+          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+            <Text style={styles.buttonText}>Assign A Supervisor</Text>
+          </TouchableOpacity>
           <Text style={styles.value}>{complain.supervisorID}</Text>
         </View>
       ) : userInfo.role === "supervisor" ? (
         <View style={styles.dataContainer}>
           <Text style={styles.label}>Mark as completed as the superser</Text>
         </View>
-      ): userInfo.role === "labour" ? (
+      ) : userInfo.role === "labour" ? (
         <View style={styles.dataContainer}>
           <Text style={styles.label}>Mark as completed as a labour</Text>
         </View>
-      ) :  (
+      ) : (
 
-       
-          complain.status !== "Completed" ? ( <Text style={styles.label}>We will complete as soon as possible !!</Text>
-           ) : ( <Text style={styles.label}>
-            Is ther any problem, Please contact us through new complain !!
-           </Text> )
-        
+
+        complain.status !== "Completed" ? (<Text style={styles.label}>We will complete as soon as possible !!</Text>
+        ) : (<Text style={styles.label}>
+          Is ther any problem, Please contact us through new complain !!
+        </Text>)
+
       )
-    }
+      }
     </View>
 
   )

@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -14,7 +15,7 @@ import BASE_URL from '../../src/Common/BaseURL';
 import axios from 'axios';
 import { Badge } from 'react-native-paper';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation, useRoute } from '@react-navigation/native';
+
 
 const { height, width } = Dimensions.get("window")
 
@@ -25,12 +26,29 @@ const UserDashboard = () => {
   const [assignedAData, setAssignedAData] = useState([]);
   const [completedData, setCompletedData] = useState([]);
 
+  useFocusEffect(
+    useCallback(() => {
+      getPendingComplains();
+      getCompletedComplains();
+      getAssignedAComplains();
+      console.log("useFocusEffect")
+    }, [userInfo]) // Add userInfo as a dependency
+  );
+
+  useEffect(() => {
+    getPendingComplains();
+    getCompletedComplains();
+    getAssignedAComplains();
+    console.log("useEffect")
+  }, []);
+
   const onRefresh = useCallback(() => {
     
     setRefreshing(true);
     getPendingComplains();
     getCompletedComplains();
     getAssignedAComplains();
+    console.log("refreshing")
 
     setTimeout(() => {
       setRefreshing(false);
@@ -46,11 +64,7 @@ const UserDashboard = () => {
 
   const { userInfo } = useContext(AuthContext);
 
-  useEffect(() => {
-    getPendingComplains();
-    getCompletedComplains();
-    getAssignedAComplains();
-  }, []);
+
 
   const getPendingComplains = async () => {
     try {
