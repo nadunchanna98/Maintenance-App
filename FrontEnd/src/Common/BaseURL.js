@@ -12,9 +12,9 @@ if (Platform.OS === "android") {
 
 // uni wifi
 // if (Platform.OS === "android") {
-//     BASE_URL = "http://10.102.11.58:3000/api/v1/" // for android emulator
+//      BASE_URL = "http://10.102.11.58:3000/api/v1/" // for android emulator
 // } else {
-//     BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
+//      BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
 // }
 
 

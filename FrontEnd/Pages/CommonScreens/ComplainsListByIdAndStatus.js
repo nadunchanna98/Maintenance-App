@@ -54,12 +54,12 @@ const CompletedComplainsListById = () => {
   return (
 
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image source={require('../../assets/backButton.png')} style={styles.backButton} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Complains</Text>
-      </View>
+      </View> */}
       <GestureScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.contentContainer}>
           <List.Section>
