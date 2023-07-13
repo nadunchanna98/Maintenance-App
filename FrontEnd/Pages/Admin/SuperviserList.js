@@ -1,25 +1,25 @@
-import React, { useState , useEffect , useContext } from 'react';
-import { View, Text, StyleSheet, Image , ScrollView } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
-import BASE_URL  from '../../src/Common/BaseURL';
+import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation , useRoute  } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const SuperviserList = ({ route }) => {
   const { complainID } = route.params;
-  console.log("complainId",complainID);
+  console.log("complainId", complainID);
 
-    const { userInfo } = useContext(AuthContext);
-    const { allusers } = useContext(UserContext);
-    
-    const navigation = useNavigation();
+  const { userInfo } = useContext(AuthContext);
+  const { allusers } = useContext(UserContext);
 
-const [activeSections, setActiveSections] = useState([]);
-const [data , setData] = useState([]);
-const theme = useTheme();
+  const navigation = useNavigation();
+
+  const [activeSections, setActiveSections] = useState([]);
+  const [data, setData] = useState([]);
+  const theme = useTheme();
 
   useEffect(() => {
     getSupervisorDetails();
@@ -34,15 +34,15 @@ const theme = useTheme();
       console.log(error);
     }
   };
-  const handleAssignButton =() =>{
+  const handleAssignButton = () => {
     console.log("Supervisor Assigned");
     // logic to assign the supervisor
   }
 
-  
+
   const renderHeader = (section, index, isActive) => {
     const renderAssignButton = complainID !== null;
-  
+
     return (
       <List.Item
         title={section.description}
@@ -54,7 +54,7 @@ const theme = useTheme();
             <Button
               icon="arrow-right"
               mode="outlined"
-              onPress={() => navigation.navigate('SuperviserDetailView', { userId: section.userID,complainId:complainID })}
+              onPress={() => navigation.navigate('SuperviserDetailView', { userId: section.userID, complainId: complainID })}
               borderColor="#01a9e1"
               color="#f08e25"
               labelStyle={{ color: "#01a9e1", fontSize: 15 }}
@@ -80,7 +80,7 @@ const theme = useTheme();
       />
     );
   };
-  
+
 
   const renderContent = (section, index, isActive) => (
     <View style={styles.content}>
@@ -95,20 +95,20 @@ const theme = useTheme();
 
   return (
 
-    <ScrollView> 
-    <View>
-      <List.Section>
-        <List.Subheader>All supervisors</List.Subheader>  
-        <Accordion
-          sections={data}
-          activeSections={activeSections}
-          renderHeader={renderHeader}
-          renderContent={renderContent}
-          onChange={updateSections}
-          underlayColor="transparent"
-        />
-      </List.Section>
-    </View>
+    <ScrollView>
+      <View>
+        <List.Section>
+          {/* <List.Subheader>All supervisors</List.Subheader>   */}
+          <Accordion
+            sections={data}
+            activeSections={activeSections}
+            renderHeader={renderHeader}
+            renderContent={renderContent}
+            onChange={updateSections}
+            underlayColor="transparent"
+          />
+        </List.Section>
+      </View>
     </ScrollView>
   );
 };

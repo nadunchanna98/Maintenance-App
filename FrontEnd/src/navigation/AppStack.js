@@ -40,33 +40,69 @@ const AdminScreens = () => (
     <Stack.Screen
       name="NewRequests"
       component={NewRequests}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "New Requests",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Completed Works",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
 
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Complain Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="CompletedWorks"
       component={CompletedWorks}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Completed Works",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="Supervisors"
       component={Supervisors}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Supervisors",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="SuperviserList"
       component={SuperviserList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Registered Supervisors",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="PendingList"
@@ -82,12 +118,24 @@ const AdminScreens = () => (
     <Stack.Screen
       name="PendingUserDetailView"
       component={PendingUserDetailView}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Request Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="SuperviserDetailView"
       component={SuperviserDetailView}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Supervisor Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
   </Stack.Navigator>
 );
@@ -114,28 +162,58 @@ const SupervisorScreens = () => (
     <Stack.Screen
       name="PendingUserDetailView"
       component={PendingUserDetailView}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Request Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Completed Works",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
 
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Complain Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="LaborerList"
       component={LaborerList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Registered Labourers",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="LaborerDetailView"
       component={LaborerDetailView}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Labour Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
   </Stack.Navigator>
 );
@@ -151,13 +229,25 @@ const LaborerScreens = () => (
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Assigned Tasks",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
 
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Complain Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
 
   </Stack.Navigator>
@@ -174,23 +264,47 @@ const UserScreens = () => (
     <Stack.Screen
       name="ComplainForm"
       component={ComplainForm}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Complain Form",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="ComplainPreview"
       component={ComplainPreview}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Complain Preview",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
       component={CompletedComplainsList}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Completed Complains",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
 
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Complain Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
   </Stack.Navigator>
 );
@@ -200,14 +314,26 @@ const InstructionScreens = () => (
     <Stack.Screen
       name="Instruction"
       component={Instruction}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Instructions",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
       initialParams={{ initialRoute: true }}
     />
 
     <Stack.Screen
       name="AboutApp"
       component={AboutApp}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "About App",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
   </Stack.Navigator>
 
@@ -236,7 +362,7 @@ const AppStack = () => {
                     iconName = 'home';
                   } else if (route.name === 'Profile') {
                     iconName = 'account';
-                  }else if (route.name === 'Instruction') {
+                  } else if (route.name === 'Instruction') {
                     iconName = 'book';
                   }
 
@@ -266,7 +392,7 @@ const AppStack = () => {
                     iconName = 'home';
                   } else if (route.name === 'Profile') {
                     iconName = 'account';
-                  }else if (route.name === 'Instruction') {
+                  } else if (route.name === 'Instruction') {
                     iconName = 'book';
                   }
 
@@ -296,7 +422,7 @@ const AppStack = () => {
                     iconName = 'home';
                   } else if (route.name === 'Profile') {
                     iconName = 'account';
-                  }else if (route.name === 'Instruction') {
+                  } else if (route.name === 'Instruction') {
                     iconName = 'book';
                   }
 
@@ -326,7 +452,7 @@ const AppStack = () => {
                     iconName = 'home';
                   } else if (route.name === 'Profile') {
                     iconName = 'account';
-                  }else if (route.name === 'Instruction') {
+                  } else if (route.name === 'Instruction') {
                     iconName = 'book';
                   }
 
