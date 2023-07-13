@@ -8,13 +8,10 @@ const SupervisorPendingSchema = new mongoose.Schema({
     work_type: { 
         type: String, 
     },
-    approved_date: {          
+    requested_date: {          
         type: Date,
         default: Date.now
      },
-     complains: [{    //list of complains assigned to the supervisor 
-        type: mongoose.Schema.Types.ObjectId, ref: 'Complaine_Details'
-        }],
   }
   
   );

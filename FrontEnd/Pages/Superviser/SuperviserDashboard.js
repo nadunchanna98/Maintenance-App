@@ -34,7 +34,7 @@ const SuperviserDashboard = () => {
       getAssignedLComplains();
       getCompletedSComplains();
       getListOfPendingLabourers();
-      console.log("useFocusEffect")
+      // console.log("useFocusEffect")
     }, [userInfo]) // Add userInfo as a dependency
   );
 
@@ -65,7 +65,8 @@ const SuperviserDashboard = () => {
   const navigation = useNavigation();
 
   const { userInfo } = useContext(AuthContext);
-
+ 
+// console.log(userInfo);
 
   const getListOfPendingLabourers = async () => {
     try {
@@ -120,6 +121,7 @@ const SuperviserDashboard = () => {
         }
       });
       setCompletedSData(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -130,6 +132,7 @@ const SuperviserDashboard = () => {
   const noOfCompletedSComplains = completedSData.length;
 
   const noOfPendingLabourers = pendingLabourersData.length;
+  console.log(noOfPendingLabourers);
 
 
   return (

@@ -31,6 +31,7 @@ const AdminDashboard = () => {
       getAssignedAComplains();
       getAssignedSComplains();
       getCompletedAComplains();
+      getListOfPendingSupervisors();
       console.log("useFocusEffect")
     }, [userInfo]) // Add userInfo as a dependency
   );

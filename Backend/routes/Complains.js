@@ -158,7 +158,7 @@ router.get('/list', async (req, res) => {
   else if (status === 'CompletedS')   //Supervisor   
   {
     status = ['CompletedS']
-    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
   }
   else if (status === 'AssignedA' & role !== 'admin')  // Complainer
   {
@@ -168,7 +168,7 @@ router.get('/list', async (req, res) => {
   else if (status === 'AssignedS' & role === 'supervisor')  // Supervisor new complains
   {
     status = ['AssignedS']
-    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
   }
   else if (status === 'AssignedA' & role === 'admin')  // Complainer
   {
@@ -185,12 +185,12 @@ router.get('/list', async (req, res) => {
   else if (status === 'AssignedL' & role === 'supervisor')  // supervisor
   {
     status = ['AssignedL', 'CompletedL', 'DeclinedL']
-    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
   }
-  else if (status === 'AssignedL' & role !== 'supervisor')  // supervisor
+  else if (status === 'AssignedL' & role !== 'supervisor')  // labour
   {
     status = ['AssignedL']
-    ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
+    ComplaineList = await Complaine_Details.find({ labourID: id, status }).sort({ createdAt: -1 });;
   }
   else if (status === 'CompletedL') {
     status = ['CompletedL', 'CompletedS', 'CompletedA', 'DeclinedL', 'DeclinedS', 'DeclinedA']
