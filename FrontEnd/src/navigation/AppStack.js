@@ -18,6 +18,7 @@ import Supervisors from '../../Pages/Admin/Supervisors';
 import CompletedComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
 import ViewComplain from '../../Pages/CommonScreens/ViewComplain';
 import SuperviserList from '../../Pages/Admin/SuperviserList';
+import SuperviserCompleteFeedBackForm from '../../Pages/Superviser/SuperviserCompleteFeedBackForm';
 import PendingList from '../../Pages/CommonScreens/PendingList';
 import PendingUserDetailView from '../../Pages/CommonScreens/PendingUserDetailView';
 import SuperviserDetailView from '../../Pages/Admin/SuperviserDetailView';
@@ -25,6 +26,7 @@ import LaborerList from '../../Pages/Superviser/LabourList';
 import LaborerDetailView from '../../Pages/Superviser/LabourDetailView';
 import Instruction from '../../Pages/Other/Instruction';
 import AboutApp from '../../Pages/Other/AboutApp';
+import AdminFeedback from '../../Pages/Admin/AdminFeedback';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,6 +38,11 @@ const AdminScreens = () => (
       component={AdminDashboard}
       options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
+    />
+    <Stack.Screen
+      name="AdminFeedback"
+      component={AdminFeedback}
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name="NewRequests"
@@ -93,6 +100,7 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+    
     <Stack.Screen
       name="SuperviserList"
       component={SuperviserList}
@@ -169,6 +177,11 @@ const SupervisorScreens = () => (
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
+    />
+    <Stack.Screen
+      name="SupervisorFeedback"
+      component={SuperviserCompleteFeedBackForm}
+      options={{headerShown:false}}
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"

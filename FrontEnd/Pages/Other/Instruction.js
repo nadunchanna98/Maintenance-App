@@ -267,6 +267,9 @@ const styles = StyleSheet.create({
     fontSize: width * 0.045,
     marginTop: 10,
     marginBottom: 10,
+    marginRight:10,
+    padding:10,
+    backgroundColor:"#D1C6C8",
     textAlign: "justify",
   },
   content: {

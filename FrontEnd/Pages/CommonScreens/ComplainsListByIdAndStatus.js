@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { List, useTheme } from 'react-native-paper';
@@ -14,6 +15,8 @@ const CompletedComplainsListById = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
+
+
 
   const data = route.params.data;
   // console.log("Status: ", data);

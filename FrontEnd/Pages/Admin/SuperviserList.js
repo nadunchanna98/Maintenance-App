@@ -8,6 +8,16 @@ import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+const getSupervisorWorks = async (userId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}supervisors/user/${userId}`);
+    console.log(response.data[0]);
+    return response.data[0];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const SuperviserList = ({ route }) => {
   const { complainID } = route.params;
   console.log("complainId", complainID);
