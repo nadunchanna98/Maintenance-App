@@ -30,6 +30,10 @@ const ViewComplain = () => {
   const handleDataSubmission = () => {
     navigation.navigate('SuperviserList', { complainID: complainId });
   }
+  const handleCompleteSupervisor = () => {
+    navigation.navigate('SupervisorFeedback', { complainID: complainId });
+  }
+
 
   useEffect(() => {
     axios.get(`${BASE_URL}complains/complainbyid/${complainId}`)
@@ -139,6 +143,13 @@ const ViewComplain = () => {
             </TouchableOpacity>
           </View>) : null))
         }
+        {userInfo.role === 'supervisor' && complain.status === 'AssignedL' ? (
+          <View style={styles.dataContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleCompleteSupervisor}>
+              <Text style={styles.buttonText}>Mark as completed</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
 
 
   {/* before rate and after rate */}
