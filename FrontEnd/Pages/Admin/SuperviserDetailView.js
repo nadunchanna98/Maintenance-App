@@ -1,5 +1,3 @@
-// for admin view perpose
-
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView,Platform,Linking ,TouchableOpacity} from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
@@ -23,6 +21,7 @@ const SuperviserDetailView = () => {
     [mobile_no,setMobileNo]=useState();
     const userId = route.params.userId;
     const complainId=route.params.complainId;
+    const { userInfo } = useContext(AuthContext);
 
     console.log("userId", userId);
   
