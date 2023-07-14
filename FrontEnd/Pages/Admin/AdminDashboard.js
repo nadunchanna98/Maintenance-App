@@ -132,7 +132,7 @@ const AdminDashboard = () => {
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("NewComplainRequests", { data: assignedAData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -146,7 +146,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("InProgressComplains", { data: assignedSData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -174,7 +174,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList",{complainID:null}) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList", { complainID: null }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedComplainsList", { data: completedAData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image

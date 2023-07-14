@@ -1,7 +1,7 @@
 // for admin view perpose
 
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView,Platform,Linking ,TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -12,178 +12,178 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 const SuperviserDetailView = () => {
 
-    const navigation = useNavigation();
-    const route = useRoute();
-    [mobile_no,setMobileNo]=useState();
-    const userId = route.params.userId;
-    const complainId=route.params.complainId;
+  const navigation = useNavigation();
+  const route = useRoute();
+  [mobile_no, setMobileNo] = useState();
+  const userId = route.params.userId;
+  const complainId = route.params.complainId;
 
-    console.log("userId", userId);
-  
-    const [pendingUser, setPendingUser] = useState([]);
-    const makeCall=()=>{
-     
-      console.log({mobile_no});
-      if(Platform.OS=='android'){
-        
-        Linking.openURL("tel: "+String({mobile_no}));
-      }
-      else{
-        
-        Linking.openURL("telprompt: "+{mobile_no});
-      }
+  console.log("userId", userId);
+
+  const [pendingUser, setPendingUser] = useState([]);
+  const makeCall = () => {
+
+    console.log({ mobile_no });
+    if (Platform.OS == 'android') {
+
+      Linking.openURL("tel: " + String({ mobile_no }));
     }
-  
-    useEffect(() => {
-      getUserDetail();
-    }, []);
-    const visible = complainId !== null;
-    const getUserDetail = () => {
-      axios
-        .get(`${BASE_URL}supervisors/user/${userId}`)
-        .then((response) => {
-          setPendingUser(response.data);
-          setMobileNo(response.data.user.mobile_no)
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    };
-  
-    if (pendingUser.length === 0) {
-      return <Text>Loading...</Text>;
+    else {
+
+      Linking.openURL("telprompt: " + { mobile_no });
     }
-  
-    return (
-        <View style={styles.container}>
-        <View style={styles.header}>
+  }
+
+  useEffect(() => {
+    getUserDetail();
+  }, []);
+  const visible = complainId !== null;
+  const getUserDetail = () => {
+    axios
+      .get(`${BASE_URL}supervisors/user/${userId}`)
+      .then((response) => {
+        setPendingUser(response.data);
+        setMobileNo(response.data.user.mobile_no)
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+
+  if (pendingUser.length === 0) {
+    return <Text>Loading...</Text>;
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* <View style={styles.header}>
           <Text style={styles.title}>Supervisor Details</Text>
-        </View>
-        <View style={styles.dataContainer}>
-            <Text style={styles.label}>Supervisor Name:</Text>
-            <Text style={styles.value}>{pendingUser.user.name}</Text>
-        </View>
-        <View style={styles.dataContainer}>
-            <Text style={styles.label}> Email:</Text>
-            <Text style={styles.value}>{pendingUser.user.email}</Text>
-          </View>
-          <View style={styles.dataContainer}>
-            <Text style={styles.label}> Mobile No:</Text>
-            <Text style={styles.value}>{pendingUser.user.mobile_no}</Text>
-          </View>
-          <View style={styles.dataContainer}>
-            <Text style={styles.label}>Work Type:</Text>
-            <Text style={styles.value}>{pendingUser.Data.work_type}</Text>
-          </View>
-          <View style={styles.dataContainer}>
-            <Text style={styles.label}>Approved Date:</Text>
-            <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
-          </View>
-          <View style={styles.buttonContainer}>
-          {visible&&(<TouchableOpacity style={styles.button} onPress={makeCall}>
-            <Text style={styles.buttonText}>Assign</Text>
-          </TouchableOpacity>)}
-          <TouchableOpacity style={styles.editButton} onPress={makeCall}>
-            <Text style={styles.editButtonText}>Call</Text>
-          </TouchableOpacity>
-        </View>
+        </View> */}
+      <View style={styles.dataContainer}>
+        <Text style={styles.label}>Supervisor Name:</Text>
+        <Text style={styles.value}>{pendingUser.user.name}</Text>
+      </View>
+      <View style={styles.dataContainer}>
+        <Text style={styles.label}> Email:</Text>
+        <Text style={styles.value}>{pendingUser.user.email}</Text>
+      </View>
+      <View style={styles.dataContainer}>
+        <Text style={styles.label}> Mobile No:</Text>
+        <Text style={styles.value}>{pendingUser.user.mobile_no}</Text>
+      </View>
+      <View style={styles.dataContainer}>
+        <Text style={styles.label}>Work Type:</Text>
+        <Text style={styles.value}>{pendingUser.Data.work_type}</Text>
+      </View>
+      <View style={styles.dataContainer}>
+        <Text style={styles.label}>Approved Date:</Text>
+        <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        {visible && (<TouchableOpacity style={styles.button} onPress={makeCall}>
+          <Text style={styles.buttonText}>Assign</Text>
+        </TouchableOpacity>)}
+        <TouchableOpacity style={styles.editButton} onPress={makeCall}>
+          <Text style={styles.editButtonText}>Call</Text>
+        </TouchableOpacity>
+      </View>
 
-        
 
-        </View>
-        
-    )
+
+    </View>
+
+  )
 }
 
 const styles = StyleSheet.create({
-    
-    container: {
-        flexGrow: 1,
-        backgroundColor: '#fff',
-        padding: 20,
-        },
-    header:{
-        backgroundColor: '#01a9e1',
-        paddingVertical: 40,
-        alignItems: 'center',
-        marginBottom:40,
 
-          },
-    title: {
+  container: {
+    flexGrow: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  header: {
+    backgroundColor: '#01a9e1',
+    paddingVertical: 40,
+    alignItems: 'center',
+    marginBottom: 40,
+
+  },
+  title: {
     color: '#fff',
     fontSize: 40,
     fontWeight: 'bold',
     marginBottom: 20,
-    },
-    dataContainer: {
+  },
+  dataContainer: {
     flexDirection: 'row',
     marginBottom: 10,
-    
-    },
-    label: {
+
+  },
+  label: {
     fontWeight: 'bold',
     fontSize: 20,
     marginRight: 10,
     marginTop: 3, // Adjust the margin as needed
-    },
-    value: {
+  },
+  value: {
     flex: 1,
     flexWrap: 'wrap',
     fontSize: 20,
-    },
-    image: {
+  },
+  image: {
     alignSelf: 'center',
     width: 300,
     height: 300,
     resizeMode: 'cover',
     marginBottom: 20,
-    },
-    buttonContainer: {
+  },
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    },
-    button: {
+  },
+  button: {
     backgroundColor: '#01a9e1',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    flex:1,
+    flex: 1,
     marginRight: 5,
-    },
-    buttonText: {
+  },
+  buttonText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    },
-    editButton: {
+  },
+  editButton: {
     backgroundColor: '#ccc',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     flex: 1,
     marginLeft: 5,
-    },
-    editButtonText: {
+  },
+  editButtonText: {
     color: '#000',
     fontSize: 20,
     fontWeight: 'bold',
-    },
-    fieldValue: {
+  },
+  fieldValue: {
     flex: 1,
     flexWrap: 'wrap',
-    },
-    fieldTitle: {
+  },
+  fieldTitle: {
     fontWeight: 'bold',
     marginRight: 10,
-    },
-    fieldValue: {
+  },
+  fieldValue: {
     flex: 1,
     flexWrap: 'wrap',
-    },
+  },
 });
-  
-  export default SuperviserDetailView;
-  
+
+export default SuperviserDetailView;
+
 
 
 //   user: {

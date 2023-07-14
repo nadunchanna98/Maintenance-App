@@ -12,10 +12,11 @@ import LaborerDashboard from '../../Pages/Laborer/LaborerDashboard';
 import { UserContext } from '../Context/UserContext';
 import { AuthContext } from '../Context/AuthContext';
 import NewRequests from '../../Pages/Admin/NewRequests';
-import InProgressWorks from '../../Pages/Admin/InProgressWorks';
-import CompletedWorks from '../../Pages/Admin/CompletedWorks';
+// import InProgressWorks from '../../Pages/Admin/InProgressWorks';
+// import CompletedWorks from '../../Pages/Admin/CompletedWorks';
+import ListView from '../../Pages/CommonScreens/ComplainsList';
 import Supervisors from '../../Pages/Admin/Supervisors';
-import CompletedComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
+import ComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
 import ViewComplain from '../../Pages/CommonScreens/ViewComplain';
 import SuperviserList from '../../Pages/Admin/SuperviserList';
 import PendingList from '../../Pages/CommonScreens/PendingList';
@@ -38,8 +39,8 @@ const AdminScreens = () => (
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
-      name="NewRequests"
-      component={NewRequests}
+      name="NewComplainRequests"
+      component={ListView}
       options={{
         headerShown: true,
         title: "New Requests",
@@ -49,17 +50,18 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="ComplainsListByIdAndStatus"
-      component={CompletedComplainsList}
+      name="InProgressComplains"
+      component={ListView}
       options={{
         headerShown: true,
-        title: "Completed Works",
+        title: "In Progress Works",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
 
+    {/*  */}
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -72,8 +74,8 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="CompletedWorks"
-      component={CompletedWorks}
+      name="CompletedComplainsList"
+      component={ComplainsList}
       options={{
         headerShown: true,
         title: "Completed Works",
@@ -104,6 +106,9 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+
+    {/*  */}
+
     <Stack.Screen
       name="PendingList"
       component={PendingList}
@@ -115,7 +120,7 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
-    <Stack.Screen
+    {/* <Stack.Screen
       name="PendingUserDetailView"
       component={PendingUserDetailView}
       options={{
@@ -125,7 +130,7 @@ const AdminScreens = () => (
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
-    />
+    /> */}
     <Stack.Screen
       name="SuperviserDetailView"
       component={SuperviserDetailView}
@@ -172,7 +177,7 @@ const SupervisorScreens = () => (
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
-      component={CompletedComplainsList}
+      component={ComplainsList}
       options={{
         headerShown: true,
         title: "Completed Works",
@@ -228,7 +233,7 @@ const LaborerScreens = () => (
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
-      component={CompletedComplainsList}
+      component={ComplainsList}
       options={{
         headerShown: true,
         title: "Assigned Tasks",
@@ -285,7 +290,7 @@ const UserScreens = () => (
     />
     <Stack.Screen
       name="ComplainsListByIdAndStatus"
-      component={CompletedComplainsList}
+      component={ComplainsList}
       options={{
         headerShown: true,
         title: "Completed Complains",

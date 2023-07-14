@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Button, List, useTheme } from 'react-native-paper';
-import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
-
-
 
 const ViewComplain = () => {
 
@@ -36,35 +31,27 @@ const ViewComplain = () => {
         setCreatedDate(response.data.created_date.split('T')[0]);
         setCreatedTime(response.data.created_date.split('T')[1].split('.')[0]);
         setVissible(response.data.status === "AssignedA");
-
-
       })
       .catch((error) => {
         console.log("error", error);
       })
   }, []);
 
-
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
-
-
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-          <Text style={styles.title}>Complain Details</Text>
-        </View> */}
       <View style={styles.dataContainer}>
         <Text style={styles.label}>Complainer ID:</Text>
         <Text style={styles.value}>{complain.userID}</Text>
       </View>
       <View style={styles.dataContainer}>
-        <Text style={styles.label}> Created Date:</Text>
+        <Text style={styles.label}>Created Date:</Text>
         <Text style={styles.value}>{createdDate}</Text>
       </View>
       <View style={styles.dataContainer}>
-        <Text style={styles.label}> Created Time:</Text>
+        <Text style={styles.label}>Created Time:</Text>
         <Text style={styles.value}>{createdTime}</Text>
       </View>
       <View style={styles.dataContainer}>
@@ -82,9 +69,6 @@ const ViewComplain = () => {
       {visible && (<TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
         <Text style={styles.buttonText}>Assign A Supervisor</Text>
       </TouchableOpacity>)}
-
-
-
     </View>
 
   )
