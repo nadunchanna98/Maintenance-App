@@ -1,3 +1,4 @@
+
 import React, { useState,useEffect, useContext, useCallback } from 'react';
 import {
   View,
@@ -91,6 +92,7 @@ const SuperviserDashboard = () => {
         }
       });
       setAssignedSData(response.data);
+      
     } catch (error) {
       console.error(error);
     }
@@ -121,7 +123,9 @@ const SuperviserDashboard = () => {
         }
       });
       setCompletedSData(response.data);
+
       console.log(response.data);
+
     } catch (error) {
       console.error(error);
     }
@@ -166,7 +170,7 @@ const SuperviserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedLData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("omplainsListByIdAndStatus", { data: assignedLData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedLComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>

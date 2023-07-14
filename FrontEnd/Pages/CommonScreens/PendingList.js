@@ -17,7 +17,9 @@ const PendingList = () => {
   const route = useRoute();
   const data = route.params.pendingData;
 
-  const role = data[0].role;
+  const role = data[0] ? data[0].user.role : "none";
+  // role = data[0].user.role;
+  // const role = data[0] ? data[0].role : "none";
   // setActiveRequest.user.role
 
   const { userInfo } = useContext(AuthContext);
@@ -203,9 +205,10 @@ const PendingList = () => {
         <Portal>
           <Dialog visible={visibleDelete} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
-            <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role === 'supervisor' ? "supervisor" : "labour"} request?</Dialog.Title>
+            {/* role === 'supervisor' ? "supervisor" : "labour" */}
+            <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role} request?</Dialog.Title>
             <Dialog.Content>
-              <Text>Delete this new {role === 'supervisor' ? "supervisor" : "labour"} request from the pending list</Text>
+              <Text>Delete this new {role} request from the pending list</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={() => { setVisibleDelete(false) }}>Cancel</Button>
@@ -216,9 +219,9 @@ const PendingList = () => {
         <Portal>
           <Dialog visible={visibleAccept} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
-            <Dialog.Title style={styles.dialogTitle} >Are you sure to accept he/she as a new {role === 'supervisor' ? "supervisor" : "labour"}?</Dialog.Title>
+            <Dialog.Title style={styles.dialogTitle} >Are you sure to accept he/she as a new {role}?</Dialog.Title>
             <Dialog.Content>
-              <Text>Accept this request and add to registered {role === 'supervisor' ? "supervisors" : "labourers"}</Text>
+              <Text>Accept this request and add to registered {role}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={() => { setVisibleAccept(false) }}>Cancel</Button>
