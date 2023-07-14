@@ -242,6 +242,8 @@ router.get('/', async (req, res) => {
 router.get('/pending/list', async (req, res) => {
   const role = req.query.PendingType;
 
+  console.log(role);
+
   try {
     let pendingUsers = null;
 

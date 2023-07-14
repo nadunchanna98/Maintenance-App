@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.0",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -19,6 +19,7 @@
     "mongodb": "^5.4.0",
     "mongoose": "^7.1.0",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^1.14.9",
+    "util": "^0.12.5"
   }
 }
