@@ -1,18 +1,25 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, RefreshControl, Dimensions, Linking, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, RefreshControl, Dimensions, Linking, Platform, Alert } from 'react-native';
 import { Button, List, Surface, IconButton, Dialog, Portal, Provider } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
-import { useRoute } from '@react-navigation/native';
 import { AuthContext } from '../../src/Context/AuthContext';
+import axios from 'axios';
+import BASE_URL from '../../src/Common/BaseURL';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 
 const { width } = Dimensions.get("window");
 
 const PendingList = () => {
 
+      const navigation = useNavigation();
+
   const route = useRoute();
   const data = route.params.pendingData;
 
-  const role = data[0].role;
+  const role = data[0] ? data[0].user.role : "none";
+  // role = data[0].user.role;
+  // const role = data[0] ? data[0].role : "none";
   // setActiveRequest.user.role
 
   const { userInfo } = useContext(AuthContext);
@@ -61,6 +68,57 @@ const PendingList = () => {
     Linking.openURL(phoneNum);
   }
 
+  const acceptRole = (newUserID) => {
+    const approvedby = userInfo.userId;
+    let role = '';
+  
+    console.log("newUserID", newUserID);
+    console.log("approvedby", approvedby);
+  
+    if (userInfo.role === 'supervisor') {
+      role = 'labour';
+    } else if (userInfo.role === 'admin') {
+      role = 'supervisor';
+    }
+  
+    console.log("role", role);
+  
+    axios.post(`${BASE_URL}pending/approve/${newUserID}/${role}/${approvedby}`)
+      .then((response) => {
+        Alert.alert(
+          "Success",
+          "User has been approved",
+          [
+            { text: "OK" },
+          ],
+          { cancelable: false }
+        );
+        if (userInfo.role === 'supervisor') navigation.navigate("SupervisorDashboard");
+        else if (userInfo.role === 'admin') navigation.navigate("AdminDashboard");
+        
+        console.log(response.data);
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Error",
+          "Something went wrong",
+          [
+            { text: "OK" },
+          ],
+          { cancelable: false }
+        );
+  
+        console.error(error);
+      });
+  };
+  
+
+  // open whatsapp with the user mobile number dialed when click whatsapp button
+  const openWhatsapp = () => {
+    phoneNum = activeRequest.user.mobile_no;
+    Linking.openURL(`whatsapp://send?text=hello&phone=+94${phoneNum}`);
+  }
+
   const renderHeader = (section, index, isActive) => (
     <Surface style={[isActive ? styles.activeSurface : styles.inactiveSurface, styles.surface]} elevation={2}>
 
@@ -84,10 +142,7 @@ const PendingList = () => {
             <Button
               icon="check"
               mode="outlined"
-              // onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
-              onPress={() => {
-                setVisibleAccept(!visibleAccept);
-              }}
+              onPress={() => acceptRole(section.user._id)}
               borderColor='#01a9e1'
               labelStyle={{ color: "green", fontSize: 14 }}
               style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
@@ -150,9 +205,10 @@ const PendingList = () => {
         <Portal>
           <Dialog visible={visibleDelete} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
-            <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role === 'supervisor' ? "supervisor" : "labour"} request?</Dialog.Title>
+            {/* role === 'supervisor' ? "supervisor" : "labour" */}
+            <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role} request?</Dialog.Title>
             <Dialog.Content>
-              <Text>Delete this new {role === 'supervisor' ? "supervisor" : "labour"} request from the pending list</Text>
+              <Text>Delete this new {role} request from the pending list</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={() => { setVisibleDelete(false) }}>Cancel</Button>
@@ -163,9 +219,9 @@ const PendingList = () => {
         <Portal>
           <Dialog visible={visibleAccept} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
-            <Dialog.Title style={styles.dialogTitle} >Are you sure to accept he/she as a new {role === 'supervisor' ? "supervisor" : "labour"}?</Dialog.Title>
+            <Dialog.Title style={styles.dialogTitle} >Are you sure to accept he/she as a new {role}?</Dialog.Title>
             <Dialog.Content>
-              <Text>Accept this request and add to registered {role === 'supervisor' ? "supervisors" : "labourers"}</Text>
+              <Text>Accept this request and add to registered {role}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={() => { setVisibleAccept(false) }}>Cancel</Button>

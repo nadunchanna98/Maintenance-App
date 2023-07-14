@@ -21,11 +21,13 @@ app.use(morgan('tiny'));  // for logging requests to the console (express4)
 const UserRoutes = require('./routes/User');
 const SupervisorRoutes = require('./routes/Supervisor');
 const ComplainsRoutes = require('./routes/Complains');
+const PendingRoutes = require('./routes/Pending');
 
 //api routes
 app.use(`${api}/users`, UserRoutes);
 app.use(`${api}/supervisors`, SupervisorRoutes);
 app.use(`${api}/complains`, ComplainsRoutes);
+app.use(`${api}/pending`, PendingRoutes);
 
 
 //Server

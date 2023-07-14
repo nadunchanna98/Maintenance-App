@@ -14,7 +14,7 @@ import BASE_URL from '../../src/Common/BaseURL';
 import axios from 'axios';
 import { Badge } from 'react-native-paper';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get("window")
 
@@ -24,8 +24,25 @@ const AdminDashboard = () => {
   const [assignedAData, setAssignedAData] = useState([]);
   const [assignedSData, setAssignedSData] = useState([]);
   const [completedAData, setCompletedAData] = useState([]);
-
   const [pendingSupervisorsData, setPendingSupervisorsData] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getAssignedAComplains();
+      getAssignedSComplains();
+      getCompletedAComplains();
+      getListOfPendingSupervisors();
+      console.log("useFocusEffect")
+    }, [userInfo]) // Add userInfo as a dependency
+  );
+
+  useEffect(() => {
+    getAssignedAComplains();
+    getAssignedSComplains();
+    getCompletedAComplains();
+    getListOfPendingSupervisors();
+  }, []);
+
 
   const statusAssignedA = 'AssignedA';
   const statusAssignedS = 'AssignedS';
@@ -35,6 +52,11 @@ const AdminDashboard = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    getAssignedAComplains();
+    getAssignedSComplains();
+    getCompletedAComplains();
+    getListOfPendingSupervisors();
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000); //after 2s refreshing will stop 
@@ -44,21 +66,17 @@ const AdminDashboard = () => {
 
   const { userInfo } = useContext(AuthContext);
 
-  useEffect(() => {
-    getAssignedAComplains();
-    getAssignedSComplains();
-    getCompletedAComplains();
-    getListOfPendingSupervisors();
-  }, []);
 
   const getListOfPendingSupervisors = async () => {
     try {
       const response = await axios.get(`${BASE_URL}users/pending/list`, {
         params: {
           PendingType: pendingType,
+
         }
       });
       setPendingSupervisorsData(response.data);
+      console.log("Pending Supervisors: ", response.data);
     } catch (error) {
       console.error(error);
     }

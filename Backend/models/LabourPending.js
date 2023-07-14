@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User_Details' 
     },
-    approved_date: {          
+    requested_date: {          
         type: Date,
         default: Date.now
      },

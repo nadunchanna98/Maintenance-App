@@ -25,6 +25,7 @@ const LaborerDashboard = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    getComplains();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000); //after 2s refreshing will stop 
