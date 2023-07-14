@@ -30,7 +30,7 @@ const ViewComplain = () => {
   const handleDataSubmission = () => {
     navigation.navigate('SuperviserList', { complainID: complainId });
   }
-  handleompleteSupervisor = () => {
+  const handleompleteSupervisor = () => {
     navigation.navigate('SupervisorFeedback', { complainID: complainId });
 
    }
