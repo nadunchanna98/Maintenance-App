@@ -7,7 +7,9 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
+import moment from 'moment';
+
 
 const ViewComplain = () => {
   const { userInfo } = useContext(AuthContext);
@@ -32,21 +34,10 @@ const ViewComplain = () => {
     axios.get(`${BASE_URL}complains/complainbyid/${complainId}`)
       .then((response) => {
         setComplain(response.data);
-
-        // Format date in MMMM, DAY, YEAR format
-        setCreatedDate(format(new Date(response.data.created_date), 'MMMM do, yyyy'));
-
-        // Convert time to 12-hour format
-        const timeString = response.data.created_date.split('T')[1].split('.')[0];
-        const [hours, minutes] = timeString.split(':');
-        let formattedTime = '';
-        if (parseInt(hours) < 12) {
-          formattedTime = `${hours}:${minutes} AM`;
-        } else {
-          const twelveHourFormat = (parseInt(hours) - 12).toString();
-          formattedTime = `${twelveHourFormat}:${minutes} PM`;
-        }
+        formattedTime = moment(response.data.created_date).format('hh:mm A');
+        formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
         setCreatedTime(formattedTime);
+        setCreatedDate(formattedDate);
 
         setVisible(response.data.status === 'AssignedA');
       })
@@ -66,12 +57,7 @@ const ViewComplain = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image source={require('../../assets/backButton.png')} style={styles.backButton} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Complain Details</Text>
-      </View>
+
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <TouchableOpacity onPress={handleImagePress}>
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.image} />
@@ -135,21 +121,22 @@ const ViewComplain = () => {
 
         </View>
 
-        {userInfo.role === 'admin' ?( visible ? (
-          <View style={styles.dataContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-              <Text style={styles.buttonText}>Assign A Supervisor</Text>
-            </TouchableOpacity>
-            
-          </View>
-        ) : <View style={styles.dataContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-        
-          <Text style={styles.buttonText}>Change the Supervisor</Text>
-        </TouchableOpacity>
-        
-      </View>):null
+        {(userInfo.role === 'admin' && complain.status === 'AssignedS' ? (
+
+            <View style={styles.dataContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>        
+              <Text style={styles.buttonText}>Change the Supervisor</Text>
+            </TouchableOpacity>        
+            </View>          
+        ) : ( userInfo.role === 'admin' && complain.status === 'AssignedA' ?
+        ( <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+            <Text style={styles.buttonText}>Assign A Supervisor</Text> 
+          </TouchableOpacity>          
+        </View> ) : null))
       }
+
+
 
         
       </ScrollView>

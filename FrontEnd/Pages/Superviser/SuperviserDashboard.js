@@ -124,7 +124,7 @@ const SuperviserDashboard = () => {
       });
       setCompletedSData(response.data);
 
-      console.log(response.data);
+      //console.log(response.data);
 
     } catch (error) {
       console.error(error);
@@ -136,7 +136,7 @@ const SuperviserDashboard = () => {
   const noOfCompletedSComplains = completedSData.length;
 
   const noOfPendingLabourers = pendingLabourersData.length;
-  console.log(noOfPendingLabourers);
+
 
 
   return (
