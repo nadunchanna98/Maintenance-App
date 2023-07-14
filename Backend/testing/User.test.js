@@ -116,5 +116,27 @@ test("API should return the mock data", async () => {
 });
 
 //delete data
+const axios = require("axios");
+
+test("API should return the mock data", async () => {
+  const getResponse = await axios.get("http://localhost:3000/api/v1/users");
+  const Users = getResponse.data;
+
+  const userIdToDelete = Users[0].user._id;
+
+  await axios.delete(
+    `http://localhost:3000/api/v1/users/user/${userIdToDelete}`
+  );
+
+  const updated = await axios.get("http://localhost:3000/api/v1/users");
+
+  const updatedUsers = updated.data;
+
+  const matchFound = updatedUsers.some(
+    (user) => user.user._id === userIdToDelete
+  );
+
+  expect(matchFound).toBe(false);
+});
+
 // install axios
-//
