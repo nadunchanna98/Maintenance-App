@@ -59,9 +59,9 @@ The term "common property" typically refers to resources or facilities that are 
     <>
       {userInfo.role === "admin" ? (
         <SafeAreaView>
-          <View style={styles.dashboardHeader}>
+          {/* <View style={styles.dashboardHeader}>
             <Text style={[styles.headerText, styles.title]}>Instruction</Text>
-          </View>
+          </View> */}
           <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
               {/* <Text>Image</Text> */}
@@ -98,9 +98,9 @@ The term "common property" typically refers to resources or facilities that are 
         </SafeAreaView>
       ) : userInfo.role === "supervisor" ? (
         <SafeAreaView>
-          <View style={styles.dashboardHeader}>
+          {/* <View style={styles.dashboardHeader}>
             <Text style={[styles.headerText, styles.title]}>Instruction</Text>
-          </View>
+          </View> */}
           <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
               {/* <Text>Image</Text> */}
@@ -137,9 +137,9 @@ The term "common property" typically refers to resources or facilities that are 
         </SafeAreaView>
       ) : userInfo.role === "labour" ? (
         <SafeAreaView>
-          <View style={styles.dashboardHeader}>
+          {/* <View style={styles.dashboardHeader}>
             <Text style={[styles.headerText, styles.title]}>Instruction</Text>
-          </View>
+          </View> */}
           <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
               {/* <Text>Image</Text> */}
@@ -176,9 +176,9 @@ The term "common property" typically refers to resources or facilities that are 
         </SafeAreaView>
       ) : (
         <SafeAreaView>
-          <View style={styles.dashboardHeader}>
+          {/* <View style={styles.dashboardHeader}>
             <Text style={[styles.headerText, styles.title]}>Instruction</Text>
-          </View>
+          </View> */}
           <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
               {/* <Text>Image</Text> */}
@@ -267,6 +267,9 @@ const styles = StyleSheet.create({
     fontSize: width * 0.045,
     marginTop: 10,
     marginBottom: 10,
+    marginRight:10,
+    padding:10,
+    backgroundColor:"#D1C6C8",
     textAlign: "justify",
   },
   content: {

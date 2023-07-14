@@ -141,7 +141,9 @@ router.get('/list', async (req, res) => {
   let ComplaineList = [];
   console.log('id: ', id);
 
+
   if (status === 'Pending') {
+
     status = ['Pending']
     ComplaineList = await Complaine_Details.find({ userID: id, status }).sort({ createdAt: -1 });;
 
@@ -158,7 +160,9 @@ router.get('/list', async (req, res) => {
   else if (status === 'CompletedS')   //Supervisor   
   {
     status = ['CompletedS']
+
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
+
   }
   else if (status === 'AssignedA' & role !== 'admin')  // Complainer
   {
@@ -167,8 +171,10 @@ router.get('/list', async (req, res) => {
   }
   else if (status === 'AssignedS' & role === 'supervisor')  // Supervisor new complains
   {
+
     status = ['AssignedS']
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
+
   }
   else if (status === 'AssignedA' & role === 'admin')  // Complainer
   {

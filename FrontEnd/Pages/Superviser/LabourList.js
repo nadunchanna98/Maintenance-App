@@ -1,23 +1,23 @@
-import React, { useState , useEffect , useContext } from 'react';
-import { View, Text, StyleSheet, Image , ScrollView } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
-import BASE_URL  from '../../src/Common/BaseURL';
+import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation , useRoute  } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const LabourList = () => {
 
-    const { userInfo } = useContext(AuthContext);
-    const { allusers } = useContext(UserContext);
-    
-    const navigation = useNavigation();
+  const { userInfo } = useContext(AuthContext);
+  const { allusers } = useContext(UserContext);
 
-const [activeSections, setActiveSections] = useState([]);
-const [data , setData] = useState([]);
-const theme = useTheme();
+  const navigation = useNavigation();
+
+  const [activeSections, setActiveSections] = useState([]);
+  const [data, setData] = useState([]);
+  const theme = useTheme();
 
   useEffect(() => {
     getSupervisorDetails();
@@ -33,7 +33,7 @@ const theme = useTheme();
     }
   };
 
-  
+
   const renderHeader = (section, index, isActive) => (
     <List.Item
       title={section.name}
@@ -44,8 +44,8 @@ const theme = useTheme();
         <Button
           icon="arrow-right"
           mode="outlined"
-          onPress={() => navigation.navigate('LaborerDetailView', { userId: section._id }) }
-          borderColor = '#01a9e1'
+          onPress={() => navigation.navigate('LaborerDetailView', { userId: section._id })}
+          borderColor='#01a9e1'
           color='#f08e25'
           labelStyle={{ color: "#01a9e1", fontSize: 15 }}
           style={[styles.button, { borderColor: theme.colors.primary }]} // Use theme colors for border color
@@ -69,20 +69,20 @@ const theme = useTheme();
 
   return (
 
-    <ScrollView> 
-    <View>
-      <List.Section>
-        <List.Subheader>All Laborers</List.Subheader>  
-        <Accordion
-          sections={data}
-          activeSections={activeSections}
-          renderHeader={renderHeader}
-          renderContent={renderContent}
-          onChange={updateSections}
-          underlayColor="transparent"
-        />
-      </List.Section>
-    </View>
+    <ScrollView>
+      <View>
+        <List.Section>
+          {/* <List.Subheader>All Laborers</List.Subheader>   */}
+          <Accordion
+            sections={data}
+            activeSections={activeSections}
+            renderHeader={renderHeader}
+            renderContent={renderContent}
+            onChange={updateSections}
+            underlayColor="transparent"
+          />
+        </List.Section>
+      </View>
     </ScrollView>
   );
 };

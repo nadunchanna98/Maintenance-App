@@ -72,9 +72,11 @@ const AdminDashboard = () => {
       const response = await axios.get(`${BASE_URL}users/pending/list`, {
         params: {
           PendingType: pendingType,
+
         }
       });
       setPendingSupervisorsData(response.data);
+      console.log("Pending Supervisors: ", response.data);
     } catch (error) {
       console.error(error);
     }

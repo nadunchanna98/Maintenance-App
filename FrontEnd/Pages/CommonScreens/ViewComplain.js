@@ -14,8 +14,6 @@ const ViewComplain = () => {
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
-
-
   const navigation = useNavigation();
   const route = useRoute();
   const complainId = route.params.complainId;
@@ -26,13 +24,14 @@ const ViewComplain = () => {
   const [visible, setVissible] = useState('');
 
   const handleDataSubmission = () => {
+
     // console.log("Supervisor Assign");
     // console.log("Complain ID: ", complainId);
     navigation.navigate("SuperviserList", { complainID: complainId })
   }
 
   // console.log("Complain ID: ", complainId);
-
+  
   useEffect(() => {
     axios.get(`${BASE_URL}complains/complainbyid/${complainId}`)
       .then((response) => {
@@ -51,7 +50,7 @@ const ViewComplain = () => {
 
 
 
-  return (
+ return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Complain Details</Text>
@@ -64,6 +63,7 @@ const ViewComplain = () => {
         <Text style={styles.label}>Complainer ID:</Text>
         <Text style={styles.value}>{complain.userID}</Text>
       </View> */}
+
       <View style={styles.dataContainer}>
         <Text style={styles.label}> Created Date:</Text>
         <Text style={styles.value}>{createdDate}</Text>
@@ -80,6 +80,7 @@ const ViewComplain = () => {
         <Text style={styles.label}>Description:</Text>
         <Text style={styles.value}>{complain.description}</Text>
       </View>
+
       <View style={styles.dataContainer}>
         <Text style={styles.label}>Status:</Text>
         {
@@ -125,6 +126,7 @@ const ViewComplain = () => {
     </View>
 
   )
+
 }
 
 const styles = StyleSheet.create({
