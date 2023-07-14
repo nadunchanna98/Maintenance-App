@@ -27,13 +27,14 @@ const ComplainForm = () => {
   const handleFormSubmit = (values) => {
     const { location, description, title } = values;
 
-    console.log('Location:', location);
-    console.log('Description:', description);
-    console.log('Title:', title);
-    console.log('Image:', imageUri);
 
-    navigation.navigate('ComplainPreview', { title, location, description, imageUri });
-  };
+  // console.log('Location:', location);
+  // console.log('Description:', description);
+  // console.log('Title:', title);
+  // console.log('Image:', imageUri);
+  navigation.navigate('ComplainPreview', { title, location, description, imageUri });
+};
+
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 

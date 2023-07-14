@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+
+import React, { useState,useEffect, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,10 +15,8 @@ import {
 import BASE_URL from '../../src/Common/BaseURL';
 import axios from 'axios';
 import { Badge } from 'react-native-paper';
-
-
 import { AuthContext } from '../../src/Context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get("window")
 
@@ -30,6 +29,23 @@ const SuperviserDashboard = () => {
 
   const [pendingLabourersData, setPendingLabourersData] = useState([]);
 
+  useFocusEffect(
+    useCallback(() => {
+      getAssignedSComplains();
+      getAssignedLComplains();
+      getCompletedSComplains();
+      getListOfPendingLabourers();
+      // console.log("useFocusEffect")
+    }, [userInfo]) // Add userInfo as a dependency
+  );
+
+  useEffect(() => {
+    getAssignedSComplains();
+    getAssignedLComplains();
+    getCompletedSComplains();
+    getListOfPendingLabourers();
+  }, []);
+
   const statusAssignedS = 'AssignedS';
   const statusAssignedL = 'AssignedL';
   const statusCompletedS = 'CompletedS';
@@ -38,6 +54,10 @@ const SuperviserDashboard = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    getAssignedSComplains();
+    getAssignedLComplains();
+    getCompletedSComplains();
+    getListOfPendingLabourers();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000); //after 2s refreshing will stop 
@@ -46,14 +66,8 @@ const SuperviserDashboard = () => {
   const navigation = useNavigation();
 
   const { userInfo } = useContext(AuthContext);
-
-
-  useEffect(() => {
-    getAssignedSComplains();
-    getAssignedLComplains();
-    getCompletedSComplains();
-    getListOfPendingLabourers();
-  }, []);
+ 
+// console.log(userInfo);
 
   const getListOfPendingLabourers = async () => {
     try {
@@ -109,8 +123,9 @@ const SuperviserDashboard = () => {
         }
       });
       setCompletedSData(response.data);
-      console.log("------------------------")
-      console.log(response.data)
+
+      console.log(response.data);
+
     } catch (error) {
       console.error(error);
     }
@@ -121,6 +136,7 @@ const SuperviserDashboard = () => {
   const noOfCompletedSComplains = completedSData.length;
 
   const noOfPendingLabourers = pendingLabourersData.length;
+  console.log(noOfPendingLabourers);
 
 
   return (
