@@ -244,6 +244,8 @@ const styles = StyleSheet.create({
     minHeight: width * 0.16,
     padding: width * 0.04,
     alignItems: "center",
+
+    //add
   },
   firstRow: {
     // backgroundColor: "#003D14", // Green color
