@@ -15,6 +15,7 @@ const ViewComplain = () => {
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
+
   const navigation = useNavigation();
   const route = useRoute();
   const complainId = route.params.complainId;
@@ -44,16 +45,19 @@ const ViewComplain = () => {
       .catch((error) => {
         console.log('error', error);
       })
-      
+
   }, []);
 
   const windowWidth = Dimensions.get('window').width;
   const windowRatio = windowWidth / 425;
-  console.log('complain----------', ( !(complain.status === 'AssignedA')));
+  // console.log('complain----------', ( !(complain.status === 'AssignedA')));
 
   const handleImagePress = () => {
     setShowScaledImage(true);
   }
+
+  let rate = 3;
+
 
   return (
     <View style={styles.container}>
@@ -66,13 +70,13 @@ const ViewComplain = () => {
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Title:</Text>
             <Text style={styles.fieldValue}>{complain.title}</Text>
-          </View>          
+          </View>
           <View style={styles.bottomLine} />
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Created Date:</Text>
             <Text style={styles.fieldValue}>{createdDate}</Text>
           </View>
-          
+
           <View style={styles.bottomLine} />
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Created Time:</Text>
@@ -90,31 +94,31 @@ const ViewComplain = () => {
           </View>
           <Text style={styles.fieldValue}>{complain.description}</Text>
           <View style={styles.bottomLine} />
-          
+
           {
             (userInfo.role === 'admin' && !(complain.status === 'AssignedA')) ? (
-          <View style={styles.fieldContainer}>
-          <Text style={styles.fieldTitle}>Assigened:</Text>
-          <Text style={styles.fieldValue}>{complain.supervisorID}</Text>
-          </View>
-          
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>Assigened:</Text>
+                <Text style={styles.fieldValue}>{complain.supervisorID}</Text>
+              </View>
+
             ) : null
           }
-          
+
           {
             (userInfo.role === 'admin' && !(complain.status === 'AssignedA')) ? (     //Check this
-              <View style={styles.bottomLine} />          
+              <View style={styles.bottomLine} />
             ) : null
-          }          
+          }
 
           <View style={styles.fieldContainer}>
-            <Text style={styles.fieldTitle}>Status:</Text>            
-            { complain.status !== 'Completed' ? (
-                <Text style={styles.fieldValue}>In Progress</Text>
-              ) : (
-                <Text style={styles.fieldValue}>Completed</Text>
-              )
-            }            
+            <Text style={styles.fieldTitle}>Status:</Text>
+            {complain.status !== 'Completed' ? (
+              <Text style={styles.fieldValue}>In Progress</Text>
+            ) : (
+              <Text style={styles.fieldValue}>Completed</Text>
+            )
+            }
           </View>
 
           <View style={styles.bottomLine} />
@@ -123,22 +127,48 @@ const ViewComplain = () => {
 
         {(userInfo.role === 'admin' && complain.status === 'AssignedS' ? (
 
-            <View style={styles.dataContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>        
+          <View style={styles.dataContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
               <Text style={styles.buttonText}>Change the Supervisor</Text>
-            </TouchableOpacity>        
-            </View>          
-        ) : ( userInfo.role === 'admin' && complain.status === 'AssignedA' ?
-        ( <View style={styles.dataContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-            <Text style={styles.buttonText}>Assign A Supervisor</Text> 
-          </TouchableOpacity>          
-        </View> ) : null))
-      }
+            </TouchableOpacity>
+          </View>
+        ) : (userInfo.role === 'admin' && complain.status === 'AssignedA' ?
+          (<View style={styles.dataContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+              <Text style={styles.buttonText}>Assign A Supervisor</Text>
+            </TouchableOpacity>
+          </View>) : null))
+        }
+
+
+  {/* before rate and after rate */}
+        {
+          (userInfo.role === 'complainer' && complain.status === 'CompletedA') ? (
+            <View style={styles.dataContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+                <Text style={styles.buttonText}>Rate the Complain</Text>
+              </TouchableOpacity>
+            </View>) :
+            (userInfo.role === 'complainer' && complain.status === 'Completed') ? (
+              <View style={styles.dataContainer}>
+                  <Text style={styles.buttonText}>View my rate</Text>
+                   {
+                      rate === 3 ? (
+                        <Text >1</Text>
+                      ) : (
+                        <Text >2</Text>
+                      ) 
+                   }
+                  
+
+
+              </View>) : null
+
+        }
 
 
 
-        
+
       </ScrollView>
 
       {/* Scaled Image */}
@@ -220,7 +250,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#19AFE2',
     marginHorizontal: -20 * windowRatio,
     marginTop: windowRatio,
-    
+
   },
   button: {
     backgroundColor: '#01a9e1',
