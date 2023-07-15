@@ -8,7 +8,7 @@ import BASE_URL from '../../src/Common/BaseURL';
 const SuperviserCompleteFeedBackForm = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const complainId = route.params.complainId;
+  const complainId = route.params.complainID;
 
   const [complain, setComplain] = useState([]);
   const [createdDate, setCreatedDate] = useState('');
