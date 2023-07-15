@@ -1,5 +1,3 @@
-// for admin view perpose
-
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView,Platform,Linking ,TouchableOpacity} from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
@@ -9,6 +7,12 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { Dimensions } from 'react-native';
+
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const SuperviserDetailView = () => {
 
@@ -17,6 +21,7 @@ const SuperviserDetailView = () => {
     [mobile_no,setMobileNo]=useState();
     const userId = route.params.userId;
     const complainId=route.params.complainId;
+    const { userInfo } = useContext(AuthContext);
 
     console.log("userId", userId);
   
@@ -56,29 +61,38 @@ const SuperviserDetailView = () => {
   
     return (
         <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Supervisor Details</Text>
-        </View>
-        <View style={styles.dataContainer}>
-            <Text style={styles.label}>Supervisor Name:</Text>
-            <Text style={styles.value}>{pendingUser.user.name}</Text>
-        </View>
-        <View style={styles.dataContainer}>
-            <Text style={styles.label}> Email:</Text>
-            <Text style={styles.value}>{pendingUser.user.email}</Text>
+        
+          
+          <View style={styles.circleContainer}>
+          <View style={styles.circle}></View>
           </View>
-          <View style={styles.dataContainer}>
-            <Text style={styles.label}> Mobile No:</Text>
-            <Text style={styles.value}>{pendingUser.user.mobile_no}</Text>
-          </View>
-          <View style={styles.dataContainer}>
-            <Text style={styles.label}>Work Type:</Text>
-            <Text style={styles.value}>{pendingUser.Data.work_type}</Text>
-          </View>
-          <View style={styles.dataContainer}>
-            <Text style={styles.label}>Approved Date:</Text>
-            <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
-          </View>
+          
+            <View>
+              <Text style={styles.nameText}>{pendingUser.user.name}</Text>
+              <Text style={styles.joinDate}>Signed on {pendingUser.Data.approved_date}</Text>
+            </View>
+            <Text style={styles.info}>Informations</Text>
+
+
+
+            <View style={styles.DetailsContainer}>
+              <View style={styles.detail}>
+                  <Ionicons name="person-circle-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.name}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="mail-unread-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.email}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="call-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.mobile_no}</Text>
+              </View>
+              <View style={styles.detail}>
+                  <Ionicons name="settings-outline" size={28} color="#A9B5AA" />
+                  <Text style={styles.detailText}>{pendingUser.user.role}</Text>
+              </View>
+              </View>
           <View style={styles.buttonContainer}>
           {visible&&(<TouchableOpacity style={styles.button} onPress={makeCall}>
             <Text style={styles.buttonText}>Assign</Text>
@@ -87,6 +101,8 @@ const SuperviserDetailView = () => {
             <Text style={styles.editButtonText}>Call</Text>
           </TouchableOpacity>
         </View>
+       <Text style={styles.info}>In Progress Works</Text>
+       
 
         
 
@@ -100,31 +116,70 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         backgroundColor: '#fff',
-        padding: 20,
+        padding: windowWidth*0.05,
         },
-    header:{
-        backgroundColor: '#01a9e1',
-        paddingVertical: 40,
-        alignItems: 'center',
-        marginBottom:40,
-
-          },
-    title: {
-    color: '#fff',
-    fontSize: 40,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    },
-    dataContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
+        topbar: {
+          backgroundColor: "#19AFE2",
+          width: "100%",
+          height: 67,
+        },
+        text: {
+          fontSize: 20,
+          fontWeight: 'bold',
+          color: 'white',
+          textAlign: 'center',
+          marginTop:15,
+        },
+        circleContainer: {
+          alignItems: 'center',
+        },
+        circle: {
+          width: windowWidth * 0.25, 
+          height: windowWidth * 0.25,
+          backgroundColor: '#D9D9D9',
+          borderRadius: (windowWidth * 0.25) / 2, 
+          marginTop: windowHeight * 0.01, 
+          marginBottom: windowHeight * 0.02,
+        },
+        info: {
+          fontSize: 20,
+          fontWeight: 'bold',
+          paddingTop: windowHeight * 0.02,
+          paddingBottom: windowHeight * 0.02,
+        },
+        
+        nameText: {
+          fontSize: 20,
+          fontWeight: 'bold',
+          textAlign: 'center',
+          marginBottom: windowHeight * 0.004,
     
+        },
+        joinDate: {
+          textAlign: 'center',
+          fontSize: 12,
+          fontWeight: 'regular',
+          
+        },
+
+   
+    detailsContainer: {},
+    detail: {
+      flexDirection: 'row',
+      paddingBottom: windowHeight * 0.02,
+      paddingLeft: windowWidth * 0.05,
+
     },
+    detailText: {
+      fontSize: 16,
+      paddingHorizontal: windowWidth * 0.05,
+    },
+
     label: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginRight: 10,
-    marginTop: 3, // Adjust the margin as needed
+    marginRight: windowWidth * 0.01,
+    marginTop: windowHeight * 0.003, // Adjust the margin as needed
     },
     value: {
     flex: 1,
@@ -136,14 +191,14 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     resizeMode: 'cover',
-    marginBottom: 20,
+    marginBottom: windowHeight * 0.02,
     },
     buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     },
     button: {
-    backgroundColor: '#01a9e1',
+    backgroundColor: '#19AFE2',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -156,12 +211,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     },
     editButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#19AFE2',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     flex: 1,
-    marginLeft: 5,
+    marginLeft: windowWidth * 0.005,
     },
     editButtonText: {
     color: '#000',

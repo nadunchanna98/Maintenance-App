@@ -24,10 +24,10 @@ const UserSchema = new mongoose.Schema({
         enum: ['complainer','labour','supervisor','admin'], 
         default: 'complainer'
      },
-    accepted: {     //check wether the user is accepted by the admin as a supervisor
-        type: Boolean, 
-        default: false
-     },
+    // accepted: {     //check wether the user is accepted by the admin as a supervisor
+    //     type: Boolean, 
+    //     default: false
+    //  },
      complainer_type: {
         type: String,
         enum: ['student', 'staff','supervisor','other'], //??

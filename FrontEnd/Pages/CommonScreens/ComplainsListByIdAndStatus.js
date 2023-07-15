@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image,  TouchableOpacity, Dimensions } from 'react-native';
-import {  List } from 'react-native-paper';
+
+import React, { useState, useContext } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
-import axios from 'axios';
-import BASE_URL from '../../src/Common/BaseURL';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import moment from 'moment';
 import { ScrollView as GestureScrollView } from 'react-native-gesture-handler';
-
 
 const CompletedComplainsListById = () => {
 
@@ -17,31 +15,16 @@ const CompletedComplainsListById = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const data = route.params.data;
 
+
+
+  const data = route.params.data;
   // console.log("Status: ", data);
 
   const [activeSections, setActiveSections] = useState([]);
- 
-  // const getComplains = async () => {
-  //   try {
-  //     const response = await axios.get(`${BASE_URL}complains/list`, {
-  //       params: {
-  //         id: userInfo.userId,
-  //         status: Status,
-  //         role: userInfo.role,
-  //       },
-  //     });
-  //     setData(response.data);
-  //     console.log("Data: ", response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const renderHeader = (section, index, isActive) => {
-  const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
-
+    const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
 
     return (
       <TouchableOpacity
@@ -74,12 +57,12 @@ const CompletedComplainsListById = () => {
   return (
 
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image source={require('../../assets/backButton.png')} style={styles.backButton} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Complains</Text>
-      </View>
+      </View> */}
       <GestureScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.contentContainer}>
           <List.Section>
@@ -126,7 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     flex: 1,
-    marginLeft: windowRatio - 24* windowRatio,
+    marginLeft: windowRatio - 24 * windowRatio,
     marginRight: 10 * windowRatio,
     textAlign: 'center',
   },

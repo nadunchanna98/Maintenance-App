@@ -5,9 +5,6 @@ const SupervisorSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User_Details' 
     },
-    work_type: { 
-        type: String, 
-    },
     approvedby: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User_Details'
@@ -25,4 +22,4 @@ const SupervisorSchema = new mongoose.Schema({
   
   );
 
-exports.Supervisor_Details = mongoose.model('supervisor-details', SupervisorSchema);
+exports.Labour_Details = mongoose.model('labour-details', SupervisorSchema);

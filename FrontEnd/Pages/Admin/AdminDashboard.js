@@ -31,6 +31,7 @@ const AdminDashboard = () => {
       getAssignedAComplains();
       getAssignedSComplains();
       getCompletedAComplains();
+      getListOfPendingSupervisors();
       console.log("useFocusEffect")
     }, [userInfo]) // Add userInfo as a dependency
   );
@@ -71,9 +72,11 @@ const AdminDashboard = () => {
       const response = await axios.get(`${BASE_URL}users/pending/list`, {
         params: {
           PendingType: pendingType,
+
         }
       });
       setPendingSupervisorsData(response.data);
+      console.log("Pending Supervisors: ", response.data);
     } catch (error) {
       console.error(error);
     }
@@ -241,6 +244,8 @@ const styles = StyleSheet.create({
     minHeight: width * 0.16,
     padding: width * 0.04,
     alignItems: "center",
+
+    //add
   },
   firstRow: {
     // backgroundColor: "#003D14", // Green color
