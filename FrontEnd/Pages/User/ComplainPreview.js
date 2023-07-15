@@ -1,23 +1,18 @@
-import React, { useContext } from 'react';
-import { View, Alert, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Alert, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import { Dimensions } from 'react-native';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
-
-
-const { width, height } = Dimensions.get('window');
-const titleTextSize = Math.round(height * 0.03);
-const contentTextSize = Math.round(height * 0.015);
-
+import moment from 'moment';
 
 const ComplainPreview = ({ route }) => {
   const navigation = useNavigation();
   const { title, location, description, imageUri } = route.params;
   const { userInfo } = useContext(AuthContext);
-  const currentDate = new Date().toLocaleDateString();
-  const currentTime = new Date().toLocaleTimeString();
+  const currentDate = moment().format('MMMM DD, YYYY');
+  const currentTime = moment().format('hh:mm A');
+  const [showScaledImage, setShowScaledImage] = useState(false);
 
   const handleDataSubmission = () => {
     console.log('Data submitted:', {
@@ -64,131 +59,161 @@ const ComplainPreview = ({ route }) => {
     });
   };
 
+  const handleImagePress = () => {
+    setShowScaledImage(true);
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Complain Details</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Complainer Name:</Text>
-        <Text style={styles.value}>{userInfo.name}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Date:</Text>
-        <Text style={styles.value}>{currentDate}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Time:</Text>
-        <Text style={styles.value}>{currentTime}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Title:</Text>
-        <Text style={styles.value}>{title}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Location:</Text>
-        <Text style={styles.value}>{location}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Description:</Text>
-        <Text style={styles.value}>{description}</Text>
-      </View>
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+    <View style={styles.container}>
+
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <TouchableOpacity onPress={handleImagePress}>
+          <Image source={{ uri: imageUri }} style={styles.image} />
+        </TouchableOpacity>
+        <View style={styles.dataContainer}>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitle}>Complainer Name:</Text>
+            <Text style={styles.fieldValue}>{userInfo.name}</Text>
+          </View>
+
+          <View style={styles.bottomLine} />
+
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitle}>Date:</Text>
+            <Text style={styles.fieldValue}>{currentDate}</Text>
+          </View>
+
+          <View style={styles.bottomLine} />
+
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitle}>Time:</Text>
+            <Text style={styles.fieldValue}>{currentTime}</Text>
+          </View>
+
+          <View style={styles.bottomLine} />
+
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitle}>Title:</Text>
+            <Text style={styles.fieldValue}>{title}</Text>
+          </View>
+
+          <View style={styles.bottomLine} />
+
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitle}>Location:</Text>
+            <Text style={styles.fieldValue}>{location}</Text>
+          </View>
+
+          <View style={styles.bottomLine} />
+
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitle}>Description:</Text>
+          </View>
+          <Text style={styles.fieldValue}>{description}</Text>
+          <View style={styles.bottomLine} />
+
+        </View>        
+      </ScrollView>
+
+      
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-          <Text style={styles.buttonText}>Submit</Text>
+      <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleEditData}>
+        <Text style={styles.buttonText}>Edit</Text>
+      </TouchableOpacity>
+    </View>
+
+      {imageUri && showScaledImage && (
+        <TouchableOpacity style={styles.scaledImageContainer} onPress={() => setShowScaledImage(false)}>
+          <Image source={{ uri: imageUri }} style={styles.scaledImage} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.editButton} onPress={handleEditData}>
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      )}
+    </View>
   );
 };
 
+const windowWidth = Dimensions.get('window').width;
+const windowRatio = windowWidth / 425;
+
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  header: {
-    backgroundColor: '#01a9e1',
-    paddingVertical: 40,
-    alignItems: 'center',
-    marginBottom: 40,
-
-  },
-  title: {
-    color: '#fff',
-    fontSize: titleTextSize,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  dataContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-
-  },
-  label: {
-    fontWeight: 'bold',
-    fontSize: contentTextSize,
-    marginRight: 10,
-    marginTop: 3, // Adjust the margin as needed
-  },
-  value: {
     flex: 1,
-    flexWrap: 'wrap',
-    fontSize: contentTextSize,
+    backgroundColor: 'white',
+  },
+  contentContainer: {
+    paddingBottom: 20 * windowRatio,
   },
   image: {
     alignSelf: 'center',
-    width: 300,
-    height: 300,
+    width: 200 * windowRatio,
+    height: 200 * windowRatio,
     resizeMode: 'cover',
-    marginBottom: 20,
+    marginBottom: 20 * windowRatio,
+    borderRadius: 20 * windowRatio,
+    marginTop: 20 * windowRatio,
+  },
+  dataContainer: {
+    marginHorizontal: 20 * windowRatio,
+    marginBottom: 30 * windowRatio,
+    top: 30 * windowRatio,
+  },
+  fieldContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15 * windowRatio,
+  },
+  fieldTitle: {
+    fontWeight: 'bold',
+    color: '#45474b',
+    fontSize: 20 * windowRatio,
+    marginRight: 10 * windowRatio,
+    textAlign: 'left',
+  },
+  fieldValue: {
+    color: '#45474b',
+    fontSize: 20 * windowRatio,
+    textAlign: 'left',
+  },
+  bottomLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#19AFE2',
+    marginHorizontal: -20 * windowRatio,
+    marginTop: windowRatio,
+  },
+  button: {
+    backgroundColor: '#01a9e1',
+    padding: 20 * windowRatio,
+    borderRadius: 5 * windowRatio,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 20 * windowRatio,
+    marginBottom: 20 * windowRatio,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20 * windowRatio,
+    fontWeight: 'bold',
+  },
+  scaledImageContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  scaledImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  button: {
-    backgroundColor: '#01a9e1',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: contentTextSize,
-    fontWeight: 'bold',
-  },
-  editButton: {
-    backgroundColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    flex: 1,
-    marginLeft: 5,
-  },
-  editButtonText: {
-    color: '#000',
-    fontSize: contentTextSize,
-    fontWeight: 'bold',
-  },
-  fieldValue: {
-    flex: 1,
-    flexWrap: 'wrap',
-  },
-  fieldTitle: {
-    fontWeight: 'bold',
-    marginRight: 10,
-  },
-  fieldValue: {
-    flex: 1,
-    flexWrap: 'wrap',
   },
 });
 
