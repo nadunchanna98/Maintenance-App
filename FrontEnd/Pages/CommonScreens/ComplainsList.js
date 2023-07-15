@@ -50,7 +50,7 @@ const ComplainsList = () => {
                                         />
                                     </View>
                                     <View style={styles.detailsColumn}>
-                                        <Text style={styles.description}>{item.description}</Text>
+                                        <Text style={styles.description}>{item.title}</Text>
                                         <Text style={styles.status}>{item.status}</Text>
                                         <Text style={styles.date}>{formattedDate}</Text>
                                     </View>
