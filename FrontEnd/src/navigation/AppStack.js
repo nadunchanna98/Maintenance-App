@@ -362,7 +362,7 @@ const UserScreens = () => (
 const InstructionScreens = () => (
   <Stack.Navigator>
     <Stack.Screen
-      name="Instruction"
+      name="Instructions"
       component={Instruction}
       options={{
         headerShown: true,

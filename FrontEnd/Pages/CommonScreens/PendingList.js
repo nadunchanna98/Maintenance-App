@@ -173,10 +173,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    resizeMode: 'cover',
     marginLeft: 15,
+    borderWidth: 1,
+    borderColor: '#000',
   },
   content: {
     paddingVertical: 10,
@@ -211,9 +214,9 @@ const styles = StyleSheet.create({
   },
   labourRequest: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    width: width * 0.39,
+    width: width * 0.4,
     overflow: 'hidden',
   },
   callButton: {

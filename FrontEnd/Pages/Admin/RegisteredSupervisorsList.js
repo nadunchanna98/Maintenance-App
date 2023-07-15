@@ -105,7 +105,7 @@ const RegisteredSupervisersList = () => {
         const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
         return (<Surface style={[styles.surface, styles.contentSurface]} elevation={2}>
             <View style={styles.content}>
-                <Text style={styles.description}>Name : {section.userID}</Text>
+                <Text style={styles.description}>Name : {section.userDetails.name}</Text>
                 <Text style={styles.description}>Mobile No. : {section.userDetails.mobile_no}</Text>
                 <Text style={styles.description}>Date Joined: {formattedDate}</Text>
                 <View style={styles.buttons}>
@@ -153,10 +153,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 50,
+        height: 50,
+        borderRadius: 100,
+        resizeMode: 'cover',
         marginLeft: 15,
+        borderWidth: 1,
+        borderColor: '#000',
     },
     content: {
         paddingVertical: 10,
