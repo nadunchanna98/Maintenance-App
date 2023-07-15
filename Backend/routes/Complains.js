@@ -188,9 +188,9 @@ router.get('/list', async (req, res) => {
     ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
   }
 
-  else if (status === 'AssignedL' & role === 'supervisor')  // supervisor
+  else if (status === 'AssignedL' & role === 'supervisor')  // supervisor  inprogress complains
   {
-    status = ['AssignedL', 'CompletedL', 'DeclinedL']
+    status = ['AssignedL']
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
   }
   else if (status === 'AssignedL' & role !== 'supervisor')  // labour

@@ -124,7 +124,7 @@ const SuperviserDashboard = () => {
       });
       setCompletedSData(response.data);
 
-      console.log(response.data);
+      //console.log(response.data);
 
     } catch (error) {
       console.error(error);
@@ -136,7 +136,7 @@ const SuperviserDashboard = () => {
   const noOfCompletedSComplains = completedSData.length;
 
   const noOfPendingLabourers = pendingLabourersData.length;
-  console.log(noOfPendingLabourers);
+
 
 
   return (
@@ -170,7 +170,7 @@ const SuperviserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("omplainsListByIdAndStatus", { data: assignedLData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedLData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedLComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
