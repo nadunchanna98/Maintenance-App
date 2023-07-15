@@ -19,25 +19,27 @@ const SuperviserDetailView = () => {
   const complainId = route.params.complainId;
 
   console.log("userId", userId);
-
+  const visible = complainId !== null;
   const [pendingUser, setPendingUser] = useState([]);
+  const [assignedWorks, setAssignedWorks] = useState([]);
   const makeCall = () => {
 
     console.log({ mobile_no });
     if (Platform.OS == 'android') {
 
-      Linking.openURL("tel: " + String({ mobile_no }));
+      Linking.openURL(`tel:${mobile_no}`);
     }
     else {
 
-      Linking.openURL("telprompt: " + { mobile_no });
+      Linking.openURL(`telprompt:${mobile_no}`);
     }
   }
 
   useEffect(() => {
     getUserDetail();
+    getAssignedLComplains();
   }, []);
-  const visible = complainId !== null;
+
   const getUserDetail = () => {
     axios
       .get(`${BASE_URL}supervisors/user/${userId}`)
@@ -50,15 +52,34 @@ const SuperviserDetailView = () => {
       });
   };
 
+
+  const getAssignedLComplains = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusAssignedS,
+          role: userInfo.role,
+        }
+      });
+      setAssignedWorks(response.data);
+      console.log("Data: ", response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
   if (pendingUser.length === 0) {
     return <Text>Loading...</Text>;
   }
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-          <Text style={styles.title}>Supervisor Details</Text>
-        </View> */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Supervisor Details</Text>
+      </View>
       <View style={styles.dataContainer}>
         <Text style={styles.label}>Supervisor Name:</Text>
         <Text style={styles.value}>{pendingUser.user.name}</Text>
@@ -79,13 +100,12 @@ const SuperviserDetailView = () => {
         <Text style={styles.label}>Approved Date:</Text>
         <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        {visible && (<TouchableOpacity style={styles.button} onPress={makeCall}>
-          <Text style={styles.buttonText}>Assign</Text>
-        </TouchableOpacity>)}
-        <TouchableOpacity style={styles.editButton} onPress={makeCall}>
-          <Text style={styles.editButtonText}>Call</Text>
-        </TouchableOpacity>
+
+      <View style={visible ? [styles.buttonContainer, { justifyContent: 'space-evenly' }] : [styles.buttonContainer, { alignSelf: 'center' }]} >
+        {visible && (<Button icon={"account-hard-hat"} onPress={makeCall} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Assign
+        </Button>)}
+        <Button icon={"phone"} onPress={makeCall} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Call</Button>
+
       </View>
 
 

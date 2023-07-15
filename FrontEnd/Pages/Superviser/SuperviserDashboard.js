@@ -78,6 +78,7 @@ const SuperviserDashboard = () => {
         }
       });
       setAssignedSData(response.data);
+
     } catch (error) {
       console.error(error);
     }
@@ -108,6 +109,8 @@ const SuperviserDashboard = () => {
         }
       });
       setCompletedSData(response.data);
+      console.log("------------------------")
+      console.log(response.data)
     } catch (error) {
       console.error(error);
     }

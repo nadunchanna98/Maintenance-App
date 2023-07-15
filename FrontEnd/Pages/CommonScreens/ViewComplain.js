@@ -72,6 +72,7 @@ const ViewComplain = () => {
     </View>
 
   )
+
 }
 
 const styles = StyleSheet.create({
