@@ -118,16 +118,11 @@ const AdminDashboard = () => {
   return (
     <SafeAreaView>
       <View>
-        <View style={styles.dashboardHeader}>
-          <View style={styles.secondRow}>
-            <Text style={styles.title}>Admin Dashboard</Text>
-          </View>
-        </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "91.5%" }} // 89.9%
+            style={{ height: "100%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>

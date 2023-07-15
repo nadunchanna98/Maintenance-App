@@ -60,21 +60,16 @@ const LaborerDashboard = () => {
   return (
     <SafeAreaView>
       <View>
-        <View style={styles.dashboardHeader}>
-          <View style={styles.secondRow}>
-            <Text style={styles.title}>Labour Dashboard</Text>
-          </View>
-        </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "91.5%" }} // 89.9%
+            style={{ height: "100%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: data }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("AssignedWorks", { data: data }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedTasks}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>

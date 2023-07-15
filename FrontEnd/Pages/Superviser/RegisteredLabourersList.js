@@ -9,7 +9,7 @@ import moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
 
-const RegisteredSupervisersList = () => {
+const RegisteredLabourersList = () => {
 
     const route = useRoute();
     const complainId = route.params.complainId;
@@ -19,7 +19,7 @@ const RegisteredSupervisersList = () => {
 
     const [activeSections, setActiveSections] = useState([]);
     const [data, setData] = useState([]);
-    const [activeSupervisor, setActiveSupervisor] = useState({});
+    const [activeLabourer, setActiveLabourer] = useState({});
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
@@ -30,19 +30,19 @@ const RegisteredSupervisersList = () => {
     }, []);
 
     useEffect(() => {
-        getSupervisorDetails();
+        getLabourerDetails();
     }, []);
 
     // this will set the active request
     useEffect(() => {
         if (activeSections.length != 0) {
-            setActiveSupervisor(data[activeSections[0]])
+            setActiveLabourer(data[activeSections[0]])
         }
     }, [activeSections])
 
-    const getSupervisorDetails = async () => {
+    const getLabourerDetails = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}supervisors/list`);
+            const response = await axios.get(`${BASE_URL}users/labours/list`);
             console.log(response.data[0]);
             setData(response.data);
         } catch (error) {
@@ -51,13 +51,13 @@ const RegisteredSupervisersList = () => {
     };
 
     const handleAssignButton = () => {
-        console.log("Supervisor Assigned");
-        // logic to assign the supervisor
+        console.log("Labourer Assigned");
+        // logic to assign the labourer
     }
 
     // open dial pad with the user mobile number dialed when click call button
     const dialCall = () => {
-        phoneNum = activeSupervisor.userDetails.mobile_no;
+        phoneNum = activeLabourer.mobile_no;
         if (Platform.OS === 'android') {
             phoneNum = `tel:${phoneNum}`;
         } else {
@@ -74,9 +74,9 @@ const RegisteredSupervisersList = () => {
             <Surface style={[isActive ? styles.activeSurface : styles.inactiveSurface, styles.surface]} elevation={2}>
 
                 <List.Item
-                    title={section.userDetails.name}
+                    title={section.name}
                     titleStyle={{}}
-                    description={section.work_type}
+                    description={section.email}
                     descriptionStyle={{}}
                     style={[isActive ? styles.activeHeader : styles.inactiveHeader, { borderRadius: 8 }]}
                     left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={[styles.avatar, { alignSelf: "center" }]} />}
@@ -85,7 +85,7 @@ const RegisteredSupervisersList = () => {
                             <Button
                                 icon="arrow-right"
                                 mode="outlined"
-                                onPress={() => navigation.navigate('SuperviserDetailView', { userId: section.userID, complainId: complainId })}
+                                onPress={() => navigation.navigate('LabourerDetailView', { userId: section._id, complainId: complainId })}
                                 borderColor='#01a9e1'
                                 labelStyle={{ color: "#01a9e1", fontSize: 14 }}
                                 style={[styles.button, { borderColor: "#01a9e1" }]}
@@ -102,12 +102,12 @@ const RegisteredSupervisersList = () => {
 
 
     const renderContent = (section, index, isActive) => {
-        const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
+        // const formattedDate = moment(section.assigned_date).format('MMMM DD, YYYY');
         return (<Surface style={[styles.surface, styles.contentSurface]} elevation={2}>
             <View style={styles.content}>
-                <Text style={styles.description}>Name : {section.userID}</Text>
-                <Text style={styles.description}>Mobile No. : {section.userDetails.mobile_no}</Text>
-                <Text style={styles.description}>Date Joined: {formattedDate}</Text>
+                <Text style={styles.description}>Name : {section.name}</Text>
+                <Text style={styles.description}>Mobile No. : {section.mobile_no}</Text>
+                {/* <Text style={styles.description}>Date Joined: {formattedDate}</Text> */}
                 <View style={styles.buttons}>
                     <Button icon={"phone"} mode='contained' buttonColor={"#19AFE2"} style={styles.callButton} onPress={dialCall}>Call</Button>
                     {complainId && <Button icon={"account-hard-hat"} mode='outlined' textColor={"#19AFE2"} style={styles.assignButton} onPress={handleAssignButton}>Assign</Button>}
@@ -123,7 +123,7 @@ const RegisteredSupervisersList = () => {
     return (
 
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-            {!data[0] && <Text style={styles.noSupervisors}>There are no registered supervisors at this moment!</Text>}
+            {!data[0] && <Text style={styles.noSupervisors}>There are no registered labourers at this moment!</Text>}
             <View style={styles.requestList}>
                 <List.Section>
                     <Accordion
@@ -210,4 +210,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RegisteredSupervisersList;
+export default RegisteredLabourersList;
