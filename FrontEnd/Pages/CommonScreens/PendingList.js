@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image, ScrollView, RefreshControl, Dimensions, 
 import { Button, List, Surface, IconButton, Dialog, Portal, Provider } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import { useRoute } from '@react-navigation/native';
-import { AuthContext } from '../../src/Context/AuthContext';
 
 const { width } = Dimensions.get("window");
 
@@ -13,8 +12,6 @@ const PendingList = () => {
   const data = route.params.pendingData;
 
   const role = data[0] ? data[0].user.role : "none";
-
-  const { userInfo } = useContext(AuthContext);
 
   const [activeSections, setActiveSections] = useState([]);
   const [activeRequest, setActiveRequest] = useState({});

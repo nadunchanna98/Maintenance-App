@@ -174,7 +174,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList", { complainID: null }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("RegisteredSupervisors", { complainId: null }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image

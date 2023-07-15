@@ -15,6 +15,8 @@ import NewRequests from '../../Pages/Admin/NewRequests';
 // import InProgressWorks from '../../Pages/Admin/InProgressWorks';
 // import CompletedWorks from '../../Pages/Admin/CompletedWorks';
 import ListView from '../../Pages/CommonScreens/ComplainsList';
+import RegisteredSupervisersList from '../../Pages/Admin/RegisteredSupervisorsList';
+//
 import Supervisors from '../../Pages/Admin/Supervisors';
 import ComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
 import ViewComplain from '../../Pages/CommonScreens/ViewComplain';
@@ -60,8 +62,6 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
-
-    {/*  */}
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -75,7 +75,7 @@ const AdminScreens = () => (
     />
     <Stack.Screen
       name="CompletedComplainsList"
-      component={ComplainsList}
+      component={ListView}
       options={{
         headerShown: true,
         title: "Completed Works",
@@ -85,19 +85,19 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="Supervisors"
-      component={Supervisors}
+      name="SuperviserList"
+      component={RegisteredSupervisersList}
       options={{
         headerShown: true,
-        title: "Supervisors",
+        title: "Available Supervisors",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
     <Stack.Screen
-      name="SuperviserList"
-      component={SuperviserList}
+      name="RegisteredSupervisors"
+      component={RegisteredSupervisersList}
       options={{
         headerShown: true,
         title: "Registered Supervisors",
@@ -106,9 +106,6 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
-
-    {/*  */}
-
     <Stack.Screen
       name="PendingList"
       component={PendingList}
@@ -120,17 +117,6 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
-    {/* <Stack.Screen
-      name="PendingUserDetailView"
-      component={PendingUserDetailView}
-      options={{
-        headerShown: true,
-        title: "Request Details",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
-    /> */}
     <Stack.Screen
       name="SuperviserDetailView"
       component={SuperviserDetailView}

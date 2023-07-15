@@ -20,7 +20,7 @@ const ViewComplain = () => {
   const handleDataSubmission = () => {
 
     console.log("Supervisor Assign");
-    navigation.navigate("SuperviserList", { complainID: complainId })
+    navigation.navigate("SuperviserList", { complainId: complainId })
   }
 
   useEffect(() => {
