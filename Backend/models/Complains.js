@@ -25,10 +25,17 @@ const ComplaintSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    admin_description: {
+        type: String
+    },
     status: { 
         type: String, 
         enum: ['Pending', 'AssignedA', 'AssignedS','AssignedL','CompletedL','CompletedS','CompletedA','Completed','DeclinedL','DeclinedS','DeclinedA','Declined'],
         default: 'Pending' 
+    },
+    rate : {
+        type: Number,
+        default: 0
     },
     created_date: {
             type: Date,

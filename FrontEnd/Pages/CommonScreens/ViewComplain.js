@@ -12,6 +12,11 @@ import moment from 'moment';
 
 
 const ViewComplain = () => {
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowRatio = windowWidth / 425;
+
+
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
@@ -43,7 +48,6 @@ const ViewComplain = () => {
         formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
         setCreatedTime(formattedTime);
         setCreatedDate(formattedDate);
-
         setVisible(response.data.status === 'AssignedA');
       })
       .catch((error) => {
@@ -52,8 +56,7 @@ const ViewComplain = () => {
 
   }, []);
 
-  const windowWidth = Dimensions.get('window').width;
-  const windowRatio = windowWidth / 425;
+ 
   // console.log('complain----------', ( !(complain.status === 'AssignedA')));
 
   const handleImagePress = () => {
