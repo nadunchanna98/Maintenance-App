@@ -326,6 +326,27 @@ router.put('/update/:complainId/:userId', async (req, res) => {
 });
 
 
+// get all complains for a supervisor by supervisor id
+
+router.get('/supervisorcomplains/:userId', async (req, res) => {
+
+  const supervisorId = req.params.userId;
+
+  const status = ['AssignedS', 'AssignedL', 'CompletedS', 'DeclinedS','CompletedA','DeclinedA','Completed']
+  
+  const supervisor = await Supervisor_Details.findOne({ userID: supervisorId });
+  if (!supervisor) {
+    return res.status(404).json({ success: false, message: 'Supervisor not found' });
+  }
+
+  const complains = await Complaine_Details.find({ supervisorID: supervisorId , status: status });
+  if (!complains) {
+    return res.status(404).json({ success: false, message: 'Complains not found' });
+  }
+
+  return res.status(200).json({ success: true, complains: complains });
+});
+
 
 
 
