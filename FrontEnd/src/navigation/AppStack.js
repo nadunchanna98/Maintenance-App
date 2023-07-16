@@ -8,7 +8,12 @@ import UserDashboard from '../../Pages/User/UserDashboard';
 import ComplainForm from '../../Pages/User/ComplainForm';
 import ComplainPreview from '../../Pages/User/ComplainPreview';
 import UserProfile from '../../Pages/User/UserProfile';
+
 import AdminDashboard from '../../Pages/Admin/AdminDashboard';
+import LabourList from '../../Pages/Admin/LabourList';
+import LabourDetailView from '../../Pages/Admin/LabourDetailView';
+
+
 import SupervisorDashboard from '../../Pages/Superviser/SuperviserDashboard';
 import LaborerDashboard from '../../Pages/Laborer/LaborerDashboard';
 import { UserContext } from '../Context/UserContext';
@@ -150,6 +155,29 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+    <Stack.Screen
+      name="LabourList"
+      component={LabourList}
+      options={{
+        headerShown: true,
+        title: "Registered Labours",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+    <Stack.Screen
+    name="LabourDetailView"  
+    component={LabourDetailView}
+    options={{
+      headerShown: true,
+      title: "Registered Labours",
+      headerTitleAlign: 'center',
+      headerStyle: { backgroundColor: "#19AFE2" },
+      headerTintColor: "#ffffff"
+    }}
+    />
+
   </Stack.Navigator>
 );
 

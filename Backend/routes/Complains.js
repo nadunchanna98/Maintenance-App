@@ -208,11 +208,18 @@ router.get('/list', async (req, res) => {
     ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
 
   }
-  else if (status === 'CompletedS')   //Supervisor   
+  else if (status === 'CompletedS' & role === 'supervisor')   //Supervisor   
   {
     status = ['CompletedS']
 
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
+
+  }
+  else if (status === 'CompletedS' & role === 'admin' )   //admin received by supervisor complete and decline   
+  {
+    status = ['CompletedS', 'DeclinedS']
+
+    ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
 
   }
   else if (status === 'AssignedA' & role !== 'admin')  // Complainer
@@ -308,8 +315,8 @@ router.put('/update/:complainId/:userId', async (req, res) => {
     const complainId = req.params.complainId;
     const userId = req.params.userId;
 
-    console.log("complainId: ", complainId);
-    console.log("userId: ", userId);
+    // console.log("complainId: ", complainId);
+    // console.log("userId: ", userId);
 
     const complaint = await Complaine_Details.findById(complainId);
 
@@ -364,6 +371,26 @@ router.get('/supervisorcomplains/:userId', async (req, res) => {
   return res.status(200).json({ success: true, complains: complains });
 });
 
+
+// get labour current work
+router.get('/labourcomplains/:userId', async (req, res) => {
+
+  const labourId = req.params.userId;
+
+  const status = ['AssignedL']
+
+  const labour = await Labour_Details.findOne({ userID: labourId });
+  if (!labour) {
+    return res.status(404).json({ success: false, message: 'Labour not found' });
+  }
+
+  const complains = await Complaine_Details.find({ labourID: labourId, status: status });
+  if (!complains) {
+    return res.status(404).json({ success: false, message: 'Complains not found' });
+  }
+
+  return res.status(200).json({ success: true, complains: complains });
+});
 
 
 
