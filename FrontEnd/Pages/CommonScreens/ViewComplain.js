@@ -27,7 +27,7 @@ const ViewComplain = () => {
   const [showScaledImage, setShowScaledImage] = useState(false);
   const [supervisorName, setSupervisorName] = useState('');
   const [showPopup, setShowPopup] = useState(false); // State variable for pop-up message visibility
-  const [rating, setRating] = useState(0); // State variable for rating selection
+  const [rating, setRating] = useState(''); // State variable for rating selection
   const [showThankYou, setShowThankYou] = useState(false); // State variable for showing "Thank you" pop-up
 
   const handleDataSubmission = () => {
@@ -48,7 +48,9 @@ const ViewComplain = () => {
         setCreatedTime(formattedTime);
         setCreatedDate(formattedDate);
         setVisible(response.data.status === 'AssignedA');
-        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer')); // Show pop-up only when status is 'Completed' and role is 'complainer'
+        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate < 0)  ); // Show pop-up only when status is 'Completed' and role is 'complainer'
+        setRating(response.data.rate);
+        // console.log('response.data', response.data);
       })
       .catch((error) => {
         console.log('error', error);
@@ -133,10 +135,25 @@ const ViewComplain = () => {
   };
 
   const handleThankYouSubmit = () => {
-    // Perform rating submission logic here
-    // After submitting the rating, set showThankYou to true to show the "Thank you" pop-up
+
+    axios.put(`${BASE_URL}complains/complain/${complainId}`, { rate: rating })
+    .then((response) => {
+      console.log('response', response);
+       Alert.alert(
+        'Thank you for your rating!',
+        '',
+        [
+          { text: 'OK', onPress: () => handleThankYouDismiss() }
+        ],
+        { cancelable: false }
+      );
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
+
     setShowPopup(false);
-    setShowThankYou(true);
+    handleThankYouDismiss();
   };
 
   return (
@@ -189,25 +206,72 @@ const ViewComplain = () => {
           </View>
           <View style={styles.bottomLine} />
 
-          {rating > 0 && ( // Only show the rating if it has been selected
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldTitle}>Rated:</Text>
-              <View style={styles.ratingContainer}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
-                    <Image
-                      source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
-                      style={styles.starIcon}
-                    />
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          )}
 
-          {rating > 0 && (   <View style={styles.bottomLine} />
-          )}
-        
+          {
+
+            userInfo.role === 'admin' ? (
+
+              rating > 0 ? ( // Only show the rating if it has been selected
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                        <Image
+                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
+                          style={styles.starIcon}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ) :
+
+                (
+                  <View style={styles.fieldContainer}>
+                    <Text style={styles.fieldTitle}>Rated:</Text>
+                    <View style={styles.ratingContainer}>
+
+                      <Text style={styles.fieldValue}>Not rated yet</Text>
+
+                    </View>
+                  </View>
+                )
+
+
+            ) : userInfo.role === 'complainer' ? (
+
+              rating > 0 ? ( // Only show the rating if it has been selected
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                        <Image
+                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
+                          style={styles.starIcon}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+
+                    <Text style={styles.fieldValue}>Not Rated yet</Text>
+
+                  </View>
+                </View>
+              )
+
+            ) : null
+
+          }
+
+
+
         </View>
       </ScrollView>
 
@@ -328,7 +392,7 @@ const styles = StyleSheet.create({
   },
   popupContent: {
     backgroundColor: 'white',
-    padding: 40* windowRatio,
+    padding: 40 * windowRatio,
     borderRadius: 10 * windowRatio,
     alignItems: 'center',
     width: '90%',
