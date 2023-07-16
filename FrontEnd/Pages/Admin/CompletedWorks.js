@@ -34,7 +34,7 @@ const CompletedWorks = () => {
     return (
         <SafeAreaView>
             <View>
-                {/* <View style={styles.dashboardHeader}>
+                <View style={styles.dashboardHeader}>
                     <View style={styles.firstRow}>
                         <View style={styles.logout}>
                             <TouchableOpacity onPress={() => { navigation.goBack() }}>
@@ -58,7 +58,7 @@ const CompletedWorks = () => {
                     <View style={styles.secondRow}>
                         <Text style={styles.title}>Completed Works</Text>
                     </View>
-                </View> */}
+                </View>
                 <Text>All Completed Works!</Text>
 
                 <View>

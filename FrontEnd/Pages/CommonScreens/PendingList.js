@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ScrollView, RefreshControl, Dimensions, 
 import { Button, List, Surface, IconButton, Dialog, Portal, Provider } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import { useRoute } from '@react-navigation/native';
+import { AuthContext } from '../../src/Context/AuthContext';
 
 const { width } = Dimensions.get("window");
 
@@ -12,6 +13,11 @@ const PendingList = () => {
   const data = route.params.pendingData;
 
   const role = data[0] ? data[0].user.role : "none";
+  // role = data[0].user.role;
+  // const role = data[0] ? data[0].role : "none";
+  // setActiveRequest.user.role
+
+  const { userInfo } = useContext(AuthContext);
 
   const [activeSections, setActiveSections] = useState([]);
   const [activeRequest, setActiveRequest] = useState({});
@@ -80,17 +86,31 @@ const PendingList = () => {
             <Button
               icon="check"
               mode="outlined"
+              // onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
               onPress={() => {
                 setVisibleAccept(!visibleAccept);
               }}
               borderColor='#01a9e1'
               labelStyle={{ color: "green", fontSize: 14 }}
-              style={[styles.button, { borderColor: "green" }]}
+              style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
             >
               Accept
             </Button>
 
+            {/* <IconButton icon={"delete"} iconColor='white' size={18} style={{ backgroundColor: 'red' }} onPress={() => { console.log("Delete Pressed!") }} /> */}
+
           </View>
+          // <Button
+          //   icon="arrow-right"
+          //   mode="outlined"
+          //   onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
+          //   borderColor='#01a9e1'
+          //   color='#f08e25'
+          //   labelStyle={{ color: "#01a9e1", fontSize: 15 }}
+          //   style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
+          // >
+          //   View
+          // </Button>
         )}
       />
     </Surface>
@@ -116,9 +136,9 @@ const PendingList = () => {
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        {!data[0] && <Text style={styles.emptyRequests}>There are no new requests at this moment!</Text>}
         <View style={styles.requestList}>
           <List.Section>
+            {/* <List.Subheader>New users List</List.Subheader> */}
             <Accordion
               sections={data}
               activeSections={activeSections}
@@ -132,6 +152,7 @@ const PendingList = () => {
         <Portal>
           <Dialog visible={visibleDelete} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
+            {/* role === 'supervisor' ? "supervisor" : "labour" */}
             <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role} request?</Dialog.Title>
             <Dialog.Content>
               <Text>Delete this new {role} request from the pending list</Text>
@@ -173,13 +194,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
-    resizeMode: 'cover',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     marginLeft: 15,
-    borderWidth: 1,
-    borderColor: '#000',
   },
   content: {
     paddingVertical: 10,
@@ -214,20 +232,14 @@ const styles = StyleSheet.create({
   },
   labourRequest: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: width * 0.4,
+    width: width * 0.39,
     overflow: 'hidden',
   },
   callButton: {
     width: width * 0.3,
     marginVertical: width * 0.02,
-  },
-  emptyRequests: {
-    fontWeight: 'bold',
-    fontSize: width * 0.045,
-    textAlign: 'center',
-    marginVertical: width * 0.04,
   },
 });
 
