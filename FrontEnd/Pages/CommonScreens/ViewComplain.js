@@ -60,7 +60,9 @@ const ViewComplain = () => {
   const handleImagePress = () => {
     setShowScaledImage(true);
   };
-
+const handleComplete = () => {
+  navigation.navigate('AdminFeedback', { complainID: complainId });
+}
   const handlePopupDismiss = () => {
     setShowPopup(false);
   };
@@ -72,7 +74,9 @@ const ViewComplain = () => {
   const handleThankYouDismiss = () => {
     setShowThankYou(false);
   };
-
+const handleAssignLaborer = () => {
+  navigation.navigate('LaborerAssignmentScreen', { complainID: complainId });
+}
   const renderPopup = () => {
     if (!showPopup) {
       return null; // Don't render the pop-up if showPopup is false
@@ -268,8 +272,7 @@ const ViewComplain = () => {
 
             ) : null
 
-          }
-
+              }
 
 
         </View>
@@ -282,6 +285,7 @@ const ViewComplain = () => {
           </TouchableOpacity>
         </View>
       )}
+      
 
       {(userInfo.role === 'admin' && complain.status === 'AssignedA') && (
         <View style={styles.dataContainer}>
@@ -290,11 +294,26 @@ const ViewComplain = () => {
           </TouchableOpacity>
         </View>
       )}
+      
+      {(userInfo.role === 'admin' && complain.status === 'CompletedS') && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleComplete}>
+            <Text style={styles.buttonText}>Mark As Completed</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {userInfo.role === 'supervisor' && complain.status === 'AssignedL' && (
         <View style={styles.dataContainer}>
           <TouchableOpacity style={styles.button} onPress={handleCompleteSupervisor}>
             <Text style={styles.buttonText}>Mark as Completed</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {(userInfo.role === 'supervisor' && complain.status === 'AssignedS') && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleAssignLaborer}>
+            <Text style={styles.buttonText}>Assign Laborers</Text>
           </TouchableOpacity>
         </View>
       )}
