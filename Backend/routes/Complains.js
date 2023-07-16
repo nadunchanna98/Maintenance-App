@@ -89,32 +89,49 @@ router.put('/edit/:complaintId', async (req, res) => {
   res.send('Complaint updated successfully');
 });
 
-// edit complaint without timer
+// // edit complaint without timer
+// router.put('/complainbyid/:complaintId', async (req, res) => {
 
-router.put('/complainbyid/:complaintId', async (req, res) => {
+//   const { complaintId } = req.params;
+//   // console.log('compaint by id', complaintId);
 
+//   const { 
+//     status,
+//     supervisor_feedback,
+//     resolved_date,
+//   } = req.body;
+
+//   // console.log("resolved_date", resolved_date);
+
+//   try {
+//     const updatedComplaint = await Complaine_Details.findByIdAndUpdate(complaintId, {
+//       status,
+//       supervisor_feedback,
+//       resolved_date
+//     });
+  
+//     if (!updatedComplaint) {
+//       return res.status(400).send('Complaint not found');
+//     }
+  
+//     res.send('Complaint updated successfully');
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// });
+
+router.put('/complain/:complaintId', async (req, res) => {
   const { complaintId } = req.params;
-  // console.log('compaint by id', complaintId);
-
-  const { 
-    status,
-    supervisor_feedback,
-    resolved_date = Date.now()
-  } = req.body;
-
-  // console.log("resolved_date", resolved_date);
+  const updateFields = req.body;
 
   try {
-    const updatedComplaint = await Complaine_Details.findByIdAndUpdate(complaintId, {
-      status,
-      supervisor_feedback,
-      resolved_date
-    });
-  
+    const updatedComplaint = await Complaine_Details.findByIdAndUpdate(complaintId, updateFields);
+
     if (!updatedComplaint) {
       return res.status(400).send('Complaint not found');
     }
-  
+
     res.send('Complaint updated successfully');
   } catch (error) {
     console.error(error);
@@ -325,6 +342,27 @@ router.put('/update/:complainId/:userId', async (req, res) => {
   }
 });
 
+
+// get all complains for a supervisor by supervisor id
+
+router.get('/supervisorcomplains/:userId', async (req, res) => {
+
+  const supervisorId = req.params.userId;
+
+  const status = ['AssignedS', 'AssignedL', 'CompletedS', 'DeclinedS','CompletedA','DeclinedA','Completed']
+  
+  const supervisor = await Supervisor_Details.findOne({ userID: supervisorId });
+  if (!supervisor) {
+    return res.status(404).json({ success: false, message: 'Supervisor not found' });
+  }
+
+  const complains = await Complaine_Details.find({ supervisorID: supervisorId , status: status });
+  if (!complains) {
+    return res.status(404).json({ success: false, message: 'Complains not found' });
+  }
+
+  return res.status(200).json({ success: true, complains: complains });
+});
 
 
 
