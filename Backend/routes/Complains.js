@@ -1,9 +1,11 @@
 const { Supervisor_Details } = require('../models/Supervisor');
 const { User_Details } = require('../models/User');
 const { Complaine_Details } = require('../models/Complains');
+const{Labour_Details}=require('../models/Labour');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
+const mongoose = require('mongoose');
 const setTimeoutPromise = require('util').promisify(setTimeout);
 
 // Add new complaint with timer
@@ -342,6 +344,98 @@ router.put('/update/:complainId/:userId', async (req, res) => {
   }
 });
 
+//Assign Complain to Laborers
+//assign complain to supervisor
+router.put('/batchUpdate', async (req, res) => {
+  try {
+    const complainId = req.body.complainID;
+    const LaborerIDs = req.body.laborerIds;
+    console.log('LaborerIDs:', LaborerIDs);
+    console.log('complainId:', complainId);
+
+    const complaint = await Complaine_Details.findById(complainId);
+
+    if (!complaint) {
+      return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    // Update the complaint with the assigned user ID
+      complaint.status = 'AssignedL';
+      complaint.labourerID=LaborerIDs;
+    
+
+      await complaint.save();
+
+    // Update the status of selected laborers in the database
+    
+    try {
+     
+      
+
+     
+      for (const id in LaborerIDs) {
+        const Details = await Labour_Details.findOne({ userID: LaborerIDs[id] });;
+        Details.complains.push(complainId);
+        Details.Assigned=true;
+        await Details.save();
+        console.log("Details: ",Details);
+
+      }
+      
+     
+      
+    } catch (error) {
+      console.error('Error updating Labour_Details:', error);
+      throw error;
+    }}
+  
+
+  catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+
+//Release Labourers
+router.put('/batchReleaseUpdate/:complainID', async (req, res) => {
+  try {
+    const complainId = req.params.complainID;
+    
+    
+
+    const complaint = await Complaine_Details.findById(complainId);
+    const LaborerIDs = complaint.labourerID;
+
+    if (!complaint) {
+      return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    // Update the status of selected laborers in the database
+    
+    try {
+      
+      for (const id in LaborerIDs) {
+        const Details = await Labour_Details.findOne({ userID: LaborerIDs[id] });;
+        Details.Assigned=false;
+        await Details.save();
+        console.log("Details: ",Details);
+
+      }
+      
+     
+      
+    } catch (error) {
+      console.error('Error updating Labour_Details:', error);
+      throw error;
+    }}
+  
+
+  catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
 
 // get all complains for a supervisor by supervisor id
 
