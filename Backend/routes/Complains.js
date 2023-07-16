@@ -89,6 +89,40 @@ router.put('/edit/:complaintId', async (req, res) => {
   res.send('Complaint updated successfully');
 });
 
+// edit complaint without timer
+
+router.put('/complainbyid/:complaintId', async (req, res) => {
+
+  const { complaintId } = req.params;
+  // console.log('compaint by id', complaintId);
+
+  const { 
+    status,
+    supervisor_feedback,
+    resolved_date = Date.now()
+  } = req.body;
+
+  // console.log("resolved_date", resolved_date);
+
+  try {
+    const updatedComplaint = await Complaine_Details.findByIdAndUpdate(complaintId, {
+      status,
+      supervisor_feedback,
+      resolved_date
+    });
+  
+    if (!updatedComplaint) {
+      return res.status(400).send('Complaint not found');
+    }
+  
+    res.send('Complaint updated successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 
 

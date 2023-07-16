@@ -8,6 +8,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
 
 const ViewComplain = () => {
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowRatio = windowWidth / 425;
+
+
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
@@ -49,19 +54,6 @@ const ViewComplain = () => {
         console.log('error', error);
       });
   }, []);
-
-  useEffect(() => {
-    if (showThankYou) {
-      const timer = setTimeout(() => {
-        setShowThankYou(false);
-      }, 1000); // Hide the "Thank you" pop-up after 3 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [showThankYou]);
-
-  const windowWidth = Dimensions.get('window').width;
-  const windowRatio = windowWidth / 425;
 
   const handleImagePress = () => {
     setShowScaledImage(true);

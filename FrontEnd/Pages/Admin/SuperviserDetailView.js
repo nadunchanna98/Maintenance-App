@@ -38,7 +38,9 @@ const SuperviserDetailView = () => {
       getUserDetail();
       getAssignedLComplains();
     }, []);
-   
+
+    const visible = complainId !== null;
+
     const getUserDetail = () => {
       axios
         .get(`${BASE_URL}supervisors/user/${userId}`)
