@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image } from 'react-native';
-import { Button, List, useTheme } from 'react-native-paper';
-import Accordion from 'react-native-collapsible/Accordion';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image, Modal } from 'react-native';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
-// import { format } from 'date-fns';
 import moment from 'moment';
-
 
 const ViewComplain = () => {
 
@@ -19,7 +15,6 @@ const ViewComplain = () => {
 
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
-
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -31,44 +26,123 @@ const ViewComplain = () => {
   const [visible, setVisible] = useState('');
   const [showScaledImage, setShowScaledImage] = useState(false);
   const [supervisorName, setSupervisorName] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // State variable for pop-up message visibility
+  const [rating, setRating] = useState(0); // State variable for rating selection
+  const [showThankYou, setShowThankYou] = useState(false); // State variable for showing "Thank you" pop-up
 
   const handleDataSubmission = () => {
     navigation.navigate('SuperviserList', { complainID: complainId });
-  }
+  };
+
   const handleCompleteSupervisor = () => {
     navigation.navigate('SupervisorFeedback', { complainID: complainId });
-  }
-
+  };
 
   useEffect(() => {
-    axios.get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    axios
+      .get(`${BASE_URL}complains/complainbyid/${complainId}`)
       .then((response) => {
         setComplain(response.data);
-        formattedTime = moment(response.data.created_date).format('hh:mm A');
-        formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
+        const formattedTime = moment(response.data.created_date).format('hh:mm A');
+        const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
         setCreatedTime(formattedTime);
         setCreatedDate(formattedDate);
         setVisible(response.data.status === 'AssignedA');
+        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer')); // Show pop-up only when status is 'Completed' and role is 'complainer'
       })
       .catch((error) => {
         console.log('error', error);
-      })
-
+      });
   }, []);
-
- 
-  // console.log('complain----------', ( !(complain.status === 'AssignedA')));
 
   const handleImagePress = () => {
     setShowScaledImage(true);
-  }
+  };
 
-  let rate = 3;
+  const handlePopupDismiss = () => {
+    setShowPopup(false);
+  };
 
+  const handleRateWork = (selectedRating) => {
+    setRating(selectedRating);
+  };
+
+  const handleThankYouDismiss = () => {
+    setShowThankYou(false);
+  };
+
+  const renderPopup = () => {
+    if (!showPopup) {
+      return null; // Don't render the pop-up if showPopup is false
+    }
+
+    const renderStarIcon = (index) => {
+      if (index <= rating) {
+        return (
+          <TouchableOpacity key={index} style={styles.starButton} onPress={() => handleRateWork(index)}>
+            <Image source={require('../../assets/star_filled.png')} style={styles.starIcon} />
+          </TouchableOpacity>
+        );
+      } else {
+        return (
+          <TouchableOpacity key={index} style={styles.starButton} onPress={() => handleRateWork(index)}>
+            <Image source={require('../../assets/star_empty.png')} style={styles.starIcon} />
+          </TouchableOpacity>
+        );
+      }
+    };
+
+
+    return (
+      <Modal visible={showPopup} animationType="fade" transparent={true}>
+        <View style={styles.popupContainer}>
+          <View style={styles.popupContent}>
+            <Text style={styles.popupText}>Rate this work</Text>
+            <Text style={styles.popupDescription}>Please rate your satisfaction with the completed work:</Text>
+            <View style={styles.ratingContainer}>
+              {[1, 2, 3, 4, 5].map((index) => renderStarIcon(index))}
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.submitButton} onPress={handleThankYouSubmit}>
+                <Text style={styles.submitButtonText}>Submit Rating</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.dismissButton} onPress={handlePopupDismiss}>
+                <Text style={styles.dismissButtonText}>Dismiss</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const renderThankYouPopup = () => {
+    if (!showThankYou) {
+      return null; // Don't render the "Thank you" pop-up if showThankYou is false
+    }
+
+    return (
+      <Modal visible={showThankYou} animationType="fade" transparent={true}>
+        <View style={styles.popupContainer}>
+          <View style={styles.popupContent}>
+            <Text style={styles.popupText}>Thank you for your rating!</Text>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const handleThankYouSubmit = () => {
+    // Perform rating submission logic here
+    // After submitting the rating, set showThankYou to true to show the "Thank you" pop-up
+    setShowPopup(false);
+    setShowThankYou(true);
+  };
 
   return (
     <View style={styles.container}>
-
+      {renderPopup()}
+      {renderThankYouPopup()}
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <TouchableOpacity onPress={handleImagePress}>
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.image} />
@@ -83,12 +157,10 @@ const ViewComplain = () => {
             <Text style={styles.fieldTitle}>Created Date:</Text>
             <Text style={styles.fieldValue}>{createdDate}</Text>
           </View>
-
           <View style={styles.bottomLine} />
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Created Time:</Text>
             <Text style={styles.fieldValue}>{createdTime}</Text>
-
           </View>
           <View style={styles.bottomLine} />
           <View style={styles.fieldContainer}>
@@ -102,90 +174,67 @@ const ViewComplain = () => {
           <Text style={styles.fieldValue}>{complain.description}</Text>
           <View style={styles.bottomLine} />
 
-          {
-            (userInfo.role === 'admin' && !(complain.status === 'AssignedA')) ? (
-              <View style={styles.fieldContainer}>
-                <Text style={styles.fieldTitle}>Assigened:</Text>
-                <Text style={styles.fieldValue}>{complain.supervisorID}</Text>
-              </View>
+          {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldTitle}>Assigned:</Text>
+              <Text style={styles.fieldValue}>{complain.supervisorID}</Text>
+            </View>
+          )}
 
-            ) : null
-          }
-
-          {
-            (userInfo.role === 'admin' && !(complain.status === 'AssignedA')) ? (     //Check this
-              <View style={styles.bottomLine} />
-            ) : null
-          }
+          {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && <View style={styles.bottomLine} />}
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Status:</Text>
-            {complain.status !== 'Completed' ? (
-              <Text style={styles.fieldValue}>In Progress</Text>
-            ) : (
-              <Text style={styles.fieldValue}>Completed</Text>
-            )
-            }
+            <Text style={styles.fieldValue}>{complain.status !== 'Completed' ? 'In Progress' : 'Completed'}</Text>
           </View>
-
           <View style={styles.bottomLine} />
 
+          {rating > 0 && ( // Only show the rating if it has been selected
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldTitle}>Rated:</Text>
+              <View style={styles.ratingContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                    <Image
+                      source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
+                      style={styles.starIcon}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {rating > 0 && (   <View style={styles.bottomLine} />
+          )}
+        
         </View>
-
-        {(userInfo.role === 'admin' && complain.status === 'AssignedS' ? (
-
-          <View style={styles.dataContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-              <Text style={styles.buttonText}>Change the Supervisor</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (userInfo.role === 'admin' && complain.status === 'AssignedA' ?
-          (<View style={styles.dataContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-              <Text style={styles.buttonText}>Assign A Supervisor</Text>
-            </TouchableOpacity>
-          </View>) : null))
-        }
-        {userInfo.role === 'supervisor' && complain.status === 'AssignedL' ? (
-          <View style={styles.dataContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleCompleteSupervisor}>
-              <Text style={styles.buttonText}>Mark as completed</Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
-
-
-  {/* before rate and after rate */}
-        {
-          (userInfo.role === 'complainer' && complain.status === 'CompletedA') ? (
-            <View style={styles.dataContainer}>
-              <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
-                <Text style={styles.buttonText}>Rate the Complain</Text>
-              </TouchableOpacity>
-            </View>) :
-            (userInfo.role === 'complainer' && complain.status === 'Completed') ? (
-              <View style={styles.dataContainer}>
-                  <Text style={styles.buttonText}>View my rate</Text>
-                   {
-                      rate === 3 ? (
-                        <Text >1</Text>
-                      ) : (
-                        <Text >2</Text>
-                      ) 
-                   }
-                  
-
-
-              </View>) : null
-
-        }
-
-
-
-
       </ScrollView>
 
-      {/* Scaled Image */}
+      {(userInfo.role === 'admin' && complain.status === 'AssignedS') && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+            <Text style={styles.buttonText}>Change the Supervisor</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {(userInfo.role === 'admin' && complain.status === 'AssignedA') && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+            <Text style={styles.buttonText}>Assign A Supervisor</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {userInfo.role === 'supervisor' && complain.status === 'AssignedL' && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleCompleteSupervisor}>
+            <Text style={styles.buttonText}>Mark as Completed</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {showScaledImage && (
         <TouchableOpacity style={styles.scaledImageContainer} onPress={() => setShowScaledImage(false)}>
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.scaledImage} />
@@ -193,7 +242,7 @@ const ViewComplain = () => {
       )}
     </View>
   );
-}
+};
 
 const windowWidth = Dimensions.get('window').width;
 const windowRatio = windowWidth / 425;
@@ -203,31 +252,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10 * windowRatio,
-    height: 80 * windowRatio,
-    backgroundColor: '#19AFE2',
-  },
   contentContainer: {
-    flexGrow: 1,
     paddingBottom: 20 * windowRatio,
-  },
-  backButton: {
-    left: 10 * windowRatio,
-    width: 24 * windowRatio,
-    height: 24 * windowRatio,
-    tintColor: 'white',
-    marginRight: 10 * windowRatio,
-  },
-  headerTitle: {
-    fontSize: 30 * windowRatio,
-    fontWeight: 'bold',
-    color: 'white',
-    flex: 1,
-    marginRight: 10 * windowRatio,
-    textAlign: 'center',
   },
   image: {
     alignSelf: 'center',
@@ -235,7 +261,8 @@ const styles = StyleSheet.create({
     height: 200 * windowRatio,
     resizeMode: 'cover',
     marginBottom: 20 * windowRatio,
-    borderRadius: 20 * windowRatio, // Adjust the value to control the roundness
+    borderRadius: 20 * windowRatio,
+    marginTop: 20 * windowRatio,
   },
   dataContainer: {
     marginHorizontal: 20 * windowRatio,
@@ -249,13 +276,13 @@ const styles = StyleSheet.create({
   },
   fieldTitle: {
     fontWeight: 'bold',
-    color: 'grey',
+    color: '#45474b',
     fontSize: 20 * windowRatio,
     marginRight: 10 * windowRatio,
     textAlign: 'left',
   },
   fieldValue: {
-    color: 'grey',
+    color: '#45474b',
     fontSize: 20 * windowRatio,
     textAlign: 'left',
   },
@@ -264,14 +291,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#19AFE2',
     marginHorizontal: -20 * windowRatio,
     marginTop: windowRatio,
-
   },
   button: {
     backgroundColor: '#01a9e1',
-    padding: 10 * windowRatio,
+    padding: 20 * windowRatio,
     borderRadius: 5 * windowRatio,
     alignItems: 'center',
     marginRight: 5 * windowRatio,
+    marginBottom: 25 * windowRatio,
   },
   buttonText: {
     color: '#fff',
@@ -293,7 +320,77 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
+  popupContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popupContent: {
+    backgroundColor: 'white',
+    padding: 40* windowRatio,
+    borderRadius: 10 * windowRatio,
+    alignItems: 'center',
+    width: '90%',
+  },
+  popupText: {
+    fontSize: 25 * windowRatio,
+    fontWeight: 'bold',
+    marginBottom: 10 * windowRatio,
+    textAlign: 'center',
+  },
+  popupDescription: {
+    fontSize: 20 * windowRatio,
+    marginBottom: 20 * windowRatio,
+    textAlign: 'center',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 5 * windowRatio,
+    marginLeft: 5 * windowRatio,
+  },
+  starContainer: {
+    marginHorizontal: 5 * windowRatio,
+  },
+  starButton: {
+    marginHorizontal: 8 * windowRatio,
+  },
+  starIcon: {
+    width: 30 * windowRatio,
+    height: 30 * windowRatio,
+    resizeMode: 'contain',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 20 * windowRatio,
+  },
+  submitButton: {
+    backgroundColor: '#01a9e1',
+    padding: 10 * windowRatio,
+    borderRadius: 10 * windowRatio,
+    flex: 1,
+    marginRight: 10 * windowRatio,
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 20 * windowRatio,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  dismissButton: {
+    backgroundColor: '#ccc',
+    padding: 10 * windowRatio,
+    borderRadius: 10 * windowRatio,
+    flex: 1,
+    marginLeft: 10 * windowRatio,
+  },
+  dismissButtonText: {
+    color: 'black',
+    fontSize: 20 * windowRatio,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
 export default ViewComplain;
-
