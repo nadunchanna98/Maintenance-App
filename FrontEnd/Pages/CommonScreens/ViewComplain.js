@@ -11,8 +11,6 @@ const ViewComplain = () => {
 
   const windowWidth = Dimensions.get('window').width;
   const windowRatio = windowWidth / 425;
-
-
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
@@ -53,7 +51,7 @@ const ViewComplain = () => {
         setCreatedTime(formattedTime);
         setCreatedDate(formattedDate);
         setVisible(response.data.status === 'AssignedA');
-        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate < 0)  ); // Show pop-up only when status is 'Completed' and role is 'complainer'
+        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)  ); // Show pop-up only when status is 'Completed' and role is 'complainer'
         setRating(response.data.rate);
         // console.log('response.data', response.data);
       })
