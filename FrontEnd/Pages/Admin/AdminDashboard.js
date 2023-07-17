@@ -24,6 +24,7 @@ const AdminDashboard = () => {
   const [assignedAData, setAssignedAData] = useState([]);
   const [assignedSData, setAssignedSData] = useState([]);
   const [completedAData, setCompletedAData] = useState([]);
+  const [completedSData , setCompletedSData] = useState([]); // complateS and DeclinedS
   const [pendingSupervisorsData, setPendingSupervisorsData] = useState([]);
 
   useFocusEffect(
@@ -31,6 +32,7 @@ const AdminDashboard = () => {
       getAssignedAComplains();
       getAssignedSComplains();
       getCompletedAComplains();
+      getCompletedSComplains();
       getListOfPendingSupervisors();
       console.log("useFocusEffect")
     }, [userInfo]) // Add userInfo as a dependency
@@ -40,6 +42,7 @@ const AdminDashboard = () => {
     getAssignedAComplains();
     getAssignedSComplains();
     getCompletedAComplains();
+    getCompletedSComplains();
     getListOfPendingSupervisors();
   }, []);
 
@@ -47,6 +50,7 @@ const AdminDashboard = () => {
   const statusAssignedA = 'AssignedA';
   const statusAssignedS = 'AssignedS';
   const statusCompletedA = 'CompletedA';
+  const statusCompletedS = 'CompletedS';
 
   const pendingType = 'supervisor';
 
@@ -55,6 +59,7 @@ const AdminDashboard = () => {
     getAssignedAComplains();
     getAssignedSComplains();
     getCompletedAComplains();
+    getCompletedSComplains();
     getListOfPendingSupervisors();
 
     setTimeout(() => {
@@ -65,7 +70,6 @@ const AdminDashboard = () => {
   const navigation = useNavigation();
 
   const { userInfo } = useContext(AuthContext);
-
 
   const getListOfPendingSupervisors = async () => {
     try {
@@ -122,6 +126,22 @@ const AdminDashboard = () => {
         }
       });
       setCompletedAData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+   const getCompletedSComplains = async () => {
+
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusCompletedS,
+          role: userInfo.role,
+        }
+      });
+      setCompletedSData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -205,6 +225,32 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("LabourList",{complainID:null})}}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Registered Labours</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedSData }) }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Delivered by Supervisors</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedAData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -244,8 +290,6 @@ const styles = StyleSheet.create({
     minHeight: width * 0.16,
     padding: width * 0.04,
     alignItems: "center",
-
-    //add
   },
   firstRow: {
     // backgroundColor: "#003D14", // Green color
