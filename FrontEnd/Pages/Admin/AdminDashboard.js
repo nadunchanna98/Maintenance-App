@@ -233,7 +233,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("DeliveredBySupervisors", { data: completedSData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -246,7 +246,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks", { data: completedAData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image

@@ -21,9 +21,6 @@ import { AuthContext } from '../Context/AuthContext';
 import NewRequests from '../../Pages/Admin/NewRequests';
 // import InProgressWorks from '../../Pages/Admin/InProgressWorks';
 // import CompletedWorks from '../../Pages/Admin/CompletedWorks';
-import ListView from '../../Pages/CommonScreens/ComplainsList';
-import RegisteredSupervisersList from '../../Pages/Admin/RegisteredSupervisorsList';
-import RegisteredLabourersList from '../../Pages/Superviser/RegisteredLabourersList';
 //
 import Supervisors from '../../Pages/Admin/Supervisors';
 import CompletedComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
@@ -177,7 +174,29 @@ const AdminScreens = () => (
       component={LabourDetailView}
       options={{
         headerShown: true,
-        title: "Registered Labours",
+        title: "Labourer Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+    <Stack.Screen
+      name="DeliveredBySupervisors"
+      component={ListView}
+      options={{
+        headerShown: true,
+        title: "Works Completed by Supervisors",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+    <Stack.Screen
+      name="CompletedWorks"
+      component={ListView}
+      options={{
+        headerShown: true,
+        title: "Completed Works",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"

@@ -12,10 +12,6 @@ const ViewComplain = () => {
   const windowWidth = Dimensions.get('window').width;
   const windowRatio = windowWidth / 425;
 
-
-  const { userInfo } = useContext(AuthContext);
-  const { allusers } = useContext(UserContext);
-
   const navigation = useNavigation();
   const route = useRoute();
   const complainId = route.params.complainId;
@@ -57,11 +53,8 @@ const ViewComplain = () => {
       });
   }, []);
 
-
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
-
-
 
   return (
     <View style={styles.container}>
