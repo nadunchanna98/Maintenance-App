@@ -43,7 +43,7 @@ const UserDashboard = () => {
   }, []);
 
   const onRefresh = useCallback(() => {
-    
+
     setRefreshing(true);
     getPendingComplains();
     getCompletedComplains();

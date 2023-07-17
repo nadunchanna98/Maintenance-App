@@ -160,7 +160,7 @@ const AdminScreens = () => (
 
     <Stack.Screen
       name="LabourList"
-      component={LabourList}
+      component={RegisteredLabourersList}
       options={{
         headerShown: true,
         title: "Registered Labours",
