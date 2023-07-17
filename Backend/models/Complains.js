@@ -20,6 +20,12 @@ const ComplaintSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Supervisor_Details' 
     },
+    labourerID: {
+
+        type: [mongoose.Schema.Types.ObjectId], 
+        default: [],
+        ref: 'Labour_Details' 
+    },
     description: { 
         type: String, 
         required: true 

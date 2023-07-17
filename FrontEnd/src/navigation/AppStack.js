@@ -31,6 +31,7 @@ import PendingUserDetailView from '../../Pages/CommonScreens/PendingUserDetailVi
 import SuperviserDetailView from '../../Pages/Admin/SuperviserDetailView';
 import LaborerList from '../../Pages/Superviser/LabourList';
 import LaborerDetailView from '../../Pages/Superviser/LabourDetailView';
+import LaborerAssignmentScreen from '../../Pages/Superviser/LabourAssignmentScreen';
 import Instruction from '../../Pages/Other/Instruction';
 import AboutApp from '../../Pages/Other/AboutApp';
 import AdminFeedback from '../../Pages/Admin/AdminFeedback';
@@ -155,6 +156,7 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+
     <Stack.Screen
       name="LabourList"
       component={LabourList}
@@ -178,8 +180,11 @@ const AdminScreens = () => (
     }}
     />
 
+
   </Stack.Navigator>
+  
 );
+
 
 const SupervisorScreens = () => (
   <Stack.Navigator>
@@ -256,6 +261,17 @@ const SupervisorScreens = () => (
       options={{
         headerShown: true,
         title: "Labour Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+     <Stack.Screen
+      name="LaborerAssignmentScreen"
+      component={LaborerAssignmentScreen}
+      options={{
+        headerShown: true,
+        title: "Supervisor Details",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
