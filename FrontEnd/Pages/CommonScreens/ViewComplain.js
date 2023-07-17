@@ -36,7 +36,7 @@ const ViewComplain = () => {
   };
 
   const handleDataSubmission = () => {
-    navigation.navigate('SuperviserList', { complainID: complainId });
+    navigation.navigate('SuperviserList', { complainId: complainId });
   };
 
   const handleCompleteSupervisor = () => {
@@ -53,7 +53,7 @@ const ViewComplain = () => {
         setCreatedTime(formattedTime);
         setCreatedDate(formattedDate);
         setVisible(response.data.status === 'AssignedA');
-        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate < 0)  ); // Show pop-up only when status is 'Completed' and role is 'complainer'
+        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate < 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
         setRating(response.data.rate);
         // console.log('response.data', response.data);
       })
@@ -65,9 +65,9 @@ const ViewComplain = () => {
   const handleImagePress = () => {
     setShowScaledImage(true);
   };
-const handleComplete = () => {
-  navigation.navigate('AdminFeedback', { complainID: complainId });
-}
+  const handleComplete = () => {
+    navigation.navigate('AdminFeedback', { complainID: complainId });
+  }
   const handlePopupDismiss = () => {
     setShowPopup(false);
   };
@@ -79,9 +79,9 @@ const handleComplete = () => {
   const handleThankYouDismiss = () => {
     setShowThankYou(false);
   };
-const handleAssignLaborer = () => {
-  navigation.navigate('LaborerAssignmentScreen', { complainID: complainId });
-}
+  const handleAssignLaborer = () => {
+    navigation.navigate('LaborerAssignmentScreen', { complainID: complainId });
+  }
   const renderPopup = () => {
     if (!showPopup) {
       return null; // Don't render the pop-up if showPopup is false
@@ -146,20 +146,20 @@ const handleAssignLaborer = () => {
   const handleThankYouSubmit = () => {
 
     axios.put(`${BASE_URL}complains/complain/${complainId}`, { rate: rating })
-    .then((response) => {
-      console.log('response', response);
-       Alert.alert(
-        'Thank you for your rating!',
-        '',
-        [
-          { text: 'OK', onPress: () => handleThankYouDismiss() }
-        ],
-        { cancelable: false }
-      );
-    })
-    .catch((error) => {
-      console.log('error', error);
-    });
+      .then((response) => {
+        console.log('response', response);
+        Alert.alert(
+          'Thank you for your rating!',
+          '',
+          [
+            { text: 'OK', onPress: () => handleThankYouDismiss() }
+          ],
+          { cancelable: false }
+        );
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
 
     setShowPopup(false);
     handleThankYouDismiss();
@@ -277,7 +277,7 @@ const handleAssignLaborer = () => {
 
             ) : null
 
-              }
+          }
 
 
         </View>
@@ -290,7 +290,7 @@ const handleAssignLaborer = () => {
           </TouchableOpacity>
         </View>
       )}
-      
+
 
       {(userInfo.role === 'admin' && complain.status === 'AssignedA') && (
         <View style={styles.dataContainer}>
@@ -299,7 +299,7 @@ const handleAssignLaborer = () => {
           </TouchableOpacity>
         </View>
       )}
-      
+
       {(userInfo.role === 'admin' && complain.status === 'CompletedS') && (
         <View style={styles.dataContainer}>
           <TouchableOpacity style={styles.button} onPress={handleComplete}>
