@@ -30,6 +30,11 @@ const ViewComplain = () => {
   const [rating, setRating] = useState(''); // State variable for rating selection
   const [showThankYou, setShowThankYou] = useState(false); // State variable for showing "Thank you" pop-up
 
+
+  const handleChangeSupervisor = () => {
+    navigation.navigate('SuperviserList', { complainID: complainId });
+  };
+
   const handleDataSubmission = () => {
     navigation.navigate('SuperviserList', { complainID: complainId });
   };
@@ -280,7 +285,7 @@ const handleAssignLaborer = () => {
 
       {(userInfo.role === 'admin' && complain.status === 'AssignedS') && (
         <View style={styles.dataContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
+          <TouchableOpacity style={styles.button} onPress={handleChangeSupervisor}>
             <Text style={styles.buttonText}>Change the Supervisor</Text>
           </TouchableOpacity>
         </View>

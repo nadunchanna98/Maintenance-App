@@ -8,7 +8,7 @@ import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-const SuperviserDetailView = () => {
+const LabourDetailView = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -17,9 +17,7 @@ const SuperviserDetailView = () => {
   const complainId = route.params.complainId;
   const { userInfo } = useContext(AuthContext);
 
-  // console.log("userId1", userId);
 
-  const visible = complainId !== null;
   const [pendingUser, setPendingUser] = useState([]);
   const [assignedWorks, setAssignedWorks] = useState([]);
 
@@ -31,7 +29,6 @@ const SuperviserDetailView = () => {
       Linking.openURL(`tel:${mobile_no}`);
     }
     else {
-
       Linking.openURL(`telprompt:${mobile_no}`);
     }
   }
@@ -41,28 +38,10 @@ const SuperviserDetailView = () => {
     getAssignedLComplains();
   }, []);
 
-  const handleAssignButton =(userID,complainID) =>{
-
-    //console.log("Complain ID: ",complainID);
-   // console.log("User ID:",userID);
-  
-    axios.put(`${BASE_URL}complains/update/${complainID}/${userID}`)
-    .then((response) => {
-      //console.log(response.data);
-      Alert.alert("Complain Assigned Successfully");
-      navigation.navigate('AdminDashboard');
-    }
-    )
-    .catch((error) => {
-      console.log(error);
-    }
-    )
-    
-  }
 
   const getUserDetail = () => {
     axios
-      .get(`${BASE_URL}supervisors/user/${userId}`)
+      .get(`${BASE_URL}labours/user/${userId}`)
       .then((response) => {
         setPendingUser(response.data);
         setMobileNo(response.data.user.mobile_no)
@@ -75,7 +54,7 @@ const SuperviserDetailView = () => {
 
   const getAssignedLComplains = async () => {
 
-    axios.get(`${BASE_URL}complains/supervisorcomplains/${userId}`)
+    axios.get(`${BASE_URL}complains/labourcurrent/${userId}`)
       .then((response) => {
         setAssignedWorks(response.data.complains);
         // console.log("response", response.data);
@@ -96,7 +75,7 @@ const SuperviserDetailView = () => {
     <ScrollView style={styles.container}>
 
       <View style={styles.dataContainer}>
-        <Text style={styles.label}>Supervisor Name:</Text>
+        <Text style={styles.label}>Labour Name:</Text>
         <Text style={styles.value}>{pendingUser.user.name}</Text>
       </View>
       <View style={styles.dataContainer}>
@@ -107,50 +86,26 @@ const SuperviserDetailView = () => {
         <Text style={styles.label}> Mobile No:</Text>
         <Text style={styles.value}>{pendingUser.user.mobile_no}</Text>
       </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Work Type:</Text>
-        <Text style={styles.value}>{pendingUser.Data.work_type}</Text>
-      </View>
+
       <View style={styles.dataContainer}>
         <Text style={styles.label}>Approved Date:</Text>
         <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
       </View>
 
-      <View style={visible ? [styles.buttonContainer, { justifyContent: 'space-evenly' }] : [styles.buttonContainer, { alignSelf: 'center' }]} >
-        {visible && 
-        (
-        <Button icon={"account-hard-hat"} 
-        onPress={ () => handleAssignButton(userId,complainId)}
-        buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Assign</Button>)}
-        <Button icon={"phone"} onPress={makeCall} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Call</Button>
- 
+      <View style={styles.dataContainer}>
+       <Button icon={"phone"} onPress={makeCall} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Call</Button>
       </View>
 
       <View style={styles.assignworktitle}>
-        <Text style={styles.assignworktitle}>Assigned Works</Text>
+        <Text style={styles.assignworktitle}>Current Assign work</Text>
 
         {assignedWorks.length === 0 ? (
-          <Text>No complete complaints</Text>
+          <Text>No any work assign !!</Text>
         ) : (
           <>
             <Text style={styles.assignworktitle}>In Progress:</Text>
             {assignedWorks.map((item) => {
-              if (item.status === 'AssignedS' || item.status === 'AssignedL') {
-                return (
-                  <List.Item
-                    key={item._id}
-                    title={item.title}
-                    description={item.description}
-                    left={(props) => <List.Icon {...props} icon="folder" />}
-                    onPress={() => navigation.navigate('ViewComplain', { complainId: item._id })}
-                  />
-                );
-              }
-            })}
-
-            <Text style={styles.assignworktitle}>Completed:</Text>
-            {assignedWorks.map((item) => {
-              if (item.status === 'CompletedS' || item.status === 'DeclinedS' || item.status === 'CompletedA' || item.status === 'DeclinedA' || item.status === 'Completed') {
+              if (item.status === 'AssignedL') {
                 return (
                   <List.Item
                     key={item._id}
@@ -265,7 +220,7 @@ const styles = StyleSheet.create({
 
 });
 
-export default SuperviserDetailView;
+export default LabourDetailView;
 
 
 
