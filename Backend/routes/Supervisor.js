@@ -1,5 +1,6 @@
 const { Supervisor_Details } = require('../models/Supervisor');
 const { User_Details } = require('../models/User');
+const { Labour_Details } = require('../models/Labour');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
@@ -23,6 +24,27 @@ router.get('/list/', async (req, res) => {
     ]);
 
     res.send(supervisorList);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+router.get('/list1/', async (req, res) => {
+  try {
+    const laborerList = await Labour_Details.aggregate([
+      {
+        $lookup: {
+          from: 'user-details', // Name of the User_Details collection
+          localField: 'userID',
+          foreignField: '_id',
+          as: 'userDetails'
+        }
+      },
+      {
+        $unwind: '$userDetails'
+      }
+    ]);
+
+    res.send(laborerList);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

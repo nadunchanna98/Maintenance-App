@@ -31,6 +31,65 @@ const SuperviserCompleteFeedBackForm = () => {
         console.log("error", error);
       });
   }, []);
+  
+  // const updateComplain = ({ status, complainID }) => {
+  //   // console.log('complainID', complainID);
+  //   // console.log('status', status);
+  //   // console.log('feedback', feedback);
+  
+  //   axios
+  //     .put(`${BASE_URL}complains/complainbyid/${complainID}`, {
+  //       status: status,
+  //       supervisor_feedback: feedback,
+  //       resolved_date : Date.now()
+  //     })
+  //     .then((response) => {
+  //       // console.log('response', response);
+  //       Alert.alert(
+  //         'Complain Updated',
+  //         'Complain has been updated successfully!',
+  //         [{ text: 'OK', onPress: () => navigation.navigate('SupervisorDashboard') }],
+  //         { cancelable: false }
+  //       );
+  //       navigation.navigate('SupervisorDashboard');
+  //     })
+  //     .catch((error) => {
+  //       console.log('error', error);
+  //     });
+  // };
+
+  const updateComplain = ({ status, complainID }) => {
+    // console.log('complainID', complainID);
+    // console.log('status', status);
+    // console.log('feedback', feedback);
+  
+    axios
+      .put(`${BASE_URL}complains/complain/${complainID}`, {
+        status: 'CompletedS',
+        supervisor_feedback: feedback,
+        resolved_date: Date.now()
+      })
+      .then((response) => {
+        Alert.alert(
+          'Complain Updated',
+          'Complain has been updated successfully!',
+          [{ text: 'OK', onPress: () => navigation.navigate('SupervisorDashboard') }],
+          { cancelable: false }
+        );
+        navigation.navigate('SupervisorDashboard');
+        // console.log('response', response);
+        axios.put(`${BASE_URL}complains/batchReleaseUpdate/${complainID}`)
+        .then((response) => {
+        
+      }).catch((error) => {console.log('error', error);});})
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+  
+  
+
+
 
   const handleComplete = () => {
     console.log("Work Completed");
@@ -39,7 +98,6 @@ const SuperviserCompleteFeedBackForm = () => {
   };
 
   const handleDecline = () => {
-    console.log("Work Declined");
     setCompleted(false);
     setIsModalVisible(true);
   };
@@ -50,18 +108,14 @@ const SuperviserCompleteFeedBackForm = () => {
 
   const submitFeedback = () => {
     if (completed) {
-      // axios to update the status of complain to completed
-    } else {
-      // axios to update the status of complain to declined
+      updateComplain({status: 'CompletedS', complainID: complain._id});
+    } 
+   else {
+      updateComplain({status: 'DeclinedS', complainID: complain._id});
     }
-    setFeedback('');
+  
     toggleModal();
-    Alert.alert(
-      'Feedback Submitted',
-      'Thank you for your feedback!',
-      [{ text: 'OK', onPress: () => console.log('Navigate to') }],
-      { cancelable: false }
-    );
+ 
   };
 
   return (
@@ -71,7 +125,7 @@ const SuperviserCompleteFeedBackForm = () => {
       </View>
       <View style={styles.dataContainer}>
         <Text style={styles.label}>Complainer ID:</Text>
-        <Text style={styles.value}>{complain.userID}</Text>
+        <Text style={styles.value}>{complain._id}</Text>
       </View>
       <View style={styles.dataContainer}>
         <Text style={styles.label}> Created Date:</Text>
