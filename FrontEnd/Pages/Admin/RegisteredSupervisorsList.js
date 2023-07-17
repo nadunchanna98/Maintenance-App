@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Dimensions, Platform, Linking, RefreshControl, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Dimensions, Platform, Linking, RefreshControl } from 'react-native';
 import { Button, List, Surface } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -50,17 +50,9 @@ const RegisteredSupervisersList = () => {
         }
     };
 
-    const handleAssignButton = async () => {
-
+    const handleAssignButton = () => {
+        console.log("Supervisor Assigned");
         // logic to assign the supervisor
-        try {
-            const response = await axios.put(`${BASE_URL}complains/update/${complainId}/${activeSupervisor.userID}`);
-            console.log("Supervisor Assigned");
-            Alert.alert("Supervisor Assigned!")
-            navigation.navigate("AdminDashboard");
-        } catch (err) {
-            console.log(err);
-        }
     }
 
     // open dial pad with the user mobile number dialed when click call button
