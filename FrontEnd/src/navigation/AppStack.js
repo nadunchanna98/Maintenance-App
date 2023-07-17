@@ -19,16 +19,10 @@ import LaborerDashboard from '../../Pages/Laborer/LaborerDashboard';
 import { UserContext } from '../Context/UserContext';
 import { AuthContext } from '../Context/AuthContext';
 import NewRequests from '../../Pages/Admin/NewRequests';
-// import InProgressWorks from '../../Pages/Admin/InProgressWorks';
-// import CompletedWorks from '../../Pages/Admin/CompletedWorks';
-//
+import InProgressWorks from '../../Pages/Admin/InProgressWorks';
+import CompletedWorks from '../../Pages/Admin/CompletedWorks';
 import Supervisors from '../../Pages/Admin/Supervisors';
 import CompletedComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
-//
-import ListView from '../../Pages/CommonScreens/ComplainsList';
-import RegisteredSupervisersList from '../../Pages/Admin/RegisteredSupervisorsList';
-import RegisteredLabourersList from '../../Pages/Superviser/RegisteredLabourersList';
-//
 import ViewComplain from '../../Pages/CommonScreens/ViewComplain';
 import SuperviserList from '../../Pages/Admin/SuperviserList';
 import SuperviserCompleteFeedBackForm from '../../Pages/Superviser/SuperviserCompleteFeedBackForm';
@@ -53,14 +47,7 @@ const AdminScreens = () => (
     <Stack.Screen
       name="AdminDashboard"
       component={AdminDashboard}
-      options={{
-        headerShown: true,
-        title: "Admin Dashboard",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTitleStyle: { fontWeight: 'bold', fontSize: 24, fontFamily: 'sans-serif-condensed' },
-        headerTintColor: "#ffffff"
-      }}
+      options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
@@ -69,8 +56,8 @@ const AdminScreens = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="NewComplainRequests"
-      component={ListView}
+      name="NewRequests"
+      component={NewRequests}
       options={{
         headerShown: true,
         title: "New Requests",
@@ -80,16 +67,17 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="InProgressComplains"
-      component={ListView}
+      name="ComplainsListByIdAndStatus"
+      component={CompletedComplainsList}
       options={{
         headerShown: true,
-        title: "In Progress Works",
+        title: "Completed Works",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -102,8 +90,8 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="CompletedComplainsList"
-      component={ListView}
+      name="CompletedWorks"
+      component={CompletedWorks}
       options={{
         headerShown: true,
         title: "Completed Works",
@@ -113,20 +101,20 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="SuperviserList"
-      component={RegisteredSupervisersList}
+      name="Supervisors"
+      component={Supervisors}
       options={{
         headerShown: true,
-        title: "Available Supervisors",
+        title: "Supervisors",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
-
+    
     <Stack.Screen
-      name="RegisteredSupervisors"
-      component={RegisteredSupervisersList}
+      name="SuperviserList"
+      component={SuperviserList}
       options={{
         headerShown: true,
         title: "Registered Supervisors",
@@ -141,6 +129,17 @@ const AdminScreens = () => (
       options={{
         headerShown: true,
         title: "New Supervisor Requests",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+    <Stack.Screen
+      name="PendingUserDetailView"
+      component={PendingUserDetailView}
+      options={{
+        headerShown: true,
+        title: "Request Details",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
@@ -170,42 +169,20 @@ const AdminScreens = () => (
       }}
     />
     <Stack.Screen
-      name="LabourDetailView"
-      component={LabourDetailView}
-      options={{
-        headerShown: true,
-        title: "Labourer Details",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
-    />
-    <Stack.Screen
-      name="DeliveredBySupervisors"
-      component={ListView}
-      options={{
-        headerShown: true,
-        title: "Works Completed by Supervisors",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
-    />
-    <Stack.Screen
-      name="CompletedWorks"
-      component={ListView}
-      options={{
-        headerShown: true,
-        title: "Completed Works",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
+    name="LabourDetailView"  
+    component={LabourDetailView}
+    options={{
+      headerShown: true,
+      title: "Registered Labours",
+      headerTitleAlign: 'center',
+      headerStyle: { backgroundColor: "#19AFE2" },
+      headerTintColor: "#ffffff"
+    }}
     />
 
 
   </Stack.Navigator>
-
+  
 );
 
 
@@ -214,14 +191,7 @@ const SupervisorScreens = () => (
     <Stack.Screen
       name="SupervisorDashboard"
       component={SupervisorDashboard}
-      options={{
-        headerShown: true,
-        title: "Supervisor Dashboard",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTitleStyle: { fontWeight: 'bold', fontSize: 24, fontFamily: 'sans-serif-condensed' },
-        headerTintColor: "#ffffff"
-      }}
+      options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
@@ -236,11 +206,11 @@ const SupervisorScreens = () => (
       }}
     />
     <Stack.Screen
-      name="NewlyAssignedWorks"
-      component={ListView}
+      name="PendingUserDetailView"
+      component={PendingUserDetailView}
       options={{
         headerShown: true,
-        title: "Newly Assigned Works",
+        title: "Request Details",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
@@ -249,19 +219,20 @@ const SupervisorScreens = () => (
     <Stack.Screen
       name="SupervisorFeedback"
       component={SuperviserCompleteFeedBackForm}
-      options={{ headerShown: false }}
+      options={{headerShown:false}}
     />
     <Stack.Screen
-      name="InProgressWorks"
-      component={ListView}
+      name="ComplainsListByIdAndStatus"
+      component={CompletedComplainsList}
       options={{
         headerShown: true,
-        title: "In Progress Works",
+        title: "Completed Works",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -274,8 +245,8 @@ const SupervisorScreens = () => (
       }}
     />
     <Stack.Screen
-      name="LabourerList"
-      component={RegisteredLabourersList}
+      name="LaborerList"
+      component={LaborerList}
       options={{
         headerShown: true,
         title: "Registered Labourers",
@@ -285,7 +256,7 @@ const SupervisorScreens = () => (
       }}
     />
     <Stack.Screen
-      name="LabourerDetailView"
+      name="LaborerDetailView"
       component={LaborerDetailView}
       options={{
         headerShown: true,
@@ -295,18 +266,7 @@ const SupervisorScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
-    <Stack.Screen
-      name="CompletedWorks"
-      component={ListView}
-      options={{
-        headerShown: true,
-        title: "Completed Works",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
-    />
-    <Stack.Screen
+     <Stack.Screen
       name="LaborerAssignmentScreen"
       component={LaborerAssignmentScreen}
       options={{
@@ -325,19 +285,12 @@ const LaborerScreens = () => (
     <Stack.Screen
       name="LaborerDashboard"
       component={LaborerDashboard}
-      options={{
-        headerShown: true,
-        title: "Labour Dashboard",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTitleStyle: { fontWeight: 'bold', fontSize: 24, fontFamily: 'sans-serif-condensed' },
-        headerTintColor: "#ffffff"
-      }}
+      options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
-      name="AssignedWorks"
-      component={ListView}
+      name="ComplainsListByIdAndStatus"
+      component={CompletedComplainsList}
       options={{
         headerShown: true,
         title: "Assigned Tasks",
@@ -346,6 +299,7 @@ const LaborerScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -366,14 +320,7 @@ const UserScreens = () => (
     <Stack.Screen
       name="UserDashboard"
       component={UserDashboard}
-      options={{
-        headerShown: true,
-        title: "User Dashboard",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTitleStyle: { fontWeight: 'bold', fontSize: 24, fontFamily: 'sans-serif-condensed' },
-        headerTintColor: "#ffffff"
-      }}
+      options={{ headerShown: false }}
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
@@ -381,7 +328,7 @@ const UserScreens = () => (
       component={ComplainForm}
       options={{
         headerShown: true,
-        title: "New Complain",
+        title: "Complain Form",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
@@ -399,38 +346,17 @@ const UserScreens = () => (
       }}
     />
     <Stack.Screen
-      name="EditableComplains"
-      component={ListView}
+      name="ComplainsListByIdAndStatus"
+      component={CompletedComplainsList}
       options={{
         headerShown: true,
-        title: "Editable Complains",
+        title: "Completed Complains",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
-    <Stack.Screen
-      name="InProgressWorks"
-      component={ListView}
-      options={{
-        headerShown: true,
-        title: "In Progress Works",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
-    />
-    <Stack.Screen
-      name="CompletedWorks"
-      component={ListView}
-      options={{
-        headerShown: true,
-        title: "Completed Works",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
-    />
+
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -448,7 +374,7 @@ const UserScreens = () => (
 const InstructionScreens = () => (
   <Stack.Navigator>
     <Stack.Screen
-      name="Instructions"
+      name="Instruction"
       component={Instruction}
       options={{
         headerShown: true,
