@@ -12,17 +12,12 @@ const { width } = Dimensions.get("window");
 
 const PendingList = () => {
 
-      const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const route = useRoute();
   const data = route.params.pendingData;
 
   const role = data[0] ? data[0].user.role : "none";
-  // role = data[0].user.role;
-  // const role = data[0] ? data[0].role : "none";
-  // setActiveRequest.user.role
-
-  const { userInfo } = useContext(AuthContext);
 
   const [activeSections, setActiveSections] = useState([]);
   const [activeRequest, setActiveRequest] = useState({});
@@ -71,18 +66,18 @@ const PendingList = () => {
   const acceptRole = (newUserID) => {
     const approvedby = userInfo.userId;
     let role = '';
-  
+
     console.log("newUserID", newUserID);
     console.log("approvedby", approvedby);
-  
+
     if (userInfo.role === 'supervisor') {
       role = 'labour';
     } else if (userInfo.role === 'admin') {
       role = 'supervisor';
     }
-  
+
     console.log("role", role);
-  
+
     axios.post(`${BASE_URL}pending/approve/${newUserID}/${role}/${approvedby}`)
       .then((response) => {
         Alert.alert(
@@ -95,7 +90,7 @@ const PendingList = () => {
         );
         if (userInfo.role === 'supervisor') navigation.navigate("SupervisorDashboard");
         else if (userInfo.role === 'admin') navigation.navigate("AdminDashboard");
-        
+
         console.log(response.data);
       })
       .catch((error) => {
@@ -107,11 +102,11 @@ const PendingList = () => {
           ],
           { cancelable: false }
         );
-  
+
         console.error(error);
       });
   };
-  
+
 
   // open whatsapp with the user mobile number dialed when click whatsapp button
   const openWhatsapp = () => {
@@ -142,28 +137,17 @@ const PendingList = () => {
             <Button
               icon="check"
               mode="outlined"
-              onPress={() => acceptRole(section.user._id)}
+              onPress={() => {
+                setVisibleAccept(!visibleAccept);
+              }}
               borderColor='#01a9e1'
               labelStyle={{ color: "green", fontSize: 14 }}
-              style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
+              style={[styles.button, { borderColor: "green" }]}
             >
               Accept
             </Button>
 
-            {/* <IconButton icon={"delete"} iconColor='white' size={18} style={{ backgroundColor: 'red' }} onPress={() => { console.log("Delete Pressed!") }} /> */}
-
           </View>
-          // <Button
-          //   icon="arrow-right"
-          //   mode="outlined"
-          //   onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
-          //   borderColor='#01a9e1'
-          //   color='#f08e25'
-          //   labelStyle={{ color: "#01a9e1", fontSize: 15 }}
-          //   style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
-          // >
-          //   View
-          // </Button>
         )}
       />
     </Surface>
@@ -189,9 +173,9 @@ const PendingList = () => {
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
+        {!data[0] && <Text style={styles.emptyRequests}>There are no new requests at this moment!</Text>}
         <View style={styles.requestList}>
           <List.Section>
-            {/* <List.Subheader>New users List</List.Subheader> */}
             <Accordion
               sections={data}
               activeSections={activeSections}
@@ -205,7 +189,6 @@ const PendingList = () => {
         <Portal>
           <Dialog visible={visibleDelete} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
-            {/* role === 'supervisor' ? "supervisor" : "labour" */}
             <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role} request?</Dialog.Title>
             <Dialog.Content>
               <Text>Delete this new {role} request from the pending list</Text>
@@ -247,10 +230,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    resizeMode: 'cover',
     marginLeft: 15,
+    borderWidth: 1,
+    borderColor: '#000',
   },
   content: {
     paddingVertical: 10,
@@ -285,14 +271,20 @@ const styles = StyleSheet.create({
   },
   labourRequest: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    width: width * 0.39,
+    width: width * 0.4,
     overflow: 'hidden',
   },
   callButton: {
     width: width * 0.3,
     marginVertical: width * 0.02,
+  },
+  emptyRequests: {
+    fontWeight: 'bold',
+    fontSize: width * 0.045,
+    textAlign: 'center',
+    marginVertical: width * 0.04,
   },
 });
 

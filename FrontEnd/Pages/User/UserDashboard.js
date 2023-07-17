@@ -119,16 +119,11 @@ const UserDashboard = () => {
   return (
     <SafeAreaView>
       <View>
-        <View style={styles.dashboardHeader}>
-          <View style={styles.secondRow}>
-            <Text style={styles.title}>User Dashboard</Text>
-          </View>
-        </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "91.5%", paddingTop: 15 }} // 89.9%
+            style={{ height: "100%", paddingTop: 15 }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
@@ -147,7 +142,7 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: pendingData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("EditableComplains", { data: pendingData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfPendingComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -161,7 +156,7 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("InProgressWorks", { data: assignedAData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -175,7 +170,7 @@ const UserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks", { data: completedData }) }}>
                 {/* <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8, backgroundColor: "green" }}>{noOfCompletedComplains}</Badge></View> */}
                 <View style={styles.card}>
                   <View style={styles.imageSection}>

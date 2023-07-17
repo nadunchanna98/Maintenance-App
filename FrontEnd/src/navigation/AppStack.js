@@ -19,8 +19,12 @@ import LaborerDashboard from '../../Pages/Laborer/LaborerDashboard';
 import { UserContext } from '../Context/UserContext';
 import { AuthContext } from '../Context/AuthContext';
 import NewRequests from '../../Pages/Admin/NewRequests';
-import InProgressWorks from '../../Pages/Admin/InProgressWorks';
-import CompletedWorks from '../../Pages/Admin/CompletedWorks';
+// import InProgressWorks from '../../Pages/Admin/InProgressWorks';
+// import CompletedWorks from '../../Pages/Admin/CompletedWorks';
+import ListView from '../../Pages/CommonScreens/ComplainsList';
+import RegisteredSupervisersList from '../../Pages/Admin/RegisteredSupervisorsList';
+import RegisteredLabourersList from '../../Pages/Superviser/RegisteredLabourersList';
+//
 import Supervisors from '../../Pages/Admin/Supervisors';
 import CompletedComplainsList from '../../Pages/CommonScreens/ComplainsListByIdAndStatus';
 //
@@ -302,12 +306,19 @@ const LaborerScreens = () => (
     <Stack.Screen
       name="LaborerDashboard"
       component={LaborerDashboard}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Labour Dashboard",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTitleStyle: { fontWeight: 'bold', fontSize: 24, fontFamily: 'sans-serif-condensed' },
+        headerTintColor: "#ffffff"
+      }}
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
-      name="ComplainsListByIdAndStatus"
-      component={CompletedComplainsList}
+      name="AssignedWorks"
+      component={ListView}
       options={{
         headerShown: true,
         title: "Assigned Tasks",
@@ -316,7 +327,6 @@ const LaborerScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
-
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}
@@ -337,7 +347,14 @@ const UserScreens = () => (
     <Stack.Screen
       name="UserDashboard"
       component={UserDashboard}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "User Dashboard",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTitleStyle: { fontWeight: 'bold', fontSize: 24, fontFamily: 'sans-serif-condensed' },
+        headerTintColor: "#ffffff"
+      }}
       initialParams={{ initialRoute: true }}
     />
     <Stack.Screen
@@ -345,7 +362,7 @@ const UserScreens = () => (
       component={ComplainForm}
       options={{
         headerShown: true,
-        title: "Complain Form",
+        title: "New Complain",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
@@ -363,17 +380,38 @@ const UserScreens = () => (
       }}
     />
     <Stack.Screen
-      name="ComplainsListByIdAndStatus"
-      component={CompletedComplainsList}
+      name="EditableComplains"
+      component={ListView}
       options={{
         headerShown: true,
-        title: "Completed Complains",
+        title: "Editable Complains",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
       }}
     />
-
+    <Stack.Screen
+      name="InProgressWorks"
+      component={ListView}
+      options={{
+        headerShown: true,
+        title: "In Progress Works",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+    <Stack.Screen
+      name="CompletedWorks"
+      component={ListView}
+      options={{
+        headerShown: true,
+        title: "Completed Works",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
     <Stack.Screen
       name="ViewComplain"
       component={ViewComplain}

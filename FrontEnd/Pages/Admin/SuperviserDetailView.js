@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
-import { Button, List } from 'react-native-paper';
+import { View, Text, StyleSheet, Image, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
+import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
@@ -41,23 +41,23 @@ const SuperviserDetailView = () => {
     getAssignedLComplains();
   }, []);
 
-  const handleAssignButton =(userID,complainID) =>{
+  const handleAssignButton = (userID, complainID) => {
 
     //console.log("Complain ID: ",complainID);
-   // console.log("User ID:",userID);
-  
+    // console.log("User ID:",userID);
+
     axios.put(`${BASE_URL}complains/update/${complainID}/${userID}`)
-    .then((response) => {
-      //console.log(response.data);
-      Alert.alert("Complain Assigned Successfully");
-      navigation.navigate('AdminDashboard');
-    }
-    )
-    .catch((error) => {
-      console.log(error);
-    }
-    )
-    
+      .then((response) => {
+        //console.log(response.data);
+        Alert.alert("Complain Assigned Successfully");
+        navigation.navigate('AdminDashboard');
+      }
+      )
+      .catch((error) => {
+        console.log(error);
+      }
+      )
+
   }
 
   const getUserDetail = () => {
@@ -117,13 +117,13 @@ const SuperviserDetailView = () => {
       </View>
 
       <View style={visible ? [styles.buttonContainer, { justifyContent: 'space-evenly' }] : [styles.buttonContainer, { alignSelf: 'center' }]} >
-        {visible && 
-        (
-        <Button icon={"account-hard-hat"} 
-        onPress={ () => handleAssignButton(userId,complainId)}
-        buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Assign</Button>)}
+        {visible &&
+          (
+            <Button icon={"account-hard-hat"}
+              onPress={() => handleAssignButton(userId, complainId)}
+              buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Assign</Button>)}
         <Button icon={"phone"} onPress={makeCall} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Call</Button>
- 
+
       </View>
 
       <View style={styles.assignworktitle}>
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
 
   assignworktitle:
   {
-    flex: 1, marginTop: 20 , marginBottom: 20 ,fontSize: 20, fontWeight: 'bold'
+    flex: 1, marginTop: 20, marginBottom: 20, fontSize: 20, fontWeight: 'bold'
   },
 
 
