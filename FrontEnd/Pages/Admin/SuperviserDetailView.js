@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Platform, Linking, TouchableOpacity, Alert } from 'react-native';
 import { Button, List, useTheme } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';

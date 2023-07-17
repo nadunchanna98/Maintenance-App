@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal ,Linking,Alert} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal, Linking, Alert } from 'react-native';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -11,15 +11,15 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const LaborerAssignmentScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const  complainID  = route.params.complainID;
-  console.log("----------------------",complainID);
+  const complainID = route.params.complainId;
+  console.log("----------------------", complainID);
   const [availableLaborers, setAvailableLaborers] = useState([]);
   const [selectedLaborers, setSelectedLaborers] = useState([]);
   const [selectedLaborerDetails, setSelectedLaborerDetails] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const[mobile_no,setMobileNo]=useState('');
+  const [mobile_no, setMobileNo] = useState('');
   //get commplaint id from the previous screen
-  
+
 
   useEffect(() => {
     // Fetch available laborers from the API endpoint
@@ -29,7 +29,7 @@ const LaborerAssignmentScreen = () => {
         // Extracting only the "name" property from each laborer object
         const laborerNames = response.data.map(laborer => [laborer.name, laborer._id]);
         setAvailableLaborers(laborerNames);
-        
+
       })
       .catch(error => {
         console.log('Error fetching laborers:', error);
@@ -37,9 +37,9 @@ const LaborerAssignmentScreen = () => {
   }, []);
 
   const windowWidth = Dimensions.get('window').width;
-  const itemWidth = 150; 
+  const itemWidth = 150;
 
-  
+
 
   const handleAssignLaborer = (laborer) => {
     if (!selectedLaborers.includes(laborer)) {
@@ -51,21 +51,21 @@ const LaborerAssignmentScreen = () => {
   };
   const makeCall = () => {
     //use link to make a call
-    if(Platform.OS === 'android'){
-    Linking.openURL(`tel:${mobile_no}`);
-    }else{
-    Linking.openURL(`telprompt:${mobile_no}`);
+    if (Platform.OS === 'android') {
+      Linking.openURL(`tel:${mobile_no}`);
+    } else {
+      Linking.openURL(`telprompt:${mobile_no}`);
     }
 
   }
   const handleUpdateSelectedLaborersStatus = (newStatus) => {
     // Collect the IDs of all selected laborers
     const laborerIds = selectedLaborers.map(laborer => laborer[1]);
-    console.log("Laborer Ids: ",laborerIds);
-    console.log("Complain ID: ",complainID);    
+    console.log("Laborer Ids: ", laborerIds);
+    console.log("Complain ID: ", complainID);
 
     // Make a single PUT request to update the status of all selected laborers
-    axios.put(`${BASE_URL}complains/batchUpdate` ,{ laborerIds, complainID })
+    axios.put(`${BASE_URL}complains/batchUpdate`, { laborerIds, complainID })
       .then(response => {
         // Handle successful update if needed
       })
@@ -75,26 +75,26 @@ const LaborerAssignmentScreen = () => {
   };
 
 
-  const handleSubmit=()=>{
+  const handleSubmit = () => {
     Alert.alert(
-        'Assign Complaint',
-        'Are you sure you want to assign this complaint?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
+      'Assign Complaint',
+      'Are you sure you want to assign this complaint?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: () => {
+            handleUpdateSelectedLaborersStatus();
+            navigation.navigate('SupervisorDashboard');
           },
-          {
-            text: 'Confirm',
-            onPress: () => {
-              handleUpdateSelectedLaborersStatus();
-              navigation.navigate('SupervisorDashboard');
-            },
-          },
-        ],
-        { cancelable: true }
-      );
-    
+        },
+      ],
+      { cancelable: true }
+    );
+
     //navigate to dashboard
     console.log("HAndle Submit");
 
@@ -103,7 +103,7 @@ const LaborerAssignmentScreen = () => {
   }
 
   const handleViewDetails = (laborer) => {
-    
+
     // Fetch laborer details from the API endpoint based on the selected laborer
     axios.get(`${BASE_URL}users/labour/${laborer[1]}`)
       .then(response => {
@@ -165,15 +165,15 @@ const LaborerAssignmentScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
-        
+
       </View>
       <View>
-     <TouchableOpacity onPress={handleSubmit} style={styles.closeButton}>
-     <Text style={styles.closeButtonText}>Assign</Text>
-   </TouchableOpacity>
-   </View>
+        <TouchableOpacity onPress={handleSubmit} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>Assign</Text>
+        </TouchableOpacity>
+      </View>
 
-      
+
       <Modal visible={isModalVisible} animationType="slide" onRequestClose={closeModal}>
         <View style={styles.modalContainer}>
           {selectedLaborerDetails ? (
@@ -186,7 +186,7 @@ const LaborerAssignmentScreen = () => {
           ) : (
             <Text>Loading...</Text>
           )}
-          {isModalVisible&&<TouchableOpacity onPress={makeCall} style={styles.closeButton}>
+          {isModalVisible && <TouchableOpacity onPress={makeCall} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Call</Text>
           </TouchableOpacity>}
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
@@ -195,7 +195,7 @@ const LaborerAssignmentScreen = () => {
         </View>
       </Modal>
     </View>
-    
+
 
   );
 };
