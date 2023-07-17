@@ -73,9 +73,11 @@ const UserProfile = () => {
       <ScrollView>
         <View style={styles.topBar}></View>
         <View style={styles.container}>
+
           <View style={styles.profileContainer}>
             <Ionicons name="person" size={windowWidth * 0.18} color="black" />
           </View>
+
           <View style={styles.detailsContainer}>
             <View style={styles.detail}>
               <Ionicons name="person-outline" size={24} color="black" />
