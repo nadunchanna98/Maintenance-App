@@ -8,7 +8,12 @@ import UserDashboard from '../../Pages/User/UserDashboard';
 import ComplainForm from '../../Pages/User/ComplainForm';
 import ComplainPreview from '../../Pages/User/ComplainPreview';
 import UserProfile from '../../Pages/User/UserProfile';
+
 import AdminDashboard from '../../Pages/Admin/AdminDashboard';
+import LabourList from '../../Pages/Admin/LabourList';
+import LabourDetailView from '../../Pages/Admin/LabourDetailView';
+
+
 import SupervisorDashboard from '../../Pages/Superviser/SuperviserDashboard';
 import LaborerDashboard from '../../Pages/Laborer/LaborerDashboard';
 import { UserContext } from '../Context/UserContext';
@@ -26,6 +31,7 @@ import PendingUserDetailView from '../../Pages/CommonScreens/PendingUserDetailVi
 import SuperviserDetailView from '../../Pages/Admin/SuperviserDetailView';
 import LaborerList from '../../Pages/Superviser/LabourList';
 import LaborerDetailView from '../../Pages/Superviser/LabourDetailView';
+import LaborerAssignmentScreen from '../../Pages/Superviser/LabourAssignmentScreen';
 import Instruction from '../../Pages/Other/Instruction';
 import AboutApp from '../../Pages/Other/AboutApp';
 import AdminFeedback from '../../Pages/Admin/AdminFeedback';
@@ -150,8 +156,35 @@ const AdminScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+
+    <Stack.Screen
+      name="LabourList"
+      component={LabourList}
+      options={{
+        headerShown: true,
+        title: "Registered Labours",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+    <Stack.Screen
+    name="LabourDetailView"  
+    component={LabourDetailView}
+    options={{
+      headerShown: true,
+      title: "Registered Labours",
+      headerTitleAlign: 'center',
+      headerStyle: { backgroundColor: "#19AFE2" },
+      headerTintColor: "#ffffff"
+    }}
+    />
+
+
   </Stack.Navigator>
+  
 );
+
 
 const SupervisorScreens = () => (
   <Stack.Navigator>
@@ -228,6 +261,17 @@ const SupervisorScreens = () => (
       options={{
         headerShown: true,
         title: "Labour Details",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
+    />
+     <Stack.Screen
+      name="LaborerAssignmentScreen"
+      component={LaborerAssignmentScreen}
+      options={{
+        headerShown: true,
+        title: "Supervisor Details",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"

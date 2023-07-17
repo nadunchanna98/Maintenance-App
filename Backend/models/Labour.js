@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const SupervisorSchema = new mongoose.Schema({
+const LabourSchema = new mongoose.Schema({
     userID: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User_Details' 
@@ -15,11 +15,15 @@ const SupervisorSchema = new mongoose.Schema({
      requested_date: {          
         type: Date,
      },
-     complains: [{    //list of complains assigned to the supervisor 
+     Assigned: {
+        type: Boolean,
+        default: false
+     },
+     complains: [{    //list of complains assigned to the Labour
         type: mongoose.Schema.Types.ObjectId, ref: 'Complaine_Details'
         }],
   }
   
   );
 
-exports.Labour_Details = mongoose.model('labour-details', SupervisorSchema);
+exports.Labour_Details = mongoose.model('labour-details', LabourSchema);
