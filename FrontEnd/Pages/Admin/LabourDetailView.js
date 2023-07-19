@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking,Dimensions } from 'react-native';
-import { Ionicons,AntDesign,MaterialIcons  } from '@expo/vector-icons';
+import { Ionicons,AntDesign,Fontisto  } from '@expo/vector-icons';
 import { Button, List } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import moment from 'moment';
 
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
@@ -98,9 +98,9 @@ const LabourDetailView = () => {
         </View>
      
         <View style={styles.detail}>
-              <AntDesign name="check" size={24} color="black" />
-              <Text style={styles.subDetailText}>Approved Date: </Text>
-              <Text style={styles.subDetailTextX}>{pendingUser.Data.approved_date}</Text>
+              <Fontisto name="date" size={24} color="black" />
+              <Text style={styles.detailText}>Approved Date: </Text>
+              <Text style={styles.detailText}>{moment(pendingUser.Data.approved_date).format('MMMM DD, YYYY')}</Text>
               
         </View>
         
@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 10,
     marginTop: 15,
+    alignSelf: 'center',
 
   },
   label: {

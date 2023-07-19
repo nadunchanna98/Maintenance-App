@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking,Dimensions} from 'react-native';
 import { Button, List } from 'react-native-paper';
+import { Ionicons,AntDesign,Fontisto  } from '@expo/vector-icons';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import moment from 'moment';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const SuperviserDetailView = () => {
 
@@ -95,28 +100,41 @@ const SuperviserDetailView = () => {
   return (
     <ScrollView style={styles.container}>
 
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Supervisor Name:</Text>
-        <Text style={styles.value}>{pendingUser.user.name}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}> Email:</Text>
-        <Text style={styles.value}>{pendingUser.user.email}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}> Mobile No:</Text>
-        <Text style={styles.value}>{pendingUser.user.mobile_no}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Work Type:</Text>
-        <Text style={styles.value}>{pendingUser.Data.work_type}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Approved Date:</Text>
-        <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
-      </View>
+      <View style={styles.profileContainer}>
+            <Ionicons name="person" size={windowWidth * 0.18} color="black" />
+        </View>
 
-      <View style={visible ? [styles.buttonContainer, { justifyContent: 'space-evenly' }] : [styles.buttonContainer, { alignSelf: 'center' }]} >
+        <View style={styles.dataContainer}>
+        <Text style={styles.heading}>{pendingUser.user.name}</Text>
+        </View>
+
+        <View style={styles.detail}>
+              <Ionicons name="mail-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{pendingUser.user.email}</Text>
+        </View>
+
+        <View style={styles.detail}>
+              <Ionicons name="phone-portrait-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{pendingUser.user.mobile_no}</Text>
+        </View>
+
+        <View style={styles.detail}>
+        <Ionicons name="ios-construct-outline" size={24} color="black" />
+              <Text style={styles.detailText}>Work Type: </Text>
+              <Text style={styles.detailText}>{pendingUser.Data.work_type}</Text>
+              
+        </View>
+        <View style={styles.detail}>
+              <Fontisto name="date" size={24} color="black" />
+              <Text style={styles.detailText}>Approved Date: </Text>
+              <Text style={styles.detailText}>{moment(pendingUser.Data.approved_date).format('MMMM DD, YYYY')}</Text>
+              
+        </View>
+
+        
+      
+
+      <View style={visible ? [styles.dataContainer, { justifyContent: 'space-evenly' }] : [styles.dataContainer, { alignSelf: 'center' }]} >
         {visible && 
         (
         <Button icon={"account-hard-hat"} 
@@ -174,53 +192,73 @@ const SuperviserDetailView = () => {
 
 const styles = StyleSheet.create({
 
-  container: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  header: {
-    backgroundColor: '#01a9e1',
-    paddingVertical: 40,
-    alignItems: 'center',
-    marginBottom: 40,
-
-  },
-  title: {
-    color: '#fff',
-    fontSize: 40,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  dataContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-
-  },
-  label: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginRight: 10,
-    marginTop: 3, // Adjust the margin as needed
-  },
-  value: {
-    flex: 1,
-    flexWrap: 'wrap',
-    fontSize: 20,
-  },
-  image: {
-    alignSelf: 'center',
-    width: 300,
-    height: 300,
-    resizeMode: 'cover',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
+  profileContainer: {
+    width: windowWidth * 0.3,
+    height: windowHeight * 0.15,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 500,
     marginTop: 20,
-
-
+    alignItems: "center",
+    alignSelf: "center",
+    justifyContent: "center",
   },
+heading: {
+  flex: 1,
+  fontWeight: "bold",
+  textAlign: 'center', // Aligns the first item to the left
+  flexWrap: 'wrap',
+  fontSize: 20,
+},
+
+container: {
+  flexGrow: 1,
+  padding: 20,
+},
+header: {
+  backgroundColor: '#01a9e1',
+  paddingVertical: 40,
+  alignItems: 'center',
+  marginBottom: 40,
+
+},
+detail: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 15,
+  paddingLeft: windowWidth * 0.05,
+  borderColor: "#19AFE2",
+  borderBottomWidth: 1,
+},
+subDetail: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 10,
+  paddingBottom:0.5,
+  paddingLeft: windowWidth * 0.05,
+  borderColor: "#19AFE2",
+  
+},
+detailText: {
+  fontSize: windowWidth * 0.042,
+  paddingLeft: windowWidth * 0.06,
+},
+subDetailText: {
+  fontSize: windowWidth * 0.035,
+  paddingLeft: windowWidth * 0.03,
+  color: 'gray',
+},
+subDetailTextX: {
+  fontSize: windowWidth * 0.035,
+  paddingLeft: windowWidth * 0.0005,
+  color: 'gray',
+},
+dataContainer: {
+  flexDirection: 'row',
+  marginBottom: 10,
+  marginTop: 15,
+
+},
+  
   button: {
     width: '40%',
 
@@ -258,7 +296,7 @@ const styles = StyleSheet.create({
 
   assignworktitle:
   {
-    flex: 1, marginTop: 20 , marginBottom: 20 ,fontSize: 20, fontWeight: 'bold'
+    flex: 1, marginTop: 10 , marginBottom: 20 ,fontSize: 20
   },
 
 
