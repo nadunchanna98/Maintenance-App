@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView,Dimensions } from 'react-native';
 import { Ionicons,AntDesign,MaterialIcons  } from '@expo/vector-icons';
-import {  List } from 'react-native-paper';
-import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
@@ -92,12 +90,15 @@ const LabourDetailView = () => {
               <Text style={styles.detailText}>{user.mobile_no}</Text>
         </View>
         
-        <View style={styles.detail}>
-              <AntDesign  name="setting" size={24} color="black" />
+        <View style={styles.subDetail}>
+              <AntDesign name="check" size={24} color="black" />
+              <Text style={styles.subDetailText}>Approved By: </Text>
               <Text style={styles.detailText}></Text>
         </View>
+        
         <View style={styles.detail}>
-              <MaterialIcons name="construction" size={24} color="black" />
+              <AntDesign name="check" size={24} color="black" />
+              <Text style={styles.subDetailText}>Approved Date: </Text>
               <Text style={styles.detailText}></Text>
         </View>
 
@@ -172,9 +173,23 @@ const LabourDetailView = () => {
     borderColor: "#19AFE2",
     borderBottomWidth: 1,
   },
+  subDetail: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingBottom:0.5,
+    paddingLeft: windowWidth * 0.05,
+    borderColor: "#19AFE2",
+    
+  },
   detailText: {
     fontSize: windowWidth * 0.042,
     paddingLeft: windowWidth * 0.06,
+  },
+  subDetailText: {
+    fontSize: windowWidth * 0.035,
+    paddingLeft: windowWidth * 0.03,
+    color: 'gray',
   },
   activeHeader: {
     backgroundColor: '#F5F5F5',
