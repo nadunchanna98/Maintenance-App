@@ -24,7 +24,7 @@ const AdminDashboard = () => {
   const [assignedAData, setAssignedAData] = useState([]);
   const [assignedSData, setAssignedSData] = useState([]);
   const [completedAData, setCompletedAData] = useState([]);
-  const [completedSData , setCompletedSData] = useState([]); // complateS and DeclinedS
+  const [completedSData, setCompletedSData] = useState([]); // complateS and DeclinedS
   const [pendingSupervisorsData, setPendingSupervisorsData] = useState([]);
 
   useFocusEffect(
@@ -131,7 +131,7 @@ const AdminDashboard = () => {
     }
   };
 
-   const getCompletedSComplains = async () => {
+  const getCompletedSComplains = async () => {
 
     try {
       const response = await axios.get(`${BASE_URL}complains/list`, {
@@ -156,21 +156,16 @@ const AdminDashboard = () => {
   return (
     <SafeAreaView>
       <View>
-        <View style={styles.dashboardHeader}>
-          <View style={styles.secondRow}>
-            <Text style={styles.title}>Admin Dashboard</Text>
-          </View>
-        </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "91.5%" }} // 89.9%
+            style={{ height: "100%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("NewComplainRequests", { data: assignedAData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -184,7 +179,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("InProgressComplains", { data: assignedSData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -212,7 +207,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList",{complainID:null}) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("RegisteredSupervisors", { complainId: null }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -225,7 +220,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("LabourList",{complainID:null})}}>
+              <TouchableOpacity onPress={() => { navigation.navigate("LabourList", { complainID: null }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -238,7 +233,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("DeliveredBySupervisors", { data: completedSData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -251,7 +246,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks", { data: completedAData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
