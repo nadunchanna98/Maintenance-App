@@ -42,23 +42,47 @@ const ViewComplain = () => {
   };
 
   useEffect(() => {
+    getData();
+    getSupervisorName(complain.supervisorID);
+  }, [ complain.supervisorID]);
+
+  const getData = () => {
     axios
-      .get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    .get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    .then((response) => {
+      setComplain(response.data);
+      const formattedTime = moment(response.data.created_date).format('hh:mm A');
+      const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
+      setCreatedTime(formattedTime);
+      setCreatedDate(formattedDate);
+      setVisible(response.data.status === 'AssignedA');
+      setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
+      setRating(response.data.rate);
+      getSupervisorName(complain.supervisorID);
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
+  }
+
+  const getSupervisorName = (id) => {
+
+  if(id !== undefined){
+    
+    console.log('id', id);
+
+    axios.get(`${BASE_URL}supervisors/user/${id}`)
       .then((response) => {
-        setComplain(response.data);
-        const formattedTime = moment(response.data.created_date).format('hh:mm A');
-        const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
-        setCreatedTime(formattedTime);
-        setCreatedDate(formattedDate);
-        setVisible(response.data.status === 'AssignedA');
-        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
-        setRating(response.data.rate);
-        // console.log('response.data', response.data);
+        setSupervisorName(response.data.user.name);
       })
       .catch((error) => {
         console.log('error', error);
       });
-  }, []);
+
+    }
+
+  };
+
 
   const handleImagePress = () => {
     setShowScaledImage(true);
@@ -145,7 +169,7 @@ const ViewComplain = () => {
 
     axios.put(`${BASE_URL}complains/complain/${complainId}`, { rate: rating })
       .then((response) => {
-        console.log('response', response);
+        // console.log('response', response);
         Alert.alert(
           'Thank you for your rating!',
           '',
@@ -201,7 +225,7 @@ const ViewComplain = () => {
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Assigned:</Text>
-              <Text style={styles.fieldValue}>{complain.supervisorID}</Text>
+              <Text style={styles.fieldValue}>{ supervisorName }</Text>
             </View>
           )}
 

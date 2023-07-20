@@ -7,6 +7,7 @@ const SupervisorSchema = new mongoose.Schema({
     },
     work_type: { 
         type: String, 
+        default: 'not a specified work type'
     },
     approvedby: {
         type: mongoose.Schema.Types.ObjectId,

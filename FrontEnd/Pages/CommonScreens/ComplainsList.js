@@ -23,7 +23,7 @@ const ComplainsList = () => {
     }, []);
 
     useEffect(() => {
-        console.log(complainsData[0])
+        // console.log(complainsData[0])
     }, [])
 
     return (

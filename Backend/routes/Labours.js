@@ -40,14 +40,14 @@ router.get('/list/', async (req, res) => {
         return res.status(404).send('User not found');
       }
   
-      let Data = null;
+      let labours = null;
   
-        Data = await Labour_Details.findOne({ userID: userId }).exec();
+      labours = await Labour_Details.findOne({ userID: userId }).exec();
      
   
       const combinedData = {
         user: user.toObject(),
-        Data: Data ? Data.toObject() : null,
+        labours: labours ? labours.toObject() : null,
       };
   
       console.log(combinedData);

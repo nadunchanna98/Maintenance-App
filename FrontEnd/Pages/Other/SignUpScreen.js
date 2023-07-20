@@ -18,7 +18,7 @@ const validationSchema = yup.object().shape({
     mobileNumber: yup
         .string()
         .required('Mobile Number is required')
-        .matches(/^[0-9]{10}$/, 'Not a valid mobile number')
+        .matches(/^0[0-9]{9}$/, 'Not a valid mobile number')
         .test(
             'Unique mobileNumber',
             'Mobile Number already in use',
@@ -39,6 +39,7 @@ const validationSchema = yup.object().shape({
         .string()
         .oneOf([yup.ref('password'), null], 'Passwords must match')
         .required('Confirm Password is required'),
+        
 });
 
 const SignUpScreen = () => {
@@ -55,7 +56,7 @@ const SignUpScreen = () => {
     const data_role = [
         { key: '1', value: 'complainer' },
         { key: '2', value: 'labour' },
-        { key: '3', value: 'supervisor'},
+        { key: '3', value: 'supervisor' },
         { key: '4', value: 'admin' },
     ]
 
@@ -67,8 +68,8 @@ const SignUpScreen = () => {
     ]
 
     const handleSignUp = (values) => {
-        const { name, email, mobileNumber, password } = values;
-        
+        const { name, email, mobileNumber, password ,work_type } = values;
+   
         let Role = '';
         console.log(selected1);
 
@@ -78,37 +79,38 @@ const SignUpScreen = () => {
         else if (selected1 === "2" | selected1 === "labour") {
             Role = 'labour';
         }
-        else if (selected1 === "3"  | selected1 === "supervisor") {
+        else if (selected1 === "3" | selected1 === "supervisor") {
             Role = 'supervisor';
         }
-        else if (selected1 === "4" | selected1 === "admin"){
+        else if (selected1 === "4" | selected1 === "admin") {
             Role = 'admin';
         }
 
         console.log(Role);
 
         const requestData = {
-          name,
-          email,
-          mobileNumber,
-          password,
-          role: Role,
-          // userType: selected2,
+            name,
+            email,
+            mobileNumber,
+            password,
+            role: Role,
+            work_type,
+            // userType: selected2,
         };
-      
+
         axios
-          .post(`${BASE_URL}users/user/register`, requestData)
-          .then((response) => {
-            console.log(response.data);
-            alert('User registered successfully!');
-            navigation.navigate('Login');
-          })
-          .catch((error) => {
-            console.log(error);
-            alert('User registration failed!');
-          });
-      };
-      
+            .post(`${BASE_URL}users/user/register`, requestData)
+            .then((response) => {
+                console.log(response.data);
+                alert('User registered successfully!');
+                navigation.navigate('Login');
+            })
+            .catch((error) => {
+                console.log(error);
+                alert('User registration failed!');
+            });
+    };
+
 
     return (
         <ScrollView style={styles.container}>
@@ -127,6 +129,7 @@ const SignUpScreen = () => {
                         password: '',
                         confirmPassword: '',
                         role: '',
+                        work_type: '',
                         // userType: '',
                     }}
                     validationSchema={validationSchema}
@@ -209,6 +212,23 @@ const SignUpScreen = () => {
                                     search={false}
                                 />
                             </View>
+
+                            {
+                                selected1 === "3" | selected1 === "supervisor" ?
+                                    <View style={styles.inputContainer}>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder="Work type"
+                                            onChangeText={handleChange('work_type')}
+                                            onBlur={handleBlur('work_type')}
+                                            value={values.work_type}
+                                             
+                                        />
+                                        {touched.work_type && errors.work_type && <Text style={styles.errorText}>{errors.work_type}</Text>}
+                                    </View>
+                                    : null
+
+                            }
 
                             {/* <View style={styles.inputContainer}>
                                 <SelectList
