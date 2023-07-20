@@ -22,16 +22,52 @@ const LabourDetailView = () => {
     console.log("userId", userId);
   
     const [user, setUser] = useState([]);
+    const [labour, setLabour] = useState([]);
+    const [supervisorName, setSupervisorName] = useState('');
   
     useEffect(() => {
       getUserDetail();
-    }, []);
+      getSupervisorName(labour.approvedby);
+      getSpecificLabourDetail();
+    }, [labour.approvedby]);
   
+    const getSpecificLabourDetail = () => {
+
+      axios.get(`${BASE_URL}labours/user/${userId}`)
+        .then((response) => {
+          setLabour(response.data.labours);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    };
+
+    const getSupervisorName = (id) => {
+
+      if(id !== undefined){
+        
+        console.log('id', id);
+    
+        axios.get(`${BASE_URL}supervisors/user/${id}`)
+          .then((response) => {
+            setSupervisorName(response.data.user.name);
+          })
+          .catch((error) => {
+            console.log('error', error);
+          });
+    
+        }
+    
+      };
+
+
+
     const getUserDetail = () => {
       axios
         .get(`${BASE_URL}users/labour/${userId}`)
         .then((response) => {
           setUser(response.data);
+          // console.log(response.data);
         })
         .catch((error) => {
           console.log("error", error);
@@ -66,6 +102,7 @@ const LabourDetailView = () => {
 
 
     return (
+
       <ScrollView style={styles.container}>
 
         <View style={styles.profileContainer}>
@@ -125,6 +162,7 @@ const LabourDetailView = () => {
         
         
         </ScrollView>
+
     );
   };
   
@@ -209,4 +247,6 @@ const LabourDetailView = () => {
   });
 
   export default LabourDetailView;
+  
+
   

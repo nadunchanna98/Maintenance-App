@@ -1,5 +1,5 @@
 
-import React, { useState,useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -66,8 +66,8 @@ const SuperviserDashboard = () => {
   const navigation = useNavigation();
 
   const { userInfo } = useContext(AuthContext);
- 
-// console.log(userInfo);
+
+  // console.log(userInfo);
 
   const getListOfPendingLabourers = async () => {
     try {
@@ -92,7 +92,7 @@ const SuperviserDashboard = () => {
         }
       });
       setAssignedSData(response.data);
-      
+
     } catch (error) {
       console.error(error);
     }
@@ -142,21 +142,16 @@ const SuperviserDashboard = () => {
   return (
     <SafeAreaView>
       <View>
-        <View style={styles.dashboardHeader}>
-          <View style={styles.secondRow}>
-            <Text style={styles.title}>Supervisor Dashboard</Text>
-          </View>
-        </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "91.5%" }} // 89.9%
+            style={{ height: "100%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("NewlyAssignedWorks", { data: assignedSData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -170,7 +165,7 @@ const SuperviserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedLData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("InProgressWorks", { data: assignedLData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedLComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -198,7 +193,7 @@ const SuperviserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("LaborerList") }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("LabourerList", { complainId: null }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -211,7 +206,7 @@ const SuperviserDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks", { data: completedSData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image

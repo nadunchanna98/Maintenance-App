@@ -10,8 +10,7 @@ require('dotenv/config');
 // Approve pending data
 router.post('/approve/:id/:role/:approvedby', async (req, res) => {
 
-    // console.log("approve :",req.params.id,req.params.role,req.params.approvedby);
-
+    console.log("approve :",req.params.id,req.params.role,req.params.approvedby);
 
     try {
         if (req.params.role === 'supervisor') {
@@ -41,13 +40,14 @@ router.post('/approve/:id/:role/:approvedby', async (req, res) => {
             await Supervisor_Pending.deleteOne({ userID: req.params.id });
 
             res.json(savedSupervisor);
+
         } else if (req.params.role === 'labour') {
 
 
             // Move data from Labour_Pending to Labour_Details
             const pendingLabour = await Labour_Pending.findOne({ userID: req.params.id });
 
-           // console.log("pendingLabour :", pendingLabour);
+        // console.log("pendingLabour :", pendingLabour);
 
             const labour = new Labour_Details({
                 userID: pendingLabour.userID,

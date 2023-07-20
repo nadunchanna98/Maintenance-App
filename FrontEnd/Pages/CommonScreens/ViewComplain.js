@@ -11,8 +11,6 @@ const ViewComplain = () => {
 
   const windowWidth = Dimensions.get('window').width;
   const windowRatio = windowWidth / 425;
-
-
   const { userInfo } = useContext(AuthContext);
   const { allusers } = useContext(UserContext);
 
@@ -36,7 +34,7 @@ const ViewComplain = () => {
   };
 
   const handleDataSubmission = () => {
-    navigation.navigate('SuperviserList', { complainID: complainId });
+    navigation.navigate('SuperviserList', { complainId: complainId });
   };
 
   const handleCompleteSupervisor = () => {
@@ -44,28 +42,54 @@ const ViewComplain = () => {
   };
 
   useEffect(() => {
+    getData();
+    getSupervisorName(complain.supervisorID);
+  }, [ complain.supervisorID]);
+
+  const getData = () => {
     axios
-      .get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    .get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    .then((response) => {
+      setComplain(response.data);
+      const formattedTime = moment(response.data.created_date).format('hh:mm A');
+      const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
+      setCreatedTime(formattedTime);
+      setCreatedDate(formattedDate);
+      setVisible(response.data.status === 'AssignedA');
+      setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
+      setRating(response.data.rate);
+      getSupervisorName(complain.supervisorID);
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
+  }
+
+  const getSupervisorName = (id) => {
+
+  if(id !== undefined){
+    
+    console.log('id', id);
+
+    axios.get(`${BASE_URL}supervisors/user/${id}`)
       .then((response) => {
-        setComplain(response.data);
-        const formattedTime = moment(response.data.created_date).format('hh:mm A');
-        const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
-        setCreatedTime(formattedTime);
-        setCreatedDate(formattedDate);
-        setVisible(response.data.status === 'AssignedA');
-        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate < 0)  ); // Show pop-up only when status is 'Completed' and role is 'complainer'
-        setRating(response.data.rate);
-        // console.log('response.data', response.data);
+        setSupervisorName(response.data.user.name);
       })
       .catch((error) => {
         console.log('error', error);
       });
-  }, []);
+
+    }
+
+  };
+
 
   const handleImagePress = () => {
     setShowScaledImage(true);
   };
-
+  const handleComplete = () => {
+    navigation.navigate('AdminFeedback', { complainID: complainId });
+  }
   const handlePopupDismiss = () => {
     setShowPopup(false);
   };
@@ -77,7 +101,9 @@ const ViewComplain = () => {
   const handleThankYouDismiss = () => {
     setShowThankYou(false);
   };
-
+  const handleAssignLaborer = () => {
+    navigation.navigate('LaborerAssignmentScreen', { complainID: complainId });
+  }
   const renderPopup = () => {
     if (!showPopup) {
       return null; // Don't render the pop-up if showPopup is false
@@ -142,20 +168,20 @@ const ViewComplain = () => {
   const handleThankYouSubmit = () => {
 
     axios.put(`${BASE_URL}complains/complain/${complainId}`, { rate: rating })
-    .then((response) => {
-      console.log('response', response);
-       Alert.alert(
-        'Thank you for your rating!',
-        '',
-        [
-          { text: 'OK', onPress: () => handleThankYouDismiss() }
-        ],
-        { cancelable: false }
-      );
-    })
-    .catch((error) => {
-      console.log('error', error);
-    });
+      .then((response) => {
+        // console.log('response', response);
+        Alert.alert(
+          'Thank you for your rating!',
+          '',
+          [
+            { text: 'OK', onPress: () => handleThankYouDismiss() }
+          ],
+          { cancelable: false }
+        );
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
 
     setShowPopup(false);
     handleThankYouDismiss();
@@ -199,7 +225,7 @@ const ViewComplain = () => {
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Assigned:</Text>
-              <Text style={styles.fieldValue}>{complain.supervisorID}</Text>
+              <Text style={styles.fieldValue}>{ supervisorName }</Text>
             </View>
           )}
 
@@ -276,7 +302,6 @@ const ViewComplain = () => {
           }
 
 
-
         </View>
       </ScrollView>
 
@@ -288,6 +313,7 @@ const ViewComplain = () => {
         </View>
       )}
 
+
       {(userInfo.role === 'admin' && complain.status === 'AssignedA') && (
         <View style={styles.dataContainer}>
           <TouchableOpacity style={styles.button} onPress={handleDataSubmission}>
@@ -296,10 +322,25 @@ const ViewComplain = () => {
         </View>
       )}
 
+      {(userInfo.role === 'admin' && complain.status === 'CompletedS') && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleComplete}>
+            <Text style={styles.buttonText}>Mark As Completed</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {userInfo.role === 'supervisor' && complain.status === 'AssignedL' && (
         <View style={styles.dataContainer}>
           <TouchableOpacity style={styles.button} onPress={handleCompleteSupervisor}>
             <Text style={styles.buttonText}>Mark as Completed</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {(userInfo.role === 'supervisor' && complain.status === 'AssignedS') && (
+        <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleAssignLaborer}>
+            <Text style={styles.buttonText}>Assign Laborers</Text>
           </TouchableOpacity>
         </View>
       )}

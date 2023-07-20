@@ -65,12 +65,11 @@ const SuperviserCompleteFeedBackForm = () => {
   
     axios
       .put(`${BASE_URL}complains/complain/${complainID}`, {
-        status: status,
+        status: 'CompletedS',
         supervisor_feedback: feedback,
         resolved_date: Date.now()
       })
       .then((response) => {
-        // console.log('response', response);
         Alert.alert(
           'Complain Updated',
           'Complain has been updated successfully!',
@@ -78,7 +77,11 @@ const SuperviserCompleteFeedBackForm = () => {
           { cancelable: false }
         );
         navigation.navigate('SupervisorDashboard');
-      })
+        // console.log('response', response);
+        axios.put(`${BASE_URL}complains/batchReleaseUpdate/${complainID}`)
+        .then((response) => {
+        
+      }).catch((error) => {console.log('error', error);});})
       .catch((error) => {
         console.log('error', error);
       });
