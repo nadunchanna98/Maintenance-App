@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking } from 'react-native';
 import { Button, List } from 'react-native-paper';
-import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
-import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
