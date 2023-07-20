@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, Platform, Linking,Dimensions } from 'react-native';
+import { Ionicons,AntDesign,Fontisto  } from '@expo/vector-icons';
 import { Button, List } from 'react-native-paper';
 import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
@@ -7,6 +8,10 @@ import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import moment from 'moment';
+
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
 
 const LabourDetailView = () => {
 
@@ -74,23 +79,31 @@ const LabourDetailView = () => {
   return (
     <ScrollView style={styles.container}>
 
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Labour Name:</Text>
-        <Text style={styles.value}>{pendingUser.user.name}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}> Email:</Text>
-        <Text style={styles.value}>{pendingUser.user.email}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}> Mobile No:</Text>
-        <Text style={styles.value}>{pendingUser.user.mobile_no}</Text>
-      </View>
+        <View style={styles.profileContainer}>
+            <Ionicons name="person" size={windowWidth * 0.18} color="black" />
+        </View>
 
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Approved Date:</Text>
-        <Text style={styles.value}>{pendingUser.Data.approved_date}</Text>
-      </View>
+        <View style={styles.dataContainer}>
+        <Text style={styles.heading}>{pendingUser.user.name}</Text>
+        </View>
+
+        <View style={styles.detail}>
+              <Ionicons name="mail-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{pendingUser.user.email}</Text>
+        </View>
+
+        <View style={styles.detail}>
+              <Ionicons name="phone-portrait-outline" size={24} color="black" />
+              <Text style={styles.detailText}>{pendingUser.user.mobile_no}</Text>
+        </View>
+     
+        <View style={styles.detail}>
+              <Fontisto name="date" size={24} color="black" />
+              <Text style={styles.detailText}>Approved Date: </Text>
+              <Text style={styles.detailText}>{moment(pendingUser.Data.approved_date).format('MMMM DD, YYYY')}</Text>
+              
+        </View>
+        
 
       <View style={styles.dataContainer}>
        <Button icon={"phone"} onPress={makeCall} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Call</Button>
@@ -129,9 +142,26 @@ const LabourDetailView = () => {
 
 const styles = StyleSheet.create({
 
+ profileContainer: {
+      width: windowWidth * 0.3,
+      height: windowHeight * 0.15,
+      backgroundColor: "#FFFFFF",
+      borderRadius: 500,
+      marginTop: 20,
+      alignItems: "center",
+      alignSelf: "center",
+      justifyContent: "center",
+    },
+  heading: {
+    flex: 1,
+    fontWeight: "bold",
+    textAlign: 'center', // Aligns the first item to the left
+    flexWrap: 'wrap',
+    fontSize: 20,
+  },
+
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 20,
   },
   header: {
@@ -140,6 +170,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
 
+  },
+  detail: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 15,
+    paddingLeft: windowWidth * 0.05,
+    borderColor: "#19AFE2",
+    borderBottomWidth: 1,
+  },
+  subDetail: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingBottom:0.5,
+    paddingLeft: windowWidth * 0.05,
+    borderColor: "#19AFE2",
+    
+  },
+  detailText: {
+    fontSize: windowWidth * 0.042,
+    paddingLeft: windowWidth * 0.06,
+  },
+  subDetailText: {
+    fontSize: windowWidth * 0.035,
+    paddingLeft: windowWidth * 0.03,
+    color: 'gray',
+  },
+  subDetailTextX: {
+    fontSize: windowWidth * 0.035,
+    paddingLeft: windowWidth * 0.0005,
+    color: 'gray',
   },
   title: {
     color: '#fff',
@@ -150,6 +211,8 @@ const styles = StyleSheet.create({
   dataContainer: {
     flexDirection: 'row',
     marginBottom: 10,
+    marginTop: 15,
+    alignSelf: 'center',
 
   },
   label: {
@@ -213,7 +276,10 @@ const styles = StyleSheet.create({
 
   assignworktitle:
   {
-    flex: 1, marginTop: 20 , marginBottom: 20 ,fontSize: 20, fontWeight: 'bold'
+    flex: 1,
+    marginTop: 20,
+    marginBottom: 20,
+    fontSize: 20
   },
 
 
