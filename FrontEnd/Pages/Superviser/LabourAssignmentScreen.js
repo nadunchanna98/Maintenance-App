@@ -162,7 +162,6 @@ const LaborerAssignmentScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Available Laborers</Text>
       <FlatList
         data={availableLaborers}
         renderItem={renderAvailableLaborerRow}
