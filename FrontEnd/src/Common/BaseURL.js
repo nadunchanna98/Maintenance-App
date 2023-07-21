@@ -2,12 +2,14 @@ import { Platform } from "react-native";
 
 let BASE_URL = "";
 
+
 // // ruvi home
 if (Platform.OS === "android") {
      BASE_URL = "http://192.168.99.83:3000/api/v1/" // for android emulator
 } else {
      BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
 }
+
 
 
 // uni wifi
@@ -21,11 +23,11 @@ if (Platform.OS === "android") {
 //nadun mobile
 
 
-// if (Platform.OS === "android") {
-//     BASE_URL = "http://192.168.8.101:3000/api/v1/" // for android emulator
-// } else {
-//     BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
-// }
+if (Platform.OS === "android") {
+    BASE_URL = "http://192.168.163.74:3000/api/v1/" // for android emulator
+} else {
+    BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
+}
 
 
 

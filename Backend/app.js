@@ -8,7 +8,7 @@ const cors  = require('cors');  // for cross origin resource sharing
 
 mongoose.set('strictQuery', false); 
 const api = process.env.API_URL;
-
+app.use(bodyParser.json());
 
 app.use(cors());  
 app.options('*',cors()); 

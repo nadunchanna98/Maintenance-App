@@ -47,6 +47,24 @@ const AdminFeedback = () => {
   const submitFeedback = () => {
     if (completed) {
       // axios to update the status of complain to completed
+      axios.put(`${BASE_URL}complains/complain/${complainId}`, {
+        status: 'Completed',
+        admin_feedback:feedback}).then((response) => {
+          console.log('response', response);
+          Alert.alert(
+            'Complain Updated',
+            'Complain has been updated successfully!',
+
+            [{ text: 'OK', onPress: () => navigation.navigate('AdminDashboard') }],
+            { cancelable: false }
+          );
+          navigation.navigate('AdminDashboard');
+        })
+        .catch((error) => {
+          console.log('error', error);
+
+        });
+
     } else {
       // axios to update the status of complain to declined
     }
