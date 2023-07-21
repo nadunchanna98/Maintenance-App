@@ -185,7 +185,7 @@ const AdminScreens = () => (
       component={ListView}
       options={{
         headerShown: true,
-        title: "Works Completed by Supervisors",
+        title: "Works Delivered by Supervisors",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"
