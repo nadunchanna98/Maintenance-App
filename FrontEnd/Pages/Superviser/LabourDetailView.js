@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView,Dimensions } from 'react-native';
-import { Ionicons,AntDesign,MaterialIcons  } from '@expo/vector-icons';
+import { Ionicons,AntDesign,Fontisto  } from '@expo/vector-icons';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import moment from 'moment';
 
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
@@ -93,13 +94,14 @@ const LabourDetailView = () => {
         <View style={styles.subDetail}>
               <AntDesign name="check" size={24} color="black" />
               <Text style={styles.subDetailText}>Approved By: </Text>
-              <Text style={styles.detailText}></Text>
+              <Text style={styles.subDetailText}></Text>
+             
         </View>
         
         <View style={styles.detail}>
-              <AntDesign name="check" size={24} color="black" />
+              <Fontisto name="date" size={24} color="black" />
               <Text style={styles.subDetailText}>Approved Date: </Text>
-              <Text style={styles.detailText}></Text>
+              <Text style={styles.subDetailText}>{moment(user.approved_date).format('MMMM DD, YYYY')}</Text>
         </View>
 
         <View style={styles.dataContainer}>
