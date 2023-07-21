@@ -22,7 +22,7 @@ let BASE_URL = "";
 
 
 if (Platform.OS === "android") {
-    BASE_URL = "http://192.168.163.74:3000/api/v1/" // for android emulator
+    BASE_URL = "http://192.168.97.74:3000/api/v1/" // for android emulator
 } else {
     BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
 }

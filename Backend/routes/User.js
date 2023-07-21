@@ -114,8 +114,6 @@ router.post('/user/checkMobileNo', async (req, res) => {
 
 
 
-
-
 // Register route
 router.post('/user/register', async (req, res) => {
   hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -127,6 +125,7 @@ router.post('/user/register', async (req, res) => {
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
+      profileImage : req.body.profileImage
     });
 
     console.log(newUser);
