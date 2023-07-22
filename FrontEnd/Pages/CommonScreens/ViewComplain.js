@@ -10,8 +10,6 @@ const { width, height } = Dimensions.get('window');
 
 const Slideshow = ({ images }) => {
 
-  console.log('inside of slider',);
-
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleSlide = (event) => {
@@ -97,9 +95,6 @@ const ViewComplain = () => {
       .then((response) => {
         setComplain(response.data);
 
-        console.log('response.data', response.data);
-
-
         const formattedTime = moment(response.data.created_date).format('hh:mm A');
         const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
         setCreatedTime(formattedTime);
@@ -117,9 +112,6 @@ const ViewComplain = () => {
   const getSupervisorName = (id) => {
 
     if (id !== undefined) {
-
-      console.log('id', id);
-
       axios.get(`${BASE_URL}supervisors/user/${id}`)
         .then((response) => {
           setSupervisorName(response.data.user.name);
