@@ -66,7 +66,13 @@ const AdminScreens = () => (
     <Stack.Screen
       name="AdminFeedback"
       component={AdminFeedback}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: true,
+        title: "Admin Feedback",
+        headerTitleAlign: 'center',
+        headerStyle: { backgroundColor: "#19AFE2" },
+        headerTintColor: "#ffffff"
+      }}
     />
     <Stack.Screen
       name="NewComplainRequests"

@@ -215,7 +215,7 @@ const ViewComplain = () => {
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Description:</Text>
           </View>
-          <Text style={styles.fieldValue}>{complain.description}</Text>
+          <Text style={[styles.fieldValue, { marginBottom: windowRatio * 15 }]}>{complain.description}</Text>
           <View style={styles.bottomLine} />
 
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
@@ -294,10 +294,17 @@ const ViewComplain = () => {
 
           }
 
-          {(userInfo.role === 'admin' && complain.status === 'DeclinedS') && (<View>
+          {(userInfo.role === 'admin' && (complain.status === 'DeclinedS' || complain.status === 'CompletedS')) && (<View>
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Supervisor Feedback:</Text>
               <Text style={styles.fieldValue}>{complain.supervisor_feedback}</Text>
+            </View>
+          </View>)}
+
+          {(userInfo.role === 'supervisor' && (complain.status === 'CompletedA' || complain.status === 'Completed')) && (<View>
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldTitle}>Admin Feedback:</Text>
+              <Text style={styles.fieldValue}>{complain.admin_feedback}</Text>
             </View>
           </View>)}
 
@@ -349,6 +356,10 @@ const ViewComplain = () => {
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.scaledImage} />
         </TouchableOpacity>
       )}
+
+
+
+
     </View>
   );
 };
@@ -382,6 +393,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 15 * windowRatio,
+    maxWidth: '100%',
+    paddingRight: 15 * windowRatio,
   },
   fieldTitle: {
     fontWeight: 'bold',
@@ -389,11 +402,13 @@ const styles = StyleSheet.create({
     fontSize: 20 * windowRatio,
     marginRight: 10 * windowRatio,
     textAlign: 'left',
+    alignSelf: 'flex-start',
   },
   fieldValue: {
     color: '#45474b',
     fontSize: 20 * windowRatio,
     textAlign: 'left',
+    flex: 1,
   },
   bottomLine: {
     borderBottomWidth: 1,

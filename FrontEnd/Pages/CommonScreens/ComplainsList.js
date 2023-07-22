@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { View, StyleSheet, Image, Dimensions, SafeAreaView, FlatList } from 'react-native';
 import { Text, Surface, TouchableRipple } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { AuthContext } from '../../src/Context/AuthContext';
 import moment from 'moment';
 
 const { width } = Dimensions.get("window");
@@ -11,6 +12,8 @@ const ComplainsList = () => {
 
     const route = useRoute();
     const navigation = useNavigation();
+
+    const { userInfo } = useContext(AuthContext)
 
     const complainsData = route.params.data;
     let statusCheck = complainsData[0]?.status === "CompletedS" ? "CompletedS" : complainsData[0]?.status === "DeclinedS" ? "DeclinedS" : null;
@@ -38,7 +41,7 @@ const ComplainsList = () => {
 
     return (
         <SafeAreaView>
-            {statusCheck && <View style={styles.filterContainer}>
+            {statusCheck && userInfo.role === 'admin' && <View style={styles.filterContainer}>
                 <SelectList
                     setSelected={(key) => { setSelected(key) }}
                     onSelect={handleFilter}
@@ -73,7 +76,7 @@ const ComplainsList = () => {
                                         <Text style={styles.status}>{item.status}</Text>
                                         <Text style={styles.date}>{formattedDate}</Text>
                                     </View>
-                                    <View style={item.status === "DeclinedS" ? [styles.indicator, { backgroundColor: '#ff0000' }] : (item.status === "CompletedS" ? [styles.indicator, { backgroundColor: '#00ff00' }] : null)}></View>
+                                    {userInfo.role === 'admin' && <View style={item.status === "DeclinedS" ? [styles.indicator, { backgroundColor: '#ff0000' }] : (item.status === "CompletedS" ? [styles.indicator, { backgroundColor: '#00ff00' }] : null)}></View>}
                                 </View>
                             </Surface>
                         </TouchableRipple>
@@ -84,7 +87,7 @@ const ComplainsList = () => {
                 onRefresh={onRefresh}
                 style={styles.list}
                 ListEmptyComponent={<Text style={styles.emptyComponent}>There are no complains! Come back later</Text>}
-                ListFooterComponent={<View style={statusCheck ? { height: width * 0.24 } : { height: width * 0.03 }}></View>}
+                ListFooterComponent={<View style={statusCheck ? (userInfo.role === 'admin' ? { height: width * 0.24 } : { height: width * 0.03 }) : { height: width * 0.03 }}></View>}
             />
         </SafeAreaView>
     );
