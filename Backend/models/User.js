@@ -38,6 +38,11 @@ const UserSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId, ref: 'Complaine_Details'
      }],
 
+     profileImage: {
+        type: String,
+        default: null,
+    },
+    
      
   });
   
