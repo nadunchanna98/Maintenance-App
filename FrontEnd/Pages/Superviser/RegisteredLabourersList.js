@@ -85,7 +85,7 @@ const RegisteredLabourersList = () => {
                             <Button
                                 icon="arrow-right"
                                 mode="outlined"
-                                onPress={() => navigation.navigate('LabourDetailView', { userId: section._id, complainId: complainId })}
+                                onPress={() => navigation.navigate('LabourerDetailView', { userId: section._id, complainId: complainId })}
                                 borderColor='#01a9e1'
                                 labelStyle={{ color: "#01a9e1", fontSize: 14 }}
                                 style={[styles.button, { borderColor: "#01a9e1" }]}
