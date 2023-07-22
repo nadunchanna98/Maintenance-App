@@ -14,13 +14,16 @@ router.post('/add/', async (req, res) => {
     userID: req.body.userID,
     title: req.body.title,
     location: req.body.location,
+    subLocation : req.body.subLocation,
     description: req.body.description,
+    complaineImages: req.body.complaineImages,
     status: req.body.status,
     supervisorID: req.body.supervisorID,
     supervisor_feedback: req.body.supervisor_feedback,
     admin_feedback: req.body.admin_feedback,
     assigned_date: req.body.assigned_date,
     resolved_date: req.body.resolved_date,
+    complaineImages : req.body.complaineImages
   });
 
   console.log('newComplaint: ', newComplaint);
