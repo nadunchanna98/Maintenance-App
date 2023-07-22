@@ -2,15 +2,18 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image, Modal } from 'react-native';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
+import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import moment from 'moment';
 
 const ViewComplain = () => {
 
-
+  const windowWidth = Dimensions.get('window').width;
+  const windowRatio = windowWidth / 425;
   const { userInfo } = useContext(AuthContext);
+  const { allusers } = useContext(UserContext);
+
   const navigation = useNavigation();
   const route = useRoute();
   const complainId = route.params.complainId;
@@ -41,11 +44,7 @@ const ViewComplain = () => {
   useEffect(() => {
     getData();
     getSupervisorName(complain.supervisorID);
-
-  }, [complain.supervisorID]);
-
-
-n
+  }, [ complain.supervisorID]);
 
   const getData = () => {
     axios
@@ -74,36 +73,11 @@ n
 
     axios.get(`${BASE_URL}supervisors/user/${id}`)
       .then((response) => {
-
-        setComplain(response.data);
-        const formattedTime = moment(response.data.created_date).format('hh:mm A');
-        const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
-        setCreatedTime(formattedTime);
-        setCreatedDate(formattedDate);
-        setVisible(response.data.status === 'AssignedA');
-        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
-        setRating(response.data.rate);
-        getSupervisorName(complain.supervisorID);
-
+        setSupervisorName(response.data.user.name);
       })
       .catch((error) => {
         console.log('error', error);
       });
-
-  }
-
-  const getSupervisorName = (id) => {
-
-    if (id !== undefined) {
-
-      axios.get(`${BASE_URL}supervisors/user/${id}`)
-        .then((response) => {
-          setSupervisorName(response.data.user.name);
-        })
-        .catch((error) => {
-          console.log('error', error);
-        });
-
 
     }
 
@@ -163,12 +137,10 @@ n
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.submitButton} onPress={handleThankYouSubmit}>
-
-                <Text style={styles.submitButtonText}>Submit</Text>
+                <Text style={styles.submitButtonText}>Submit Rating</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.dismissButton} onPress={handlePopupDismiss}>
-                <Text style={styles.dismissButtonText}>Cancel</Text>
-
+                <Text style={styles.dismissButtonText}>Dismiss</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -197,7 +169,7 @@ n
 
     axios.put(`${BASE_URL}complains/complain/${complainId}`, { rate: rating })
       .then((response) => {
-
+        // console.log('response', response);
         Alert.alert(
           'Thank you for your rating!',
           '',
@@ -220,9 +192,6 @@ n
       {renderPopup()}
       {renderThankYouPopup()}
       <ScrollView contentContainerStyle={styles.contentContainer}>
-
-        {/* <StatusBar style="dark" /> */}
-
         <TouchableOpacity onPress={handleImagePress}>
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.image} />
         </TouchableOpacity>
@@ -250,16 +219,13 @@ n
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Description:</Text>
           </View>
-
-          <Text style={[styles.fieldValue, { marginBottom: windowRatio * 15 }]}>{complain.description}</Text>
-
+          <Text style={styles.fieldValue}>{complain.description}</Text>
           <View style={styles.bottomLine} />
 
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Assigned:</Text>
-              <Text style={styles.fieldValue}>{supervisorName}</Text>
-
+              <Text style={styles.fieldValue}>{ supervisorName }</Text>
             </View>
           )}
 
@@ -267,85 +233,73 @@ n
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Status:</Text>
-
-            {complain.status === "AssignedA" ? <Text style={styles.fieldValue}>Supervisor Not Assigned</Text> : <Text style={styles.fieldValue}>{complain.status !== 'Completed' ? 'In Progress' : 'Completed'}</Text>}
+            <Text style={styles.fieldValue}>{complain.status !== 'Completed' ? 'In Progress' : 'Completed'}</Text>
           </View>
           <View style={styles.bottomLine} />
 
-          {userInfo.role === 'admin' ? (
 
-            rating > 0 ? ( // Only show the rating if it has been selected
-              <View style={styles.fieldContainer}>
-                <Text style={styles.fieldTitle}>Rated:</Text>
-                <View style={styles.ratingContainer}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
-                      <Image
-                        source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
-                        style={styles.starIcon}
-                      />
-                    </TouchableOpacity>
-                  ))}
+          {
+
+            userInfo.role === 'admin' ? (
+
+              rating > 0 ? ( // Only show the rating if it has been selected
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                        <Image
+                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
+                          style={styles.starIcon}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
-              </View>
-            ) :
+              ) :
 
-              (
-                complain.status === "Completed" ? <View style={styles.fieldContainer}>
+                (
+                  <View style={styles.fieldContainer}>
+                    <Text style={styles.fieldTitle}>Rated:</Text>
+                    <View style={styles.ratingContainer}>
+
+                      <Text style={styles.fieldValue}>Not rated yet</Text>
+
+                    </View>
+                  </View>
+                )
+
+
+            ) : userInfo.role === 'complainer' ? (
+
+              rating > 0 ? ( // Only show the rating if it has been selected
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                        <Image
+                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
+                          style={styles.starIcon}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.fieldContainer}>
                   <Text style={styles.fieldTitle}>Rated:</Text>
                   <View style={styles.ratingContainer}>
 
-                    <Text style={styles.fieldValue}>Not rated yet</Text>
+                    <Text style={styles.fieldValue}>Not Rated yet</Text>
 
                   </View>
-                </View> : null
+                </View>
               )
 
-
-          ) : userInfo.role === 'complainer' ? (
-
-            rating > 0 ? ( // Only show the rating if it has been selected
-              <View style={styles.fieldContainer}>
-                <Text style={styles.fieldTitle}>Rated:</Text>
-                <View style={styles.ratingContainer}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
-                      <Image
-                        source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
-                        style={styles.starIcon}
-                      />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            ) : (
-              complain.status === "Completed" ? <View style={styles.fieldContainer}>
-                <Text style={styles.fieldTitle}>Rated:</Text>
-                <View style={styles.ratingContainer}>
-
-                  <Text style={styles.fieldValue}>Not Rated yet</Text>
-
-                </View>
-              </View> : null
-            )
-
-          ) : null
+            ) : null
 
           }
-
-          {(userInfo.role === 'admin' && (complain.status === 'DeclinedS' || complain.status === 'CompletedS')) && (<View>
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldTitle}>Supervisor Feedback:</Text>
-              <Text style={styles.fieldValue}>{complain.supervisor_feedback}</Text>
-            </View>
-          </View>)}
-
-          {(userInfo.role === 'supervisor' && (complain.status === 'CompletedA' || complain.status === 'Completed')) && (<View>
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldTitle}>Admin Feedback:</Text>
-              <Text style={styles.fieldValue}>{complain.admin_feedback}</Text>
-            </View>
-          </View>)}
 
 
         </View>
@@ -429,8 +383,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 15 * windowRatio,
-    maxWidth: '100%',
-    paddingRight: 15 * windowRatio,
   },
   fieldTitle: {
     fontWeight: 'bold',
@@ -438,13 +390,11 @@ const styles = StyleSheet.create({
     fontSize: 20 * windowRatio,
     marginRight: 10 * windowRatio,
     textAlign: 'left',
-    alignSelf: 'flex-start',
   },
   fieldValue: {
     color: '#45474b',
     fontSize: 20 * windowRatio,
     textAlign: 'left',
-    flex: 1,
   },
   bottomLine: {
     borderBottomWidth: 1,
