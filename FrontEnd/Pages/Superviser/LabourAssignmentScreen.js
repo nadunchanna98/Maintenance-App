@@ -10,16 +10,17 @@ import {
   Linking,
   Alert,
   ScrollView,
+  Image,
 } from 'react-native';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const LaborerAssignmentScreen = () => {
+  // React hooks and states
   const route = useRoute();
   const navigation = useNavigation();
   const complainID = route.params.complainID;
-  console.log('----------------------', complainID);
   const [availableLaborers, setAvailableLaborers] = useState([]);
   const [selectedLaborers, setSelectedLaborers] = useState([]);
   const [selectedLaborerDetails, setSelectedLaborerDetails] = useState(null);
@@ -28,17 +29,12 @@ const LaborerAssignmentScreen = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedLaborerNames, setSelectedLaborerNames] = useState([]);
 
+  // Fetch available laborers from the API endpoint on component mount
   useEffect(() => {
-    // Fetch available laborers from the API endpoint
     axios
       .get(`${BASE_URL}users/labours/list`)
       .then((response) => {
-        // Assuming the laborers' data is an array of objects like [{_id, name, email, ...}, ...]
-        // Extracting only the "name" property from each laborer object
-        const laborerNames = response.data.map((laborer) => [
-          laborer.name,
-          laborer._id,
-        ]);
+        const laborerNames = response.data.map((laborer) => [laborer.name, laborer._id]);
         setAvailableLaborers(laborerNames);
       })
       .catch((error) => {
@@ -46,9 +42,11 @@ const LaborerAssignmentScreen = () => {
       });
   }, []);
 
+  // Dimensions and utility variables
   const windowWidth = Dimensions.get('window').width;
   const itemWidth = 150;
 
+  // Event handlers
   const handleAssignLaborer = (laborer) => {
     if (!selectedLaborers.includes(laborer)) {
       setSelectedLaborers((prevState) => [...prevState, laborer]);
@@ -56,9 +54,7 @@ const LaborerAssignmentScreen = () => {
   };
 
   const handleRemoveLaborer = (laborer) => {
-    setSelectedLaborers((prevState) =>
-      prevState.filter((selected) => selected !== laborer)
-    );
+    setSelectedLaborers((prevState) => prevState.filter((selected) => selected !== laborer));
   };
 
   const makeCall = () => {
@@ -71,12 +67,10 @@ const LaborerAssignmentScreen = () => {
   };
 
   const handleUpdateSelectedLaborersStatus = () => {
-    // Collect the IDs of all selected laborers
     const laborerIds = selectedLaborers.map((laborer) => laborer[1]);
     console.log('Laborer Ids: ', laborerIds);
     console.log('Complain ID: ', complainID);
 
-    // Make a single PUT request to update the status of all selected laborers
     axios
       .put(`${BASE_URL}complains/batchUpdate`, { laborerIds, complainID })
       .then((response) => {
@@ -89,10 +83,11 @@ const LaborerAssignmentScreen = () => {
 
   const handleSubmit = () => {
     if (selectedLaborers.length === 0) {
-      // Show an alert message if no laborers are selected
-      Alert.alert('Please Select Laborers', 'You need to select at least one laborer.');
+      Alert.alert(
+        'Please Select Laborers',
+        'You need to select at least one laborer.'
+      );
     } else {
-      // Get the names of selected laborers
       const selectedLaborerNames = selectedLaborers.map((laborer) => laborer[0]);
       setShowPopup(true);
       setSelectedLaborerNames(selectedLaborerNames);
@@ -110,7 +105,6 @@ const LaborerAssignmentScreen = () => {
   };
 
   const handleViewDetails = (laborer) => {
-    // Fetch laborer details from the API endpoint based on the selected laborer
     axios
       .get(`${BASE_URL}users/labour/${laborer[1]}`)
       .then((response) => {
@@ -127,37 +121,42 @@ const LaborerAssignmentScreen = () => {
     setIsModalVisible(false);
   };
 
+  // Rendering functions
   const renderAvailableLaborerRow = ({ item }) => {
     const isSelected = selectedLaborers.includes(item);
     const isAssigned = isSelected && selectedLaborers.length > 0;
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.availableLaborerRow}>
-        <TouchableOpacity onPress={() => handleViewDetails(item)} style={styles.laborViewContainer}>
+      <TouchableOpacity
+        onPress={() => handleViewDetails(item)}
+        style={styles.laborViewContainer}
+      >
+        <View style={styles.availableLaborerRow}>
+          <Image
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3588/3588614.png' }}
+            style={styles.laborerImage}
+          />
           <Text style={styles.availableLaborerName}>{item[0]}</Text>
-        </TouchableOpacity>
 
-        {!isSelected && (
-          <TouchableOpacity
-            onPress={() => handleAssignLaborer(item)}
-            style={[styles.button, styles.assignButton]}
-          >
-            <Text style={styles.buttonText}>Select</Text>
-          </TouchableOpacity>
-        )}
-        {isSelected && (
-          <TouchableOpacity
-            onPress={() => handleRemoveLaborer(item)}
-            style={[styles.button, styles.assignButton, styles.assignedButton]}
-          >
-            <Text style={styles.buttonText}>Selected</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-      </ScrollView>
+          {!isSelected && (
+            <TouchableOpacity
+              onPress={() => handleAssignLaborer(item)}
+              style={[styles.button, styles.assignButton]}
+            >
+              <Text style={styles.buttonText}>Select</Text>
+            </TouchableOpacity>
+          )}
+          {isSelected && (
+            <TouchableOpacity
+              onPress={() => handleRemoveLaborer(item)}
+              style={[styles.button, styles.assignButton, styles.assignedButton]}
+            >
+              <Text style={styles.buttonText}>Selected</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </TouchableOpacity>
     );
-    
   };
 
   return (
@@ -169,12 +168,6 @@ const LaborerAssignmentScreen = () => {
         contentContainerStyle={styles.availableLaborersList}
         horizontal={false}
       />
-
-      <View>
-        <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
-          <Text style={styles.assignButtonText}>Assign laborers</Text>
-        </TouchableOpacity>
-      </View>
 
       <Modal visible={isModalVisible} animationType="slide" onRequestClose={closeModal}>
         <View style={styles.modalContainer}>
@@ -208,7 +201,9 @@ const LaborerAssignmentScreen = () => {
               <Text style={styles.popupText}>
                 Are you sure you want to assign the complaint to the following laborers?
               </Text>
-              <Text style={styles.selectedLaborerNames}>{selectedLaborerNames.join(', ')}</Text>
+              <Text style={styles.selectedLaborerNames}>
+                {selectedLaborerNames.join(', ')}
+              </Text>
               <View style={styles.popupButtonContainer}>
                 <TouchableOpacity
                   onPress={handleConfirm}
@@ -227,18 +222,37 @@ const LaborerAssignmentScreen = () => {
           </View>
         </Modal>
       )}
+
+      {/* Move the labor containers above the "Assign Laborers" button */}
+      <View style={styles.laborContainers}>
+        {/* Render selected laborer names or other laborer details here */}
+      </View>
+
+      <View style={styles.assignButtonContainer}>
+        <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
+          <Text style={styles.assignButtonText}>Assign laborers</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 const ratio = windowWidth / 425;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20 * ratio,
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+  },
+  laborerImage: {
+    width: 35 * ratio,
+    height: 35 * ratio,
+    marginRight: 15 * ratio,
+    marginLeft: -10 * ratio,
   },
   heading: {
     fontSize: 20 * ratio,
@@ -251,7 +265,6 @@ const styles = StyleSheet.create({
   availableLaborerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   availableLaborerName: {
     fontSize: 20 * ratio,
@@ -259,27 +272,26 @@ const styles = StyleSheet.create({
   },
   laborViewContainer: {
     flex: 1,
-    marginTop: 20 * ratio,
+    marginTop: 15 * ratio,
     height: 60 * ratio,
     justifyContent: 'center',
     paddingVertical: 10 * ratio,
     paddingHorizontal: 20 * ratio,
     backgroundColor: '#01a9e1',
-    borderRadius: 5 * ratio,
+    borderRadius: 15 * ratio,
   },
   assignButton: {
     backgroundColor: 'gray',
+    marginLeft: 'auto',
     width: 100 * ratio,
-    height: 60 * ratio,
-    marginTop: 20 * ratio,
-    paddingVertical: 10 * ratio,
-    paddingHorizontal: 20 * ratio,
-    borderRadius: 5 * ratio,
+    height: 45 * ratio,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 20 * ratio,
+    marginRight: -10 * ratio,
   },
   assignedButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: 'green',
   },
   submitButton: {
     position: 'absolute',
@@ -366,7 +378,6 @@ const styles = StyleSheet.create({
     marginBottom: 20 * ratio,
     color: '#000',
     textAlign: 'center',
-    color: '',
   },
   popupButtonContainer: {
     flexDirection: 'row',
@@ -403,6 +414,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  laborContainers: {
+    // Add styles for labor containers if needed
   },
 });
 
