@@ -6,6 +6,51 @@ import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
+const { width, height } = Dimensions.get('window');
+
+const Slideshow = ({ images }) => {
+
+  console.log('inside of slider',);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleSlide = (event) => {
+    const slideSize = event.nativeEvent.layoutMeasurement.width;
+    const currentIndex = event.nativeEvent.contentOffset.x / slideSize;
+    setCurrentIndex(Math.round(currentIndex));
+  };
+
+  return (
+    <View style={styles.slideshowContainer}>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={handleSlide}
+      >
+        {images.map((imageUri, index) => (
+          <Image
+            key={index}
+            source={{ uri: imageUri }}
+            style={styles.slideshowImage}
+            resizeMode="cover"
+          />
+        ))}
+      </ScrollView>
+      <View style={styles.paginationContainer}>
+        {images.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.paginationDot,
+              index === currentIndex ? styles.activeDot : null,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
 
 const ViewComplain = () => {
 
@@ -44,40 +89,44 @@ const ViewComplain = () => {
   useEffect(() => {
     getData();
     getSupervisorName(complain.supervisorID);
-  }, [ complain.supervisorID]);
+  }, [complain.supervisorID]);
 
   const getData = () => {
     axios
-    .get(`${BASE_URL}complains/complainbyid/${complainId}`)
-    .then((response) => {
-      setComplain(response.data);
-      const formattedTime = moment(response.data.created_date).format('hh:mm A');
-      const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
-      setCreatedTime(formattedTime);
-      setCreatedDate(formattedDate);
-      setVisible(response.data.status === 'AssignedA');
-      setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
-      setRating(response.data.rate);
-      getSupervisorName(complain.supervisorID);
-    })
-    .catch((error) => {
-      console.log('error', error);
-    });
-  }
-
-  const getSupervisorName = (id) => {
-
-  if(id !== undefined){
-    
-    console.log('id', id);
-
-    axios.get(`${BASE_URL}supervisors/user/${id}`)
+      .get(`${BASE_URL}complains/complainbyid/${complainId}`)
       .then((response) => {
-        setSupervisorName(response.data.user.name);
+        setComplain(response.data);
+
+        console.log('response.data', response.data);
+
+
+        const formattedTime = moment(response.data.created_date).format('hh:mm A');
+        const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
+        setCreatedTime(formattedTime);
+        setCreatedDate(formattedDate);
+        setVisible(response.data.status === 'AssignedA');
+        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
+        setRating(response.data.rate);
+        getSupervisorName(complain.supervisorID);
       })
       .catch((error) => {
         console.log('error', error);
       });
+  }
+
+  const getSupervisorName = (id) => {
+
+    if (id !== undefined) {
+
+      console.log('id', id);
+
+      axios.get(`${BASE_URL}supervisors/user/${id}`)
+        .then((response) => {
+          setSupervisorName(response.data.user.name);
+        })
+        .catch((error) => {
+          console.log('error', error);
+        });
 
     }
 
@@ -192,9 +241,29 @@ const ViewComplain = () => {
       {renderPopup()}
       {renderThankYouPopup()}
       <ScrollView contentContainerStyle={styles.contentContainer}>
+
+
+        <View style={styles.imageContainer}>
+          {complain && complain.complaineImages && complain.complaineImages.length > 0  ? (
+            <Slideshow images={complain.complaineImages} />
+          ) : (
+
+            <View style={styles.noimage}>
+            <Image  source={require('../../assets/icon.png')}  style={styles.image}  />
+              <Text style={styles.fieldValue}>No Images</Text> 
+          </View>
+          )}
+        </View>
+
+
+        {/*         
         <TouchableOpacity onPress={handleImagePress}>
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.image} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+
+
+
         <View style={styles.dataContainer}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Title:</Text>
@@ -225,7 +294,7 @@ const ViewComplain = () => {
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Assigned:</Text>
-              <Text style={styles.fieldValue}>{ supervisorName }</Text>
+              <Text style={styles.fieldValue}>{supervisorName}</Text>
             </View>
           )}
 
@@ -501,6 +570,58 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
+  //   // Slideshow styles
+  imageContainer: {
+    marginBottom: Dimensions.get('window').height * 0.05,
+    marginTop: Dimensions.get('window').height * 0.05,
+  },
+  placeholderImage: {
+    width: Dimensions.get('window').width * 0.5,
+    height: Dimensions.get('window').width * 0.5,
+    alignSelf: 'center',
+  },
+  imageStyle: {
+    width: width * 0.5,
+    height: width * 0.5,
+    alignSelf: 'center',
+  },
+  slideshowImage: {
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
+
+  },
+  slideshowContainer: {
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
+    alignSelf: 'center',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 5,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    marginHorizontal: 3,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  noimage: {
+    width: width * 0.9,
+    height: width * 0.5,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
 });
 
 export default ViewComplain;
