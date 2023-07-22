@@ -44,40 +44,40 @@ const ViewComplain = () => {
   useEffect(() => {
     getData();
     getSupervisorName(complain.supervisorID);
-  }, [ complain.supervisorID]);
+  }, [complain.supervisorID]);
 
   const getData = () => {
     axios
-    .get(`${BASE_URL}complains/complainbyid/${complainId}`)
-    .then((response) => {
-      setComplain(response.data);
-      const formattedTime = moment(response.data.created_date).format('hh:mm A');
-      const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
-      setCreatedTime(formattedTime);
-      setCreatedDate(formattedDate);
-      setVisible(response.data.status === 'AssignedA');
-      setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
-      setRating(response.data.rate);
-      getSupervisorName(complain.supervisorID);
-    })
-    .catch((error) => {
-      console.log('error', error);
-    });
-  }
-
-  const getSupervisorName = (id) => {
-
-  if(id !== undefined){
-    
-    console.log('id', id);
-
-    axios.get(`${BASE_URL}supervisors/user/${id}`)
+      .get(`${BASE_URL}complains/complainbyid/${complainId}`)
       .then((response) => {
-        setSupervisorName(response.data.user.name);
+        setComplain(response.data);
+        const formattedTime = moment(response.data.created_date).format('hh:mm A');
+        const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
+        setCreatedTime(formattedTime);
+        setCreatedDate(formattedDate);
+        setVisible(response.data.status === 'AssignedA');
+        setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
+        setRating(response.data.rate);
+        getSupervisorName(complain.supervisorID);
       })
       .catch((error) => {
         console.log('error', error);
       });
+  }
+
+  const getSupervisorName = (id) => {
+
+    if (id !== undefined) {
+
+      console.log('id', id);
+
+      axios.get(`${BASE_URL}supervisors/user/${id}`)
+        .then((response) => {
+          setSupervisorName(response.data.user.name);
+        })
+        .catch((error) => {
+          console.log('error', error);
+        });
 
     }
 
@@ -225,7 +225,7 @@ const ViewComplain = () => {
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Assigned:</Text>
-              <Text style={styles.fieldValue}>{ supervisorName }</Text>
+              <Text style={styles.fieldValue}>{supervisorName}</Text>
             </View>
           )}
 
@@ -239,67 +239,34 @@ const ViewComplain = () => {
 
 
           {
-
-            userInfo.role === 'admin' ? (
-
-              rating > 0 ? ( // Only show the rating if it has been selected
-                <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldTitle}>Rated:</Text>
-                  <View style={styles.ratingContainer}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
-                        <Image
-                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
-                          style={styles.starIcon}
-                        />
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-              ) :
-
-                (
-                  <View style={styles.fieldContainer}>
-                    <Text style={styles.fieldTitle}>Rated:</Text>
-                    <View style={styles.ratingContainer}>
-
-                      <Text style={styles.fieldValue}>Not rated yet</Text>
-
+            rating > 0 ? (
+              // Only show the rating if it has been selected
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>Rated:</Text>
+                <View style={styles.ratingContainer}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <View key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                      <Image
+                        source={
+                          star <= rating
+                            ? require('../../assets/star_filled.png')
+                            : require('../../assets/star_empty.png')
+                        }
+                        style={styles.starIcon}
+                      />
                     </View>
-                  </View>
-                )
-
-
-            ) : userInfo.role === 'complainer' ? (
-
-              rating > 0 ? ( // Only show the rating if it has been selected
-                <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldTitle}>Rated:</Text>
-                  <View style={styles.ratingContainer}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
-                        <Image
-                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
-                          style={styles.starIcon}
-                        />
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+                  ))}
                 </View>
-              ) : (
-                <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldTitle}>Rated:</Text>
-                  <View style={styles.ratingContainer}>
-
-                    <Text style={styles.fieldValue}>Not Rated yet</Text>
-
-                  </View>
+              </View>
+            ) : (
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>Rated:</Text>
+                <View style={styles.ratingContainer}>
+                  <Text style={styles.fieldValue}>Not rated yet</Text>
                 </View>
-              )
-
-            ) : null
-
-          }
+              </View>
+            )
+          }         
 
 
         </View>
