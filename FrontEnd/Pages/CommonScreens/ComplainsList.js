@@ -31,6 +31,7 @@ const ComplainsList = () => {
         }, 1500); //after 1.5s refreshing will stop 
     }, []);
 
+
     const handleFilter = () => {
         const newData = complainsData.filter((item) => {
             if (selected === 'all') return true;

@@ -28,6 +28,7 @@ router.get('/list/', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 router.get('/list1/', async (req, res) => {
   try {
     const laborerList = await Labour_Details.aggregate([
@@ -55,7 +56,8 @@ router.get('/list1/', async (req, res) => {
 router.get('/user/:id', async (req, res) => {
   const userId = req.params.id;
 
-  // console.log(userId);
+
+  // console.log("hello",userId);
   
   try {
     const user = await User_Details.findById(userId).exec();
@@ -74,11 +76,9 @@ router.get('/user/:id', async (req, res) => {
       Data: Data ? Data.toObject() : null,
     };
 
-    console.log(combinedData);
+    // console.log(combinedData);
   
     res.status(200).send(combinedData);
-
-    console.log(combinedData);
 
 
   } catch (error) {

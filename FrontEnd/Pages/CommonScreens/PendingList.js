@@ -10,6 +10,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 const { width } = Dimensions.get("window");
 
+regId = ''
+
 const PendingList = () => {
 
   const navigation = useNavigation();
@@ -18,6 +20,11 @@ const PendingList = () => {
   const data = route.params.pendingData;
 
   const role = data[0] ? data[0].user.role : "none";
+  // role = data[0].user.role;
+  // const role = data[0] ? data[0].role : "none";
+  // setActiveRequest.user.role
+
+  const { userInfo } = useContext(AuthContext);
 
   const [activeSections, setActiveSections] = useState([]);
   const [activeRequest, setActiveRequest] = useState({});
@@ -50,6 +57,7 @@ const PendingList = () => {
   const acceptRequest = () => {
     setVisibleAccept(false)
     console.log("Accepted!")
+    acceptRole(regId);
   };
 
   // open dial pad with the user mobile number dialed when click call button
@@ -106,8 +114,7 @@ const PendingList = () => {
         console.error(error);
       });
   };
-
-
+  
   // open whatsapp with the user mobile number dialed when click whatsapp button
   const openWhatsapp = () => {
     phoneNum = activeRequest.user.mobile_no;
@@ -115,6 +122,10 @@ const PendingList = () => {
   }
 
   const renderHeader = (section, index, isActive) => (
+
+    // console.log("section Id -------------------- ", section.user._id),
+
+    regId = section.user._id,
     <Surface style={[isActive ? styles.activeSurface : styles.inactiveSurface, styles.surface]} elevation={2}>
 
       <List.Item
@@ -126,28 +137,43 @@ const PendingList = () => {
         left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={[styles.avatar, { alignSelf: "center" }]} />}
         right={() => (
           <View style={styles.labourRequest}>
+
+            <Button
+              icon="check"
+              mode="outlined"
+              //onPress={() => acceptRole(section.user._id)}
+              onPress={() => { setVisibleAccept(!visibleAccept) }}
+              borderColor='#01a9e1'
+              labelStyle={{ color: "green", fontSize: width * 0.04, fontWeight: "bold" }}
+              style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
+            >
+              Accept
+            </Button>
+
             <IconButton
               icon={"delete"}
-              iconColor='white' size={18}
+              iconColor='white' size={width * 0.06}
               style={{ backgroundColor: 'red' }}
               onPress={() => {
                 setVisibleDelete(!visibleDelete);
               }}
             />
-            <Button
-              icon="check"
-              mode="outlined"
-              onPress={() => {
-                setVisibleAccept(!visibleAccept);
-              }}
-              borderColor='#01a9e1'
-              labelStyle={{ color: "green", fontSize: 14 }}
-              style={[styles.button, { borderColor: "green" }]}
-            >
-              Accept
-            </Button>
+
+
+            {/* <IconButton icon={"delete"} iconColor='white' size={18} style={{ backgroundColor: 'red' }} onPress={() => { console.log("Delete Pressed!") }} /> */}
 
           </View>
+          // <Button
+          //   icon="arrow-right"
+          //   mode="outlined"
+          //   onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
+          //   borderColor='#01a9e1'
+          //   color='#f08e25'
+          //   labelStyle={{ color: "#01a9e1", fontSize: 15 }}
+          //   style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
+          // >
+          //   View
+          // </Button>
         )}
       />
     </Surface>
@@ -173,9 +199,9 @@ const PendingList = () => {
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        {!data[0] && <Text style={styles.emptyRequests}>There are no new requests at this moment!</Text>}
         <View style={styles.requestList}>
           <List.Section>
+            {/* <List.Subheader>New users List</List.Subheader> */}
             <Accordion
               sections={data}
               activeSections={activeSections}
@@ -186,9 +212,11 @@ const PendingList = () => {
             />
           </List.Section>
         </View>
+
         <Portal>
           <Dialog visible={visibleDelete} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
+            {/* role === 'supervisor' ? "supervisor" : "labour" */}
             <Dialog.Title style={styles.dialogTitle} >Are you sure to delete this new {role} request?</Dialog.Title>
             <Dialog.Content>
               <Text>Delete this new {role} request from the pending list</Text>
@@ -199,6 +227,7 @@ const PendingList = () => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+
         <Portal>
           <Dialog visible={visibleAccept} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
@@ -212,109 +241,78 @@ const PendingList = () => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+
       </ScrollView>
     </Provider>
   );
 };
 
 const styles = StyleSheet.create({
-  requestList: {
-    marginTop: 8,
-  },
-  activeHeader: {
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  inactiveHeader: {
-    backgroundColor: 'white',
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
-    resizeMode: 'cover',
-    marginLeft: 15,
-    borderWidth: 1,
-    borderColor: '#000',
-  },
-  content: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    borderTopWidth: 1,
-    borderColor: "#c7c7c7",
-  },
-  description: {
-    fontSize: 14,
-    color: 'gray',
-    paddingVertical: width * 0.005,
-  },
-  button: {},
-  surface: {
-    marginHorizontal: 15,
-    borderRadius: 8,
-  },
-  contentSurface: {
-    marginBottom: 15,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-  },
-  activeSurface: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  inactiveSurface: {
-    marginBottom: 15,
-  },
-  labourRequest: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    width: width * 0.4,
-    overflow: 'hidden',
-  },
-  callButton: {
-    width: width * 0.3,
-    marginVertical: width * 0.02,
-  },
-  emptyRequests: {
-    fontWeight: 'bold',
-    fontSize: width * 0.045,
-    textAlign: 'center',
-    marginVertical: width * 0.04,
-  },
-});
+    requestList: {
+      marginTop: width * 0.06,
+    },
+    activeHeader: {
+      
+      backgroundColor: 'white',
+      borderBottomLeftRadius: width * 0.02,
+      borderBottomRightRadius: width * 0.02,
+    },
+    inactiveHeader: {
+      backgroundColor: 'white',
+    },
+    avatar: {
+      width: width * 0.1,
+      height: width * 0.1,
+      borderRadius: width * 0.05,
+      marginLeft: width * 0.03,
+    },
+    content: {
+      paddingVertical: width * 0.02,
+      paddingHorizontal: width * 0.04,
+      backgroundColor: 'white',
+      borderBottomLeftRadius: width * 0.02,
+      borderBottomRightRadius: width * 0.02,
+      borderTopWidth: 1,
+      borderColor: "#c7c7c7",
+    },
+    description: {
+      fontSize: width * 0.035,
+      color: 'gray',
+      paddingVertical: width * 0.005,
+    },
+    button: {
+      width: width * 0.25,    
+
+    },
+    surface: {
+      marginHorizontal: width * 0.04,
+      borderRadius: width * 0.02,
+    },
+    contentSurface: {
+      marginBottom: width * 0.03,
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+    },
+    activeSurface: {
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+    inactiveSurface: {
+      marginBottom: width * 0.03,
+    },
+    labourRequest: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: width * 0.39,
+      overflow: 'hidden',
+      marginLeft: width * 0.32,
+    },
+    callButton: {
+      width: width * 0.3,
+      marginVertical: width * 0.02,
+    },
+  });
 
 export default PendingList;
 
-
-
-
-// {
-//     user: {
-//       _id: new ObjectId("64a71a8bded55e1b353879a8"),
-//       name: 'Thisaru Rathnayake',
-//       email: 'thisaru@gmail.com',
-//       mobile_no: '0999999998',
-//       password: '$2b$10$Nd9GfVAMAiX69wYhvU.1ceu7Hl2aAOWMI4xiOJlV2Rdm4Zap8pqMK',
-//       role: 'supervisor',
-//       accepted: false,
-//       complainer_type: 'other',
-//       complains: [],
-//       __v: 0
-//     },
-//     pendingUser: {
-//       _id: new ObjectId("64a71a8bded55e1b353879a9"),
-//       userID: new ObjectId("64a71a8bded55e1b353879a8"),
-//       work_type: 'irigation',
-//       _id: new ObjectId("64a71ad3fc2422d9f32e402e"),
-//       userID: new ObjectId("64a71ad3fc2422d9f32e402d"),
-//       work_type: 'irigation',
-//       complains: [],
-//       approved_date: 2023-07-06T19:49:39.956Z,
-//       __v: 0
-//     }
-//   }

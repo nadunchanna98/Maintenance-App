@@ -13,7 +13,7 @@ const RegisteredSupervisersList = () => {
 
     const route = useRoute();
     const complainId = route.params.complainId;
-    console.log("complainId", complainId);
+    // console.log("complainId", complainId);
 
     const navigation = useNavigation();
 
@@ -33,7 +33,7 @@ const RegisteredSupervisersList = () => {
         getSupervisorDetails();
     }, []);
 
-    // this will set the active request
+   // this will set the active request
     useEffect(() => {
         if (activeSections.length != 0) {
             setActiveSupervisor(data[activeSections[0]])

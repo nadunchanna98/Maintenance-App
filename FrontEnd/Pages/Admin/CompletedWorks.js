@@ -1,4 +1,6 @@
-import React, { useState, useContext, useCallback } from "react";
+//not used
+
+import React, { useState, useContext, useCallback , useEffect } from "react";
 import {
     SafeAreaView,
     View,
@@ -18,6 +20,11 @@ const { height, width } = Dimensions.get("window");
 
 const CompletedWorks = () => {
 
+
+    useEffect(() => {
+        console.log("Completed Works");
+    }, []);
+
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
@@ -34,7 +41,7 @@ const CompletedWorks = () => {
     return (
         <SafeAreaView>
             <View>
-                {/* <View style={styles.dashboardHeader}>
+                <View style={styles.dashboardHeader}>
                     <View style={styles.firstRow}>
                         <View style={styles.logout}>
                             <TouchableOpacity onPress={() => { navigation.goBack() }}>
@@ -58,7 +65,7 @@ const CompletedWorks = () => {
                     <View style={styles.secondRow}>
                         <Text style={styles.title}>Completed Works</Text>
                     </View>
-                </View> */}
+                </View>
                 <Text>All Completed Works!</Text>
 
                 <View>

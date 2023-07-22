@@ -80,7 +80,7 @@ const AdminDashboard = () => {
         }
       });
       setPendingSupervisorsData(response.data);
-      console.log("Pending Supervisors: ", response.data);
+      // console.log("Pending Supervisors: ", response.data);
     } catch (error) {
       console.error(error);
     }

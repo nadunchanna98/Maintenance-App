@@ -9,8 +9,8 @@ import moment from 'moment';
 
 const ViewComplain = () => {
 
-  const { userInfo } = useContext(AuthContext);
 
+  const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
   const complainId = route.params.complainId;
@@ -41,13 +41,40 @@ const ViewComplain = () => {
   useEffect(() => {
     getData();
     getSupervisorName(complain.supervisorID);
+
   }, [complain.supervisorID]);
 
 
+n
+
   const getData = () => {
     axios
-      .get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    .get(`${BASE_URL}complains/complainbyid/${complainId}`)
+    .then((response) => {
+      setComplain(response.data);
+      const formattedTime = moment(response.data.created_date).format('hh:mm A');
+      const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
+      setCreatedTime(formattedTime);
+      setCreatedDate(formattedDate);
+      setVisible(response.data.status === 'AssignedA');
+      setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
+      setRating(response.data.rate);
+      getSupervisorName(complain.supervisorID);
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
+  }
+
+  const getSupervisorName = (id) => {
+
+  if(id !== undefined){
+    
+    console.log('id', id);
+
+    axios.get(`${BASE_URL}supervisors/user/${id}`)
       .then((response) => {
+
         setComplain(response.data);
         const formattedTime = moment(response.data.created_date).format('hh:mm A');
         const formattedDate = moment(response.data.created_date).format('MMMM DD, YYYY');
@@ -57,10 +84,12 @@ const ViewComplain = () => {
         setShowPopup((response.data.status === 'Completed') && (userInfo.role === 'complainer') && (response.data.rate === 0)); // Show pop-up only when status is 'Completed' and role is 'complainer'
         setRating(response.data.rate);
         getSupervisorName(complain.supervisorID);
+
       })
       .catch((error) => {
         console.log('error', error);
       });
+
   }
 
   const getSupervisorName = (id) => {
@@ -75,9 +104,11 @@ const ViewComplain = () => {
           console.log('error', error);
         });
 
+
     }
 
   };
+
 
   const handleImagePress = () => {
     setShowScaledImage(true);
@@ -132,10 +163,12 @@ const ViewComplain = () => {
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.submitButton} onPress={handleThankYouSubmit}>
+
                 <Text style={styles.submitButtonText}>Submit</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.dismissButton} onPress={handlePopupDismiss}>
                 <Text style={styles.dismissButtonText}>Cancel</Text>
+
               </TouchableOpacity>
             </View>
           </View>
@@ -164,7 +197,7 @@ const ViewComplain = () => {
 
     axios.put(`${BASE_URL}complains/complain/${complainId}`, { rate: rating })
       .then((response) => {
-        console.log('response', response);
+
         Alert.alert(
           'Thank you for your rating!',
           '',
@@ -187,7 +220,9 @@ const ViewComplain = () => {
       {renderPopup()}
       {renderThankYouPopup()}
       <ScrollView contentContainerStyle={styles.contentContainer}>
+
         {/* <StatusBar style="dark" /> */}
+
         <TouchableOpacity onPress={handleImagePress}>
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.image} />
         </TouchableOpacity>
@@ -215,13 +250,16 @@ const ViewComplain = () => {
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Description:</Text>
           </View>
+
           <Text style={[styles.fieldValue, { marginBottom: windowRatio * 15 }]}>{complain.description}</Text>
+
           <View style={styles.bottomLine} />
 
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldTitle}>Assigned:</Text>
               <Text style={styles.fieldValue}>{supervisorName}</Text>
+
             </View>
           )}
 
@@ -229,6 +267,7 @@ const ViewComplain = () => {
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Status:</Text>
+
             {complain.status === "AssignedA" ? <Text style={styles.fieldValue}>Supervisor Not Assigned</Text> : <Text style={styles.fieldValue}>{complain.status !== 'Completed' ? 'In Progress' : 'Completed'}</Text>}
           </View>
           <View style={styles.bottomLine} />
@@ -308,6 +347,7 @@ const ViewComplain = () => {
             </View>
           </View>)}
 
+
         </View>
       </ScrollView>
 
@@ -356,10 +396,6 @@ const ViewComplain = () => {
           <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={styles.scaledImage} />
         </TouchableOpacity>
       )}
-
-
-
-
     </View>
   );
 };

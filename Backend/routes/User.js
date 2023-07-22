@@ -2,6 +2,7 @@ const { User_Details } = require('../models/User');
 const { Supervisor_Details } = require('../models/Supervisor');
 const { Supervisor_Pending } = require('../models/SupervisorPending');
 const { Labour_Pending } = require('../models/LabourPending');
+const{Labour_Details}=require('../models/Labour');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
@@ -33,18 +34,22 @@ router.delete('/user/:id', (req, res) => {
       }
 
       // Delete from Supervisor_Details collection
-      Supervisor_Details.deleteMany({ userID: userId }).exec();
+      Supervisor_Details.deleteMany({ userID: userId }).exec(); 
 
       // Delete from Supervisor_Pending collection
       Supervisor_Pending.deleteMany({ userID: userId }).exec();
 
+      Labour_Details.deleteMany({ userID: userId }).exec();
+
       // Delete from Labour_Pending collection
       Labour_Pending.deleteMany({ userID: userId }).exec();
+
+
 
       return res.status(200).json({ success: true, message: 'User and related data deleted!' });
     })
     .catch(err => {
-      return res.status(500).json({ success: false, error: err });
+      return res.status(500).json({ success: false, error: err });  // 500: Internal Server Error
     });
 });
 
@@ -109,8 +114,6 @@ router.post('/user/checkMobileNo', async (req, res) => {
 
 
 
-
-
 // Register route
 router.post('/user/register', async (req, res) => {
   hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -122,6 +125,7 @@ router.post('/user/register', async (req, res) => {
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
+      profileImage : req.body.profileImage
     });
 
     console.log(newUser);
@@ -360,7 +364,7 @@ router.get('/complainers/', async (req, res) => {
   const userList = await User_Details.find();
 
   if (!userList) {
-    res.status(500).json({ success: false })
+    res.status(404).json({ success: false })
   }
 
   res.send(userList);

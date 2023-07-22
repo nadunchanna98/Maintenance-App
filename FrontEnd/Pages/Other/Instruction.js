@@ -59,8 +59,12 @@ The term "common property" typically refers to resources or facilities that are 
     <>
       {userInfo.role === "admin" ? (
         <SafeAreaView>
-          <ScrollView style={{ height: "100%" }}>
+          {/* <View style={styles.dashboardHeader}>
+            <Text style={[styles.headerText, styles.title]}>Instruction</Text>
+          </View> */}
+          <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
+              {/* <Text>Image</Text> */}
               <Image
                 source={{
                   uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -94,8 +98,12 @@ The term "common property" typically refers to resources or facilities that are 
         </SafeAreaView>
       ) : userInfo.role === "supervisor" ? (
         <SafeAreaView>
-          <ScrollView style={{ height: "100%" }}>
+          {/* <View style={styles.dashboardHeader}>
+            <Text style={[styles.headerText, styles.title]}>Instruction</Text>
+          </View> */}
+          <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
+              {/* <Text>Image</Text> */}
               <Image
                 source={{
                   uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -129,8 +137,12 @@ The term "common property" typically refers to resources or facilities that are 
         </SafeAreaView>
       ) : userInfo.role === "labour" ? (
         <SafeAreaView>
-          <ScrollView style={{ height: "100%" }}>
+          {/* <View style={styles.dashboardHeader}>
+            <Text style={[styles.headerText, styles.title]}>Instruction</Text>
+          </View> */}
+          <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
+              {/* <Text>Image</Text> */}
               <Image
                 source={{
                   uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -164,8 +176,12 @@ The term "common property" typically refers to resources or facilities that are 
         </SafeAreaView>
       ) : (
         <SafeAreaView>
-          <ScrollView style={{ height: "100%" }}>
+          {/* <View style={styles.dashboardHeader}>
+            <Text style={[styles.headerText, styles.title]}>Instruction</Text>
+          </View> */}
+          <ScrollView style={{ height: "95%" }}>
             <View style={styles.imageSection}>
+              {/* <Text>Image</Text> */}
               <Image
                 source={{
                   uri: "https://images.pexels.com/photos/8985454/pexels-photo-8985454.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",

@@ -5,9 +5,6 @@ const ComplaintSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User_Details'
      },
-     labourID: [{    
-        type: mongoose.Schema.Types.ObjectId, ref: 'User_Details'
-        }],
      title: { 
         type: String, 
         required: false
