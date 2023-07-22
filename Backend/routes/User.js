@@ -127,7 +127,8 @@ router.post('/user/register', async (req, res) => {
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
-      profileImage : req.body.profileImage
+      profileImage : req.body.profileImage,
+      token: req.body.token,
     });
 
     console.log(newUser);
@@ -407,6 +408,8 @@ router.post('/user/development/add', async (req, res) => {
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
+      profileImage : req.body.profileImage,
+      token: req.body.token,
     });
 
     console.log(newUser);
