@@ -10,9 +10,8 @@ import { SelectList } from 'react-native-dropdown-select-list'
 const { width, height } = Dimensions.get('window');
 const titleTextSize = Math.round(height * 0.03);
 const contentTextSize = Math.round(height * 0.015);
-
 import * as ImagePicker from 'expo-image-picker';
-import { firebase } from '../../src/Common/config';
+
 
 
 const validationSchema = Yup.object().shape({
@@ -362,14 +361,15 @@ const styles = StyleSheet.create({
     height: width * 0.5,
     alignSelf: 'center',
   },
-  slideshowContainer: {
-    width: width * 0.9,
-    height: width * 0.5,
-    alignSelf: 'center',
-  },
   slideshowImage: {
-    width: width * 0.9,
-    height: width * 0.5,
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
+
+  },
+  slideshowContainer: {
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
+    alignSelf: 'center',
   },
   paginationContainer: {
     flexDirection: 'row',

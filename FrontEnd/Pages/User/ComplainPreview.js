@@ -341,10 +341,13 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
+
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+
+  // Slider styles
   imageContainer: {
     marginBottom: Dimensions.get('window').height * 0.05,
     marginTop: Dimensions.get('window').height * 0.05,
@@ -360,13 +363,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   slideshowImage: {
-    width: width * 0.9,
-    height: width * 0.5,
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
 
   },
   slideshowContainer: {
-    width: width * 0.9,
-    height: width * 0.5,
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
     alignSelf: 'center',
   },
   paginationContainer: {

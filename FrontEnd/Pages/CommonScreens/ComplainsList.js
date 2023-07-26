@@ -1,7 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { View, StyleSheet, Image, Dimensions, SafeAreaView, FlatList } from 'react-native';
 import { Text, Surface, TouchableRipple } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { SelectList } from 'react-native-dropdown-select-list';
+import { AuthContext } from '../../src/Context/AuthContext';
 import moment from 'moment';
 
 const { width } = Dimensions.get("window");
@@ -11,9 +13,16 @@ const ComplainsList = () => {
     const route = useRoute();
     const navigation = useNavigation();
 
+    const { userInfo } = useContext(AuthContext)
+
     const complainsData = route.params.data;
+    let statusCheck = complainsData[0]?.status === "CompletedS" ? "CompletedS" : complainsData[0]?.status === "DeclinedS" ? "DeclinedS" : null;
 
     const [refreshing, setRefreshing] = useState(false);
+    const [selected, setSelected] = useState('all');
+    const [filterData, setFilterData] = useState(complainsData)
+
+    const dropDownData = [{ key: 'all', value: 'All' }, { key: 'CompletedS', value: 'Completed' }, { key: 'DeclinedS', value: 'Declined' }]
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -22,14 +31,28 @@ const ComplainsList = () => {
         }, 1500); //after 1.5s refreshing will stop 
     }, []);
 
-    useEffect(() => {
-        // console.log(complainsData[0])
-    }, [])
+
+    const handleFilter = () => {
+        const newData = complainsData.filter((item) => {
+            if (selected === 'all') return true;
+            return item.status === selected
+        })
+        setFilterData(newData);
+    }
 
     return (
         <SafeAreaView>
+            {statusCheck && userInfo.role === 'admin' && <View style={styles.filterContainer}>
+                <SelectList
+                    setSelected={(key) => { setSelected(key) }}
+                    onSelect={handleFilter}
+                    data={dropDownData}
+                    save='key'
+                    placeholder='Filter Complains'
+                />
+            </View>}
             <FlatList
-                data={complainsData}
+                data={filterData}
                 renderItem={({ item }) => {
                     const formattedDate = moment(item.assigned_date).format('MMMM DD, YYYY');
                     return (
@@ -54,6 +77,7 @@ const ComplainsList = () => {
                                         <Text style={styles.status}>{item.status}</Text>
                                         <Text style={styles.date}>{formattedDate}</Text>
                                     </View>
+                                    {userInfo.role === 'admin' && <View style={item.status === "DeclinedS" ? [styles.indicator, { backgroundColor: '#ff0000' }] : (item.status === "CompletedS" ? [styles.indicator, { backgroundColor: '#00ff00' }] : null)}></View>}
                                 </View>
                             </Surface>
                         </TouchableRipple>
@@ -64,7 +88,7 @@ const ComplainsList = () => {
                 onRefresh={onRefresh}
                 style={styles.list}
                 ListEmptyComponent={<Text style={styles.emptyComponent}>There are no complains! Come back later</Text>}
-                ListFooterComponent={<View style={styles.footerComponent}></View>}
+                ListFooterComponent={<View style={statusCheck ? (userInfo.role === 'admin' ? { height: width * 0.24 } : { height: width * 0.03 }) : { height: width * 0.03 }}></View>}
             />
         </SafeAreaView>
     );
@@ -88,9 +112,6 @@ const styles = StyleSheet.create({
         marginBottom: width * 0.03,
         marginHorizontal: width * 0.04,
         borderRadius: 6,
-    },
-    footerComponent: {
-        height: width * 0.03,
     },
     emptyComponent: {
         fontWeight: 'bold',
@@ -117,6 +138,13 @@ const styles = StyleSheet.create({
         color: '#a1a1a1'
     },
     date: {},
+    indicator: {
+        height: '100%',
+        width: 3,
+    },
+    filterContainer: {
+        padding: width * 0.04,
+    },
 });
 
 export default ComplainsList;

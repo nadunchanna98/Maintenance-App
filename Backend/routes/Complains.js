@@ -215,7 +215,7 @@ router.get('/list', async (req, res) => {
   }
   else if (status === 'CompletedS' & role === 'supervisor')   //Supervisor   
   {
-    status = ['CompletedS']
+    status = ['CompletedS','DeclinedS']
 
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
 
