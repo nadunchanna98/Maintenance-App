@@ -48,9 +48,35 @@ const PendingList = () => {
   }, []);
 
   // to delete a request from the pending list
-  const deleteRequest = () => {
-    setVisibleDelete(false)
-    console.log("Deleted!")
+  const deleteRequest = (id) => {
+
+    axios.delete(`${BASE_URL}users/user/${id}`)
+      .then((response) => {
+        Alert.alert(
+          "Succesfully Rejected",
+          "Pending request rejected",
+          [
+            { text: "OK" },
+          ],
+          { cancelable: false }
+        );
+        if (userInfo.role === 'supervisor') navigation.navigate("SupervisorDashboard");
+        else if (userInfo.role === 'admin') navigation.navigate("AdminDashboard");
+
+        console.log(response.data);
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Error",
+          "Something went wrong",
+          [
+            { text: "OK" },
+          ],
+          { cancelable: false }
+        );
+
+        console.error(error);
+      });
   };
 
   // to accept a request from the pending list
@@ -75,8 +101,8 @@ const PendingList = () => {
     const approvedby = userInfo.userId;
     let role = '';
 
-    console.log("newUserID", newUserID);
-    console.log("approvedby", approvedby);
+    // console.log("newUserID", newUserID);
+    // console.log("approvedby", approvedby);
 
     if (userInfo.role === 'supervisor') {
       role = 'labour';
@@ -90,7 +116,7 @@ const PendingList = () => {
       .then((response) => {
         Alert.alert(
           "Success",
-          "User has been approved",
+          "Pending request accepted successfully",
           [
             { text: "OK" },
           ],
@@ -114,7 +140,7 @@ const PendingList = () => {
         console.error(error);
       });
   };
-  
+
   // open whatsapp with the user mobile number dialed when click whatsapp button
   const openWhatsapp = () => {
     phoneNum = activeRequest.user.mobile_no;
@@ -139,41 +165,31 @@ const PendingList = () => {
           <View style={styles.labourRequest}>
 
             <Button
-              icon="check"
+              icon="plus"
               mode="outlined"
-              //onPress={() => acceptRole(section.user._id)}
-              onPress={() => { setVisibleAccept(!visibleAccept) }}
+              onPress={() => {
+                Alert.alert(
+                  "Confirm",
+                  "Are you sure to assign this user?",
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel"
+                    },
+                    { text: "OK", onPress: () => acceptRole(section.user._id) }
+                  ],
+                  { cancelable: false }
+                )
+              }}
               borderColor='#01a9e1'
               labelStyle={{ color: "green", fontSize: width * 0.04, fontWeight: "bold" }}
               style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
             >
               Accept
             </Button>
-
-            <IconButton
-              icon={"delete"}
-              iconColor='white' size={width * 0.06}
-              style={{ backgroundColor: 'red' }}
-              onPress={() => {
-                setVisibleDelete(!visibleDelete);
-              }}
-            />
-
-
-            {/* <IconButton icon={"delete"} iconColor='white' size={18} style={{ backgroundColor: 'red' }} onPress={() => { console.log("Delete Pressed!") }} /> */}
-
           </View>
-          // <Button
-          //   icon="arrow-right"
-          //   mode="outlined"
-          //   onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
-          //   borderColor='#01a9e1'
-          //   color='#f08e25'
-          //   labelStyle={{ color: "#01a9e1", fontSize: 15 }}
-          //   style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
-          // >
-          //   View
-          // </Button>
+
         )}
       />
     </Surface>
@@ -185,7 +201,29 @@ const PendingList = () => {
         <Text style={styles.description}>Name: {section.user.name}</Text>
         <Text style={styles.description}>Work Type: {section.pendingUser.work_type}</Text>
         <Text style={styles.description}>Mobile No: {section.user.mobile_no}</Text>
-        <Button icon={"phone"} mode='contained' buttonColor={"#19AFE2"} style={styles.callButton} onPress={dialCall}>Call</Button>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Button icon={"phone"} mode='contained' buttonColor={"#19AFE2"} style={styles.callButton} onPress={dialCall}>Call</Button>
+          <Button icon={"minus"} mode='contained' buttonColor={"red"} style={styles.callButton}
+            onPress={() => {
+              Alert.alert(
+                "Confirm",
+                "Are you sure to remove this Supervisor?",
+                [
+                  { text: "Yes", onPress: () => deleteRequest(section.user._id) },
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                  },
+                ],
+                { cancelable: false }
+              )
+            }} >
+            Reject
+          </Button>
+
+        </View>
+
       </View>
     </Surface>
   );
@@ -248,71 +286,73 @@ const PendingList = () => {
 };
 
 const styles = StyleSheet.create({
-    requestList: {
-      marginTop: width * 0.06,
-    },
-    activeHeader: {
-      
-      backgroundColor: 'white',
-      borderBottomLeftRadius: width * 0.02,
-      borderBottomRightRadius: width * 0.02,
-    },
-    inactiveHeader: {
-      backgroundColor: 'white',
-    },
-    avatar: {
-      width: width * 0.1,
-      height: width * 0.1,
-      borderRadius: width * 0.05,
-      marginLeft: width * 0.03,
-    },
-    content: {
-      paddingVertical: width * 0.02,
-      paddingHorizontal: width * 0.04,
-      backgroundColor: 'white',
-      borderBottomLeftRadius: width * 0.02,
-      borderBottomRightRadius: width * 0.02,
-      borderTopWidth: 1,
-      borderColor: "#c7c7c7",
-    },
-    description: {
-      fontSize: width * 0.035,
-      color: 'gray',
-      paddingVertical: width * 0.005,
-    },
-    button: {
-      width: width * 0.25,    
+  requestList: {
+    marginTop: width * 0.06,
+  },
+  activeHeader: {
 
-    },
-    surface: {
-      marginHorizontal: width * 0.04,
-      borderRadius: width * 0.02,
-    },
-    contentSurface: {
-      marginBottom: width * 0.03,
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: 0,
-    },
-    activeSurface: {
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
-    },
-    inactiveSurface: {
-      marginBottom: width * 0.03,
-    },
-    labourRequest: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: width * 0.39,
-      overflow: 'hidden',
-      marginLeft: width * 0.32,
-    },
-    callButton: {
-      width: width * 0.3,
-      marginVertical: width * 0.02,
-    },
-  });
+    backgroundColor: 'white',
+    borderBottomLeftRadius: width * 0.02,
+    borderBottomRightRadius: width * 0.02,
+  },
+  inactiveHeader: {
+    backgroundColor: 'white',
+  },
+  avatar: {
+    width: width * 0.1,
+    height: width * 0.1,
+    borderRadius: width * 0.05,
+    marginLeft: width * 0.03,
+  },
+  content: {
+    paddingVertical: width * 0.02,
+    paddingHorizontal: width * 0.04,
+    backgroundColor: 'white',
+    borderBottomLeftRadius: width * 0.02,
+    borderBottomRightRadius: width * 0.02,
+    borderTopWidth: 1,
+    borderColor: "#c7c7c7",
+  },
+  description: {
+    fontSize: width * 0.035,
+    color: 'gray',
+    paddingVertical: width * 0.005,
+  },
+  button: {
+    width: width * 0.38,
+    paddingHorizontal: 0,
+    marginHorizontal: 0,
+
+  },
+  surface: {
+    marginHorizontal: width * 0.04,
+    borderRadius: width * 0.02,
+  },
+  contentSurface: {
+    marginBottom: width * 0.03,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+  },
+  activeSurface: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  inactiveSurface: {
+    marginBottom: width * 0.03,
+  },
+  labourRequest: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: width * 0.39,
+    overflow: 'hidden',
+    marginLeft: width * 0.32,
+  },
+  callButton: {
+    width: width * 0.3,
+    marginVertical: width * 0.02,
+  },
+});
 
 export default PendingList;
 

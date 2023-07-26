@@ -66,13 +66,7 @@ const AdminScreens = () => (
     <Stack.Screen
       name="AdminFeedback"
       component={AdminFeedback}
-      options={{
-        headerShown: true,
-        title: "Admin Feedback",
-        headerTitleAlign: 'center',
-        headerStyle: { backgroundColor: "#19AFE2" },
-        headerTintColor: "#ffffff"
-      }}
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name="NewComplainRequests"
@@ -191,7 +185,7 @@ const AdminScreens = () => (
       component={ListView}
       options={{
         headerShown: true,
-        title: "Works Delivered by Supervisors",
+        title: "Works Completed by Supervisors",
         headerTitleAlign: 'center',
         headerStyle: { backgroundColor: "#19AFE2" },
         headerTintColor: "#ffffff"

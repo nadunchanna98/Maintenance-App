@@ -1,7 +1,7 @@
 const { Supervisor_Details } = require('../models/Supervisor');
 const { User_Details } = require('../models/User');
 const { Complaine_Details } = require('../models/Complains');
-const { Labour_Details } = require('../models/Labour');
+const{Labour_Details}=require('../models/Labour');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
@@ -14,13 +14,16 @@ router.post('/add/', async (req, res) => {
     userID: req.body.userID,
     title: req.body.title,
     location: req.body.location,
+    subLocation : req.body.subLocation,
     description: req.body.description,
+    complaineImages: req.body.complaineImages,
     status: req.body.status,
     supervisorID: req.body.supervisorID,
     supervisor_feedback: req.body.supervisor_feedback,
     admin_feedback: req.body.admin_feedback,
     assigned_date: req.body.assigned_date,
     resolved_date: req.body.resolved_date,
+    complaineImages : req.body.complaineImages
   });
 
   console.log('newComplaint: ', newComplaint);
@@ -111,11 +114,11 @@ router.put('/edit/:complaintId', async (req, res) => {
 //       supervisor_feedback,
 //       resolved_date
 //     });
-
+  
 //     if (!updatedComplaint) {
 //       return res.status(400).send('Complaint not found');
 //     }
-
+  
 //     res.send('Complaint updated successfully');
 //   } catch (error) {
 //     console.error(error);
@@ -212,12 +215,12 @@ router.get('/list', async (req, res) => {
   }
   else if (status === 'CompletedS' & role === 'supervisor')   //Supervisor   
   {
-    status = ['CompletedS']
+    status = ['CompletedS','DeclinedS']
 
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
 
   }
-  else if (status === 'CompletedS' & role === 'admin')   //admin received by supervisor complete and decline   
+  else if (status === 'CompletedS' & role === 'admin' )   //admin received by supervisor complete and decline   
   {
     status = ['CompletedS', 'DeclinedS']
 
@@ -244,7 +247,7 @@ router.get('/list', async (req, res) => {
 
   else if (status === 'AssignedS' & role !== 'supervisor')  //Admin  --> only check status
   {
-    status = ['AssignedS', 'AssignedL', 'CompletedL', 'DeclinedL', 'DeclinedA'] //'CompletedS' 'DeclinedS'
+    status = ['AssignedS', 'AssignedL', 'CompletedL', 'CompletedS', 'DeclinedL', 'DeclinedS', 'DeclinedA']
     ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
   }
 
@@ -367,36 +370,35 @@ router.put('/batchUpdate', async (req, res) => {
     }
 
     // Update the complaint with the assigned user ID
-    complaint.status = 'AssignedL';
-    complaint.labourerID = LaborerIDs;
+      complaint.status = 'AssignedL';
+      complaint.labourerID=LaborerIDs;
+    
 
-
-    await complaint.save();
+      await complaint.save();
 
     // Update the status of selected laborers in the database
-
+    
     try {
+     
+      
 
-
-
-
+     
       for (const id in LaborerIDs) {
         const Details = await Labour_Details.findOne({ userID: LaborerIDs[id] });;
         Details.complains.push(complainId);
-        Details.Assigned = true;
+        Details.Assigned=true;
         await Details.save();
-        console.log("Details: ", Details);
+        console.log("Details: ",Details);
 
       }
-
-
-
+      
+     
+      
     } catch (error) {
       console.error('Error updating Labour_Details:', error);
       throw error;
-    }
-  }
-
+    }}
+  
 
   catch (error) {
     console.log(error);
@@ -409,8 +411,8 @@ router.put('/batchUpdate', async (req, res) => {
 router.put('/batchReleaseUpdate/:complainID', async (req, res) => {
   try {
     const complainId = req.params.complainID;
-
-
+    
+    
 
     const complaint = await Complaine_Details.findById(complainId);
     const LaborerIDs = complaint.labourerID;
@@ -420,25 +422,24 @@ router.put('/batchReleaseUpdate/:complainID', async (req, res) => {
     }
 
     // Update the status of selected laborers in the database
-
+    
     try {
-
+      
       for (const id in LaborerIDs) {
         const Details = await Labour_Details.findOne({ userID: LaborerIDs[id] });;
-        Details.Assigned = false;
+        Details.Assigned=false;
         await Details.save();
-        console.log("Details: ", Details);
+        console.log("Details: ",Details);
 
       }
-
-
-
+      
+     
+      
     } catch (error) {
       console.error('Error updating Labour_Details:', error);
       throw error;
-    }
-  }
-
+    }}
+  
 
   catch (error) {
     console.log(error);
@@ -452,14 +453,14 @@ router.get('/supervisorcomplains/:userId', async (req, res) => {
 
   const supervisorId = req.params.userId;
 
-  const status = ['AssignedS', 'AssignedL', 'CompletedS', 'DeclinedS', 'CompletedA', 'DeclinedA', 'Completed']
-
+  const status = ['AssignedS', 'AssignedL', 'CompletedS', 'DeclinedS','CompletedA','DeclinedA','Completed']
+  
   const supervisor = await Supervisor_Details.findOne({ userID: supervisorId });
   if (!supervisor) {
     return res.status(404).json({ success: false, message: 'Supervisor not found' });
   }
 
-  const complains = await Complaine_Details.find({ supervisorID: supervisorId, status: status });
+  const complains = await Complaine_Details.find({ supervisorID: supervisorId , status: status });
   if (!complains) {
     return res.status(404).json({ success: false, message: 'Complains not found' });
   }

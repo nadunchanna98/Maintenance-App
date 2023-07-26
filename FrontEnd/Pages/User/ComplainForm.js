@@ -1,16 +1,17 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView, Modal, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
 import { SelectList } from 'react-native-dropdown-select-list'
 
 const { width, height } = Dimensions.get('window');
 const titleTextSize = Math.round(height * 0.03);
 const contentTextSize = Math.round(height * 0.015);
+import * as ImagePicker from 'expo-image-picker';
+
 
 
 const validationSchema = Yup.object().shape({
@@ -20,122 +21,134 @@ const validationSchema = Yup.object().shape({
 
 });
 
+const Slideshow = ({ images }) => {
+
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleSlide = (event) => {
+    const slideSize = event.nativeEvent.layoutMeasurement.width;
+    const currentIndex = event.nativeEvent.contentOffset.x / slideSize;
+    setCurrentIndex(Math.round(currentIndex));
+  };
+
+  return (
+    <View style={styles.slideshowContainer}>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={handleSlide}
+      >
+        {images.map((imageUri, index) => (
+          <Image
+            key={index}
+            source={{ uri: imageUri }}
+            style={styles.slideshowImage}
+            resizeMode="cover"
+          />
+        ))}
+      </ScrollView>
+      <View style={styles.paginationContainer}>
+        {images.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.paginationDot,
+              index === currentIndex ? styles.activeDot : null,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
 const ComplainForm = () => {
+
+
+  const [selectedImages, setSelectedImages] = useState([]);
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [imageUri, setImageUri] = useState(null);
+
+
+
+
   const handleFormSubmit = (values) => {
-    const { location, description, title } = values;
 
+    const { location, subLocation, description, title } = values;
 
-  // console.log('Location:', location);
-  // console.log('Description:', description);
-  // console.log('Title:', title);
-  // console.log('Image:', imageUri);
-  navigation.navigate('ComplainPreview', { title, location, description, imageUri });
-};
+    console.log('selectedImages', selectedImages);
+
+    navigation.navigate('ComplainPreview', { title, location, subLocation, description, selectedImages });
+  };
 
   const handleAddPhoto = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== 'granted') {
-      // Handle permission denial
+      Alert.alert('Sorry, we need camera roll permissions to make this work!');
       return;
     }
 
     setModalVisible(true);
   };
 
+
+
   const handleChooseFromLibrary = async () => {
     setModalVisible(false);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        aspect: [1, 1],
+        quality: 1,
+        allowsMultipleSelection: true,
+      });
 
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!pickerResult.canceled && pickerResult.uri) {
-      setImageUri(pickerResult.uri);
+      if (!result.canceled && result.assets.length > 0) {
+        const selectedAssets = result.assets;
+        const imageUris = selectedAssets.map((asset) => asset.uri);
+        setSelectedImages(imageUris);
+      }
+    } catch (error) {
+      console.log('Error selecting images:', error);
     }
   };
 
   const handleTakePhoto = async () => {
+    const permissionResult = await ImagePicker.getCameraPermissionsAsync();
     setModalVisible(false);
 
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+    if (!permissionResult.granted) {
+      alert("You've refused to allow this app to access your camera!");
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
       if (status !== 'granted') {
         // Handle permission denial
         return;
       }
+    }
+
+    try {
       const pickerResult = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
         quality: 1,
       });
-      if (!pickerResult.canceled && pickerResult.uri) {
-        setImageUri(pickerResult.uri);
-      }
 
+      if (!pickerResult.canceled && pickerResult.assets.length > 0) {
+        const selectedAsset = pickerResult.assets[0];
+        const imageUri = selectedAsset.uri;
+        setSelectedImages((prevImages) => [...prevImages, imageUri]);
+        setImageUri(imageUri);
+      }
+    } catch (error) {
+      console.log('Error selecting image:', error);
     }
   };
 
-  const handleComplain = async () => {
 
-    const complainData = new FormData();
-    complainData.append('title', title);
-    complainData.append('location', location);
-    complainData.append('description', description);
-    complainData.append('image', {
-      name: imageUri.split('/').pop(),
-      type: 'image/jpeg',
-      uri: imageUri,
-    });
-
-    /*try {
-      const response = await axios.post(`${BASE_URL}/complain`, complainData);
-      console.log(response.data);
-      alert('Complain submitted successfully');
-    } catch (error) {
-      console.log(error);
-      alert('Something went wrong');
-    }*/
-    //navigate to complain preview page
-    console.log('Title:', title);
-    console.log('Location:', location);
-    console.log('Selected Image:', imageUri);
-
-    navigation.navigate('ComplainPreview', { title, location, description, imageUri });
-
-
-  }
-
-
-
-
-
-  const openCamera = async () => {
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync();
-
-    // Explore the result
-    console.log(result);
-
-    if (!result.canceled) {
-      setPickedImagePath(result.uri);
-      console.log(result.uri);
-    }
-  }
 
   return (
     <ScrollView>
@@ -143,7 +156,7 @@ const ComplainForm = () => {
 
         <View style={styles.lowerSection}>
           <Formik
-            initialValues={{ location: '', title: '', description: '', image: '' }}
+            initialValues={{ location: '', subLocation: '', title: '', description: '', image: '' }}
             validationSchema={validationSchema}
             onSubmit={handleFormSubmit}
           >
@@ -185,13 +198,24 @@ const ComplainForm = () => {
                     <Text style={styles.error}>{errors.location}</Text>
                   )}
                 </View>
+
+                <View style={styles.inputContainer}>
+                  <Text style={styles.fieldText}>Sub Location</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Computer Department,Lab 1"
+                    onChangeText={handleChange('subLocation')}
+                    onBlur={handleBlur('subLocation')}
+                    value={values.subLocation}
+                  />
+                  {errors.subLocation && touched.subLocation && (<Text style={{ color: 'red' }}>{errors.subLocation}</Text>)}
+                </View>
+
                 <View>
                   <View >
                     <Text style={styles.fieldText}>Description</Text>
                     <TextInput
                       style={styles.textarea}
-                      multiline={true}
-                      numberOfLines={7}
                       placeholder="Description"
                       onChangeText={handleChange('description')}
                       onBlur={handleBlur('description')}
@@ -201,26 +225,34 @@ const ComplainForm = () => {
                       <Text style={{ color: 'red' }}>{errors.description}</Text>
                     )}
                   </View>
-                  <Text style={styles.fieldText}>Image</Text>
-                  <TouchableOpacity onPress={handleAddPhoto}>
 
-                    {imageUri ? (
-                      <Image
-                        source={{ uri: imageUri }}
-                        style={[{ height: 500, padding: 10, marginBottom: 20, marginTop: 20 }, styles.imageStyle]} // Adjust the width and height as needed
-                      />
-                    ) : (
-                      <Image source={require('../../assets/icon.png')}
-                        style={[{ height: 500, padding: 10, marginBottom: 20, marginTop: 20 }, styles.imageStyle]} />
-                    )}
+
+
+                  <Text style={styles.fieldText}>Image</Text>
+
+                  <TouchableOpacity style={styles.button} onPress={handleAddPhoto}>
+                    <Text style={styles.buttonText}>Take Photo</Text>
                   </TouchableOpacity>
+
+                  <View style={styles.imageContainer}>
+                    {selectedImages.length > 0 ? (
+                      <Slideshow images={selectedImages} />
+                    ) : (
+                      <Image
+                        source={require('../../assets/icon.png')}
+                        style={styles.placeholderImage}
+                      />
+                    )}
+                  </View>
                 </View>
+
+
                 <Modal visible={modalVisible} animationType="slide" transparent>
                   <View style={styles.modalContainer}>
-                    <TouchableOpacity style={styles.optionButton} onPress={handleChooseFromLibrary}>
+                    <TouchableOpacity style={styles.optionButton} onPress={() => handleChooseFromLibrary()}>
                       <Text>Upload Photo</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionButton} onPress={handleTakePhoto}>
+                    <TouchableOpacity style={styles.optionButton} onPress={() => handleTakePhoto()}>
                       <Text>Take Photo</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
@@ -329,6 +361,57 @@ const styles = StyleSheet.create({
     height: width * 0.5,
     alignSelf: 'center',
   },
+  slideshowImage: {
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
+
+  },
+  slideshowContainer: {
+    width: Dimensions.get('window').width * 0.95,
+    height: Dimensions.get('window').width * 0.95 * 3 / 4,
+    alignSelf: 'center',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 5,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    marginHorizontal: 3,
+  },
+  activeDot: {
+    backgroundColor: '#000',
+  },
+  imageContainer: {
+    marginBottom: height * 0.02,
+  },
+  placeholderImage: {
+    width: width * 0.5,
+    height: width * 0.5,
+    alignSelf: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  optionButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginBottom: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+
 });
 
 export default ComplainForm;

@@ -118,6 +118,8 @@ router.post('/user/checkMobileNo', async (req, res) => {
 router.post('/user/register', async (req, res) => {
   hashedPassword = await bcrypt.hash(req.body.password, 10);
 
+  console.log(req.body);
+
   try {
     let newUser = new User_Details({
       name: req.body.name,
@@ -125,7 +127,8 @@ router.post('/user/register', async (req, res) => {
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
-      profileImage : req.body.profileImage
+      profileImage : req.body.profileImage,
+      token: req.body.token,
     });
 
     console.log(newUser);
@@ -405,6 +408,8 @@ router.post('/user/development/add', async (req, res) => {
       password: hashedPassword,
       email: req.body.email,
       role: req.body.role,
+      profileImage : req.body.profileImage,
+      token: req.body.token,
     });
 
     console.log(newUser);
