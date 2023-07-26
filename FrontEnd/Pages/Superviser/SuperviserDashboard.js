@@ -215,7 +215,7 @@ const SuperviserDashboard = () => {
                     />
                   </View>
                   <View style={styles.textSection}>
-                    <Text style={styles.cardText}>Completed Works</Text>
+                    <Text style={styles.cardText}>My Works</Text>
                   </View>
                 </View>
               </TouchableOpacity>

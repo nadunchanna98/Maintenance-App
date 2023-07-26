@@ -236,14 +236,14 @@ const ViewComplain = () => {
 
 
         <View style={styles.imageContainer}>
-          {complain && complain.complaineImages && complain.complaineImages.length > 0  ? (
+          {complain && complain.complaineImages && complain.complaineImages.length > 0 ? (
             <Slideshow images={complain.complaineImages} />
           ) : (
 
             <View style={styles.noimage}>
-            <Image  source={require('../../assets/icon.png')}  style={styles.image}  />
-              <Text style={styles.fieldValue}>No Images</Text> 
-          </View>
+              <Image source={require('../../assets/icon.png')} style={styles.image} />
+              <Text style={styles.fieldValue}>No Images</Text>
+            </View>
           )}
         </View>
 
@@ -259,8 +259,8 @@ const ViewComplain = () => {
         <View style={styles.dataContainer}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Title:</Text>
-            <Text style={styles.fieldValue}>{complain.title}</Text>
           </View>
+          <Text style={styles.fieldValue}>{complain.title}</Text>
           <View style={styles.bottomLine} />
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldTitle}>Created Date:</Text>
@@ -284,24 +284,74 @@ const ViewComplain = () => {
           <View style={styles.bottomLine} />
 
           {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && (
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldTitle}>Assigned:</Text>
-              <Text style={styles.fieldValue}>{supervisorName}</Text>
+            <View>
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>Superviser:</Text>
+                <Text style={styles.fieldValue}>{supervisorName}</Text>
+              </View>
+              <View style={styles.bottomLine} />
+
+              <View style={styles.fieldContainer}>
+                <Text style={styles.fieldTitle}>Assign Date:</Text>
+                <Text style={styles.fieldValue}>{moment(complain.assigned_date).format('MMMM DD, YYYY')}</Text>
+              </View>
+              <View style={styles.bottomLine} />
+
+              {complain.supervisor_feedback ?
+
+                <View>
+                  <View style={styles.fieldContainer}>
+                    <Text style={styles.fieldTitle}>Supervisor Feedback:</Text>
+                  </View>
+                  <Text style={styles.fieldValue}>{complain.supervisor_feedback}</Text>
+                  <View style={styles.bottomLine} />
+                </View>
+                : null
+
+              }
+
+              {complain.resolved_date ?
+
+                <View>
+                  <View style={styles.fieldContainer}>
+                    <Text style={styles.fieldTitle}>Supervisor Sent Date:</Text>
+                    <Text style={styles.fieldValue}>{moment(complain.resolved_date).format('MMMM DD, YYYY')}</Text>
+                  </View>
+                  <View style={styles.bottomLine} />
+                </View>
+                : null}
             </View>
           )}
 
-          {userInfo.role === 'admin' && !(complain.status === 'AssignedA') && <View style={styles.bottomLine} />}
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldTitle}>Status:</Text>
-            <Text style={styles.fieldValue}>{complain.status !== 'Completed' ? 'In Progress' : 'Completed'}</Text>
-          </View>
-          <View style={styles.bottomLine} />
+          {userInfo.role === 'supervisor' && (complain.status === 'CompletedS' || complain.status === 'DeclinedS')
+            && (
+              <View >
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Status:</Text>
+                  <Text style={styles.fieldValue}>{complain.status === 'CompletedS' ? 'Work Done Successfully ✅🎉' : 'Work Declined ⛔'}</Text>
+                </View>
+                <View style={styles.bottomLine} />
 
+                {complain.supervisor_feedback ?
+
+                  <View>
+                    <View style={styles.fieldContainer}>
+                      <Text style={styles.fieldTitle}>My Feedback:</Text>
+                    </View>
+                    <Text style={styles.fieldValue}>{complain.supervisor_feedback}</Text>
+                    <View style={styles.bottomLine} />
+                  </View>
+                  : null
+
+                }
+              </View>
+            )
+          }
 
           {
 
-            userInfo.role === 'admin' ? (
+            userInfo.role === 'admin' && (complain.status === 'CompletedA' || complain.status === 'Completed') ? (
 
               rating > 0 ? ( // Only show the rating if it has been selected
                 <View style={styles.fieldContainer}>
@@ -332,6 +382,31 @@ const ViewComplain = () => {
 
 
             ) : userInfo.role === 'complainer' ? (
+
+              rating > 0 ? ( // Only show the rating if it has been selected
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <TouchableOpacity key={star} style={styles.starButton} onPress={() => handleRateWork(star)}>
+                        <Image
+                          source={star <= rating ? require('../../assets/star_filled.png') : require('../../assets/star_empty.png')}
+                          style={styles.starIcon}
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.fieldContainer}>
+                  <Text style={styles.fieldTitle}>Rated:</Text>
+                  <View style={styles.ratingContainer}>
+                    <Text style={styles.fieldValue}>Not Rated yet</Text>
+                  </View>
+                </View>
+              )
+
+            ) : userInfo.role === 'supervisor' && (complain.status === 'CompletedS' || complain.status === 'CompletedA' || complain.status === 'Completed') ? (
 
               rating > 0 ? ( // Only show the rating if it has been selected
                 <View style={styles.fieldContainer}>
@@ -383,18 +458,28 @@ const ViewComplain = () => {
         </View>
       )}
 
-      {(userInfo.role === 'admin' && complain.status === 'CompletedS') && (
-        <View style={styles.dataContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleComplete}>
+      {(userInfo.role === 'admin') && (                                            //here
+       
+       complain.status === 'CompletedS' ? (
+       <View style={styles.dataContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => {handleComplete()}}>
             <Text style={styles.buttonText}>Mark As Completed</Text>
           </TouchableOpacity>
         </View>
+        ) : ( complain.status === 'DeclinedS') ? (
+          <View style={styles.dataContainer}>
+             <TouchableOpacity style={styles.button} onPress={handleComplete}>
+               <Text style={styles.buttonText}>Get another Action</Text>
+             </TouchableOpacity>
+           </View>
+           ) : null  
+
       )}
 
       {userInfo.role === 'supervisor' && complain.status === 'AssignedL' && (
         <View style={styles.dataContainer}>
           <TouchableOpacity style={styles.button} onPress={handleCompleteSupervisor}>
-            <Text style={styles.buttonText}>Mark as Completed</Text>
+            <Text style={styles.buttonText}>Finish the Job</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -456,6 +541,7 @@ const styles = StyleSheet.create({
     color: '#45474b',
     fontSize: 20 * windowRatio,
     textAlign: 'left',
+
   },
   bottomLine: {
     borderBottomWidth: 1,
