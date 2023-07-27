@@ -74,7 +74,7 @@ const ComplainsList = () => {
                                     </View>
                                     <View style={styles.detailsColumn}>
                                         <Text style={styles.description}>{item.title}</Text>
-                                        <Text style={styles.status}>{item.status}</Text>
+                                        {/* <Text style={styles.status}>{item.status}</Text> */}
                                         <Text style={styles.date}>{formattedDate}</Text>
                                     </View>
                                     {userInfo.role === 'admin' && <View style={item.status === "DeclinedS" ? [styles.indicator, { backgroundColor: '#ff0000' }] : (item.status === "CompletedS" ? [styles.indicator, { backgroundColor: '#00ff00' }] : null)}></View>}

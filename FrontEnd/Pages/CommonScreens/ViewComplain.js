@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image, Modal, Alert } from 'react-native';
 import axios from 'axios';
 import BASE_URL from '../../src/Common/BaseURL';
 import { UserContext } from '../../src/Context/UserContext';
 import { AuthContext } from '../../src/Context/AuthContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
+import { Button } from 'react-native-paper';
 const { width, height } = Dimensions.get('window');
 
 const Slideshow = ({ images }) => {
@@ -123,6 +124,53 @@ const ViewComplain = () => {
     }
 
   };
+
+  const handleDelete = (id) => {
+    Alert.alert(
+      'Delete Complain',
+      'Are you sure you want to delete this complain?',
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+        {
+          text: 'Delete', onPress: () => {
+            complainDelete(id);
+          }
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const handleEditData = () => {
+
+
+    console.log('complain', complain);
+
+
+
+    navigation.navigate('ComplainForm2', {
+      
+      complainID: complainId,
+      title: complain.title,
+      location: complain.location,
+      subLocation: complain.subLocation,
+      description: complain.description,
+      imageUri: complain.complaineImages,
+
+    });
+  };
+
+  const complainDelete = (id) => {
+    axios.delete(`${BASE_URL}complains/delete/${id}`)
+    .then((response) => {
+      console.log('response', response);
+      navigation.navigate('UserDashboard');
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
+  }
+
 
 
   const handleImagePress = () => {
@@ -398,12 +446,25 @@ const ViewComplain = () => {
                   </View>
                 </View>
               ) : (
-                <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldTitle}>Rated:</Text>
-                  <View style={styles.ratingContainer}>
-                    <Text style={styles.fieldValue}>Not Rated yet</Text>
+
+                complain.status === 'Pending' ? (
+                  <View style={styles.fieldContainer}>
+                    <View style={styles.deleteeditbuttonpanel}>
+                      <TouchableOpacity style={styles.editbutton} onPress={() => { handleEditData() }}>
+                        <Text style={styles.buttonText}>Edit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.deletebutton} onPress={() => { handleDelete(complainId) }}>
+                        <Text style={styles.buttonText}>Delete</Text> 
+                      </TouchableOpacity>
+                      
+                    </View>
                   </View>
-                </View>
+                  ) : (<View style={styles.fieldContainer}>
+                    <Text style={styles.fieldTitle}>delete:</Text>
+                    <View style={styles.ratingContainer}>
+                      <Text style={styles.fieldValue}>edit</Text>
+                    </View>
+                  </View>)
               )
 
             ) : userInfo.role === 'supervisor' && (complain.status === 'CompletedS' || complain.status === 'CompletedA' || complain.status === 'Completed') ? (
@@ -459,20 +520,20 @@ const ViewComplain = () => {
       )}
 
       {(userInfo.role === 'admin') && (                                            //here
-       
-       complain.status === 'CompletedS' ? (
-       <View style={styles.dataContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => {handleComplete()}}>
-            <Text style={styles.buttonText}>Mark As Completed</Text>
-          </TouchableOpacity>
-        </View>
-        ) : ( complain.status === 'DeclinedS') ? (
+
+        complain.status === 'CompletedS' ? (
           <View style={styles.dataContainer}>
-             <TouchableOpacity style={styles.button} onPress={handleComplete}>
-               <Text style={styles.buttonText}>Get another Action</Text>
-             </TouchableOpacity>
-           </View>
-           ) : null  
+            <TouchableOpacity style={styles.button} onPress={() => { handleComplete() }}>
+              <Text style={styles.buttonText}>Mark As Completed</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (complain.status === 'DeclinedS') ? (
+          <View style={styles.dataContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleComplete}>
+              <Text style={styles.buttonText}>Get another Action</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null
 
       )}
 
@@ -699,6 +760,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  deleteeditbuttonpanel: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10 * windowRatio,
+    width: width * 0.9,
+  },
+
+  editbutton: {
+    backgroundColor: '#01a9e1',
+    padding: 10 * windowRatio,
+    borderRadius: 5 * windowRatio,
+    alignItems: 'center',
+    marginRight: 5 * windowRatio,
+    marginBottom: 25 * windowRatio,
+    width: width * 0.4,
+  },
+
+  deletebutton: {
+    backgroundColor: 'red',
+    padding: 10 * windowRatio,
+    borderRadius: 5 * windowRatio,
+    alignItems: 'center',
+    marginRight: 5 * windowRatio,
+    marginBottom: 25 * windowRatio,
+    width: width * 0.4,
+  },
+  
+
 
 });
 

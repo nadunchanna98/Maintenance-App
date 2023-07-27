@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import UserDashboard from '../../Pages/User/UserDashboard';
+import ComplainForm2 from '../../Pages/User/ComplainForm2';
+import ComplainPreview2 from '../../Pages/User/ComplainPreview2';
 
 import ComplainForm from '../../Pages/User/ComplainForm';
 import ComplainPreview from '../../Pages/User/ComplainPreview';
@@ -442,6 +444,26 @@ const UserScreens = () => (
         headerTintColor: "#ffffff"
       }}
     />
+    <Stack.Screen name="ComplainForm2" 
+    component={ComplainForm2}
+    options={{
+      headerShown: true,
+      title: "New Complain",
+      headerTitleAlign: 'center',
+      headerStyle: { backgroundColor: "#19AFE2" },
+      headerTintColor: "#ffffff"
+    }}/>
+
+    <Stack.Screen name="ComplainPreview2"
+    component={ComplainPreview2}
+    options={{
+      headerShown: true,
+      title: "Complain Preview",
+      headerTitleAlign: 'center',
+      headerStyle: { backgroundColor: "#19AFE2" },
+      headerTintColor: "#ffffff"
+    }}/>
+
   </Stack.Navigator>
 );
 
