@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView, Modal, Alert  } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView, Modal, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { AuthContext } from '../../src/Context/AuthContext';
-import {   useRoute ,useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list'
 
 const { width, height } = Dimensions.get('window');
@@ -62,12 +62,11 @@ const Slideshow = ({ images }) => {
   );
 };
 
-const ComplainForm = () => {
+const ComplainForm2 = () => {
 
   useEffect(() => {
-    console.log('ComplainForm 1');
+    console.log('ComplainForm 2');
   }, []);
-
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -75,16 +74,17 @@ const ComplainForm = () => {
 
 
   const navigation = useNavigation();
-  // const route = useRoute(); 
-  // const title = route.params.title;
-  // const location = route.params.location;
-  // const subLocation = route.params.subLocation;
-  // const description = route.params.description;
-  // const selectedImage = route.params.selectedImage;
+  const route = useRoute();
+  const title = route.params.title;
+  const location = route.params.location;
+  const subLocation = route.params.subLocation;
+  const description = route.params.description;
+  const selectedImage = route.params.selectedImage;
+  const complainID = route.params.complainID;
 
 
 
-//  console.log('title', title);
+  console.log('title', title);
 
 
   const handleFormSubmit = (values) => {
@@ -93,7 +93,7 @@ const ComplainForm = () => {
 
     console.log('selectedImages', selectedImages);
 
-    navigation.navigate('ComplainPreview', { title, location, subLocation, description, selectedImages });
+    navigation.navigate('ComplainPreview2', { complainID,title, location, subLocation, description, selectedImages });
   };
 
   const handleAddPhoto = async () => {
@@ -168,7 +168,13 @@ const ComplainForm = () => {
 
         <View style={styles.lowerSection}>
           <Formik
-            initialValues={{ location: '', subLocation: '', title: '', description: '', image: '' }}
+            initialValues={{
+              location: location,
+              subLocation: subLocation,
+              title: title,
+              description: description,
+              image: selectedImage,
+            }}
             validationSchema={validationSchema}
             onSubmit={handleFormSubmit}
           >
@@ -426,4 +432,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ComplainForm;
+export default ComplainForm2;

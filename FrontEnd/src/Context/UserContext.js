@@ -1,14 +1,11 @@
 import React, { createContext, useState , useEffect , useContext ,useCallback  } from 'react';
-import  BASE_URL  from '../Common/BaseURL';
 import axios from 'axios';
-import { Alert } from 'react-native';
-
 
 export const UserContext = React.createContext();
 
 export const UserProvider = ({ children }) => {
 
-
+  BASE_URL = "https://maintenance-app-m996.onrender.com/api/v1/"
 
   const [userRole, setUserRole] = useState('');
   const [ allusers , setAllusers ] = useState([]);

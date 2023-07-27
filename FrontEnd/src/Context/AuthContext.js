@@ -1,6 +1,5 @@
-import React, { createContext, useState , useEffect , useContext } from 'react';
+import React, { createContext, useState , useEffect  } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import  BASE_URL  from '../Common/BaseURL';
 import axios from 'axios';
 import { Alert } from 'react-native';
 
@@ -9,6 +8,9 @@ export const AuthContext = createContext();
 
 // Create a provider component
 export const AuthProvider = ({ children }) => {
+
+  BASE_URL = "https://maintenance-app-m996.onrender.com/api/v1/"
+
 
   const [data, setData] = useState([]);
   const [userRole, setUserRole] = useState('');
@@ -139,6 +141,7 @@ export const AuthProvider = ({ children }) => {
         setUserToken,
         userInfo,
        getUserInfo,
+       BASE_URL
         
         
         // Pass any other functions or state variables to the value object

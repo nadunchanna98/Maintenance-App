@@ -1,13 +1,11 @@
-import { Platform } from "react-native";
+let BASE_URL  = "https://maintenance-app-m996.onrender.com/api/v1/";
 
-let BASE_URL = "";
-
-//  Server link
-if (Platform.OS === "android") {
-     BASE_URL = "https://maintenance-app-m996.onrender.com/api/v1/" // for android emulator
-} else {
-     BASE_URL = "https://maintenance-app-m996.onrender.com/api/v1/" // for ios emulator
-}
+// //  Server link
+// if (Platform.OS === "android") {
+//      BASE_URL = "https://maintenance-app-m996.onrender.com/api/v1/" // for android emulator
+// } else {
+//      BASE_URL = "https://maintenance-app-m996.onrender.com/api/v1/" // for ios emulator
+// }
 
 
 // uni wifi
@@ -16,7 +14,6 @@ if (Platform.OS === "android") {
 // } else {
 //      BASE_URL = "http://192.168.171.74:3000/api/v1/" // for ios emulator
 // }
-
 
 
 export default BASE_URL;
