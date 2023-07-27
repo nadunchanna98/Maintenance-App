@@ -24,6 +24,7 @@ const AdminDashboard = () => {
   const [assignedAData, setAssignedAData] = useState([]);
   const [assignedSData, setAssignedSData] = useState([]);
   const [completedAData, setCompletedAData] = useState([]);
+  const [completedSData, setCompletedSData] = useState([]); // complateS and DeclinedS
   const [pendingSupervisorsData, setPendingSupervisorsData] = useState([]);
 
   useFocusEffect(
@@ -31,6 +32,7 @@ const AdminDashboard = () => {
       getAssignedAComplains();
       getAssignedSComplains();
       getCompletedAComplains();
+      getCompletedSComplains();
       getListOfPendingSupervisors();
       console.log("useFocusEffect")
     }, [userInfo]) // Add userInfo as a dependency
@@ -40,6 +42,7 @@ const AdminDashboard = () => {
     getAssignedAComplains();
     getAssignedSComplains();
     getCompletedAComplains();
+    getCompletedSComplains();
     getListOfPendingSupervisors();
   }, []);
 
@@ -47,6 +50,7 @@ const AdminDashboard = () => {
   const statusAssignedA = 'AssignedA';
   const statusAssignedS = 'AssignedS';
   const statusCompletedA = 'CompletedA';
+  const statusCompletedS = 'CompletedS';
 
   const pendingType = 'supervisor';
 
@@ -55,6 +59,7 @@ const AdminDashboard = () => {
     getAssignedAComplains();
     getAssignedSComplains();
     getCompletedAComplains();
+    getCompletedSComplains();
     getListOfPendingSupervisors();
 
     setTimeout(() => {
@@ -66,7 +71,6 @@ const AdminDashboard = () => {
 
   const { userInfo } = useContext(AuthContext);
 
-
   const getListOfPendingSupervisors = async () => {
     try {
       const response = await axios.get(`${BASE_URL}users/pending/list`, {
@@ -76,7 +80,7 @@ const AdminDashboard = () => {
         }
       });
       setPendingSupervisorsData(response.data);
-      console.log("Pending Supervisors: ", response.data);
+      // console.log("Pending Supervisors: ", response.data);
     } catch (error) {
       console.error(error);
     }
@@ -127,6 +131,22 @@ const AdminDashboard = () => {
     }
   };
 
+  const getCompletedSComplains = async () => {
+
+    try {
+      const response = await axios.get(`${BASE_URL}complains/list`, {
+        params: {
+          id: userInfo.userId,
+          status: statusCompletedS,
+          role: userInfo.role,
+        }
+      });
+      setCompletedSData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const noOfAssignedAComplains = assignedAData.length;
   const noOfAssignedSComplains = assignedSData.length;
   const noOfCompletedAComplains = completedAData.length;
@@ -136,21 +156,16 @@ const AdminDashboard = () => {
   return (
     <SafeAreaView>
       <View>
-        <View style={styles.dashboardHeader}>
-          <View style={styles.secondRow}>
-            <Text style={styles.title}>Admin Dashboard</Text>
-          </View>
-        </View>
         <View style={styles.dashboard}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{ height: "91.5%" }} // 89.9%
+            style={{ height: "100%" }} // 89.9%
           >
 
             <View style={styles.cardContainer}>
 
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("NewComplainRequests", { data: assignedAData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedAComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -164,7 +179,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: assignedSData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("InProgressComplains", { data: assignedSData }) }}>
                 <View style={{ zIndex: 2 }}><Badge size={25} style={{ top: 12, left: 8 }}>{noOfAssignedSComplains}</Badge></View>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
@@ -192,7 +207,7 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("SuperviserList",{complainID:null}) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("RegisteredSupervisors", { complainId: null }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image
@@ -205,7 +220,33 @@ const AdminDashboard = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { navigation.navigate("ComplainsListByIdAndStatus", { data: completedAData }) }}>
+              <TouchableOpacity onPress={() => { navigation.navigate("LabourList", { complainID: null }) }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Registered Labours</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("DeliveredBySupervisors", { data: completedSData }) }}>
+                <View style={styles.card}>
+                  <View style={styles.imageSection}>
+                    <Image
+                      source={{ uri: "https://images.pexels.com/photos/175039/pexels-photo-175039.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }}
+                      style={styles.image}
+                    />
+                  </View>
+                  <View style={styles.textSection}>
+                    <Text style={styles.cardText}>Delivered by Supervisors</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { navigation.navigate("CompletedWorks", { data: completedAData }) }}>
                 <View style={styles.card}>
                   <View style={styles.imageSection}>
                     <Image

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "FrontEnd",
-    "slug": "FrontEnd",
+    "name": "Maintenance App",
+    "slug": "MaintenanceApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

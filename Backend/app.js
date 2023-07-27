@@ -8,7 +8,7 @@ const cors  = require('cors');  // for cross origin resource sharing
 
 mongoose.set('strictQuery', false); 
 const api = process.env.API_URL;
-
+app.use(bodyParser.json());
 
 app.use(cors());  
 app.options('*',cors()); 
@@ -22,12 +22,14 @@ const UserRoutes = require('./routes/User');
 const SupervisorRoutes = require('./routes/Supervisor');
 const ComplainsRoutes = require('./routes/Complains');
 const PendingRoutes = require('./routes/Pending');
+const LabourRoutes = require('./routes/Labours');
 
 //api routes
 app.use(`${api}/users`, UserRoutes);
 app.use(`${api}/supervisors`, SupervisorRoutes);
 app.use(`${api}/complains`, ComplainsRoutes);
 app.use(`${api}/pending`, PendingRoutes);
+app.use(`${api}/labours`, LabourRoutes);    
 
 
 //Server

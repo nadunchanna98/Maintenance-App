@@ -1,4 +1,6 @@
-import React, { useState, useContext, useCallback } from "react";
+//not used
+
+import React, { useState, useContext, useCallback , useEffect } from "react";
 import {
     SafeAreaView,
     View,
@@ -17,6 +19,11 @@ import { AuthContext } from "../../src/Context/AuthContext";
 const { height, width } = Dimensions.get("window");
 
 const CompletedWorks = () => {
+
+
+    useEffect(() => {
+        console.log("Completed Works");
+    }, []);
 
     const [refreshing, setRefreshing] = useState(false);
 

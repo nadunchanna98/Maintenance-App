@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity, TextInput } from 'react-native';
-import{Button} from 'react-native-paper';
+import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity, TextInput, Dimensions } from 'react-native';
+import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import BASE_URL from '../../src/Common/BaseURL';
@@ -8,11 +8,9 @@ import BASE_URL from '../../src/Common/BaseURL';
 const SuperviserCompleteFeedBackForm = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const complainId = route.params.complainId;
+  const complainId = route.params.complainID;
 
   const [complain, setComplain] = useState([]);
-  const [createdDate, setCreatedDate] = useState('');
-  const [createdTime, setCreatedTime] = useState('');
   const [feedback, setFeedback] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -24,22 +22,48 @@ const SuperviserCompleteFeedBackForm = () => {
       .get(`${BASE_URL}complains/complainbyid/${complainId}`)
       .then((response) => {
         setComplain(response.data);
-        setCreatedDate(response.data.created_date.split('T')[0]);
-        setCreatedTime(response.data.created_date.split('T')[1].split('.')[0]); 
       })
       .catch((error) => {
         console.log("error", error);
       });
   }, []);
 
+  const updateComplain = ({ status, complainID }) => {
+    axios
+      .put(`${BASE_URL}complains/complain/${complainID}`, {
+        status: status,
+        supervisor_feedback: feedback,
+        resolved_date: Date.now()
+      })
+      .then((response) => {
+
+        if ( status === 'CompletedS') {
+          
+        Alert.alert(
+          'Work Completed!',
+          'Good Job!',
+          [{ text: 'OK', onPress: () => navigation.navigate('SupervisorDashboard') }],
+          { cancelable: false }
+        );
+        }
+        else {
+          Alert.alert(
+            'Work Declined!',
+            'Feedback submitted successfully!',
+            [{ text: 'OK', onPress: () => navigation.navigate('SupervisorDashboard') }],
+            { cancelable: false }
+          );
+        }
+      })
+
+  };
+
   const handleComplete = () => {
-    console.log("Work Completed");
     setCompleted(true);
     setIsModalVisible(true);
   };
 
   const handleDecline = () => {
-    console.log("Work Declined");
     setCompleted(false);
     setIsModalVisible(true);
   };
@@ -50,82 +74,76 @@ const SuperviserCompleteFeedBackForm = () => {
 
   const submitFeedback = () => {
     if (completed) {
-      // axios to update the status of complain to completed
+      updateComplain({ status: 'CompletedS', complainID: complain._id });
     } else {
-      // axios to update the status of complain to declined
+      updateComplain({ status: 'DeclinedS', complainID: complain._id });
     }
-    setFeedback('');
+
     toggleModal();
-    Alert.alert(
-      'Feedback Submitted',
-      'Thank you for your feedback!',
-      [{ text: 'OK', onPress: () => console.log('Navigate to') }],
-      { cancelable: false }
-    );
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Complain Details</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Complainer ID:</Text>
-        <Text style={styles.value}>{complain.userID}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}> Created Date:</Text>
-        <Text style={styles.value}>{createdDate}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}> Created Time:</Text>
-        <Text style={styles.value}>{createdTime}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Location:</Text>
-        <Text style={styles.value}>{complain.location}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Description:</Text>
-        <Text style={styles.value}>{complain.description}</Text>
-      </View>
-      <View style={styles.dataContainer}>
-        <Text style={styles.label}>Assigned Supervisor:</Text>
-        <Text style={styles.value}>{complain.supervisorID}</Text>
-      </View>
       <View>
-        <Modal visible={isModalVisible} onRequestClose={toggleModal}>
-          <View style={{ backgroundColor: 'white', padding: 20 }}>
-            <Text>Select a default feedback:</Text>
-            {completed ? (
-              defaultCompletedFeedbacks.map((item) => (
-                <TouchableOpacity key={item} onPress={() => setFeedback(item)}>
-                  <Text>{item}</Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              defaultDeclinedFeedbacks.map((item) => (
-                <TouchableOpacity key={item} onPress={() => setFeedback(item)}>
-                  <Text>{item}</Text>
-                </TouchableOpacity>
-              ))
-            )}
-            <TextInput
-              placeholder="Or enter your own feedback"
-              value={feedback}
-              onChangeText={setFeedback}
-            />
-            <Button  onPress={submitFeedback} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Submit Feedback
-          </Button> 
-          <Button  onPress={toggleModal} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Close 
-          </Button>
+        <Modal visible={isModalVisible} onRequestClose={toggleModal} transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Select a default feedback:</Text>
+              {completed ? (
+                defaultCompletedFeedbacks.map((item) => (
+                  <TouchableOpacity
+                    key={item}
+                    onPress={() => setFeedback(item)}
+                    style={styles.modalButton}
+                  >
+                    <Text style={styles.modalButtonText}>{item}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                defaultDeclinedFeedbacks.map((item) => (
+                  <TouchableOpacity
+                    key={item}
+                    onPress={() => setFeedback(item)}
+                    style={styles.modalButton}
+                  >
+                    <Text style={styles.modalButtonText}>{item}</Text>
+                  </TouchableOpacity>
+                ))
+              )}
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Or enter your own feedback"
+                value={feedback}
+                onChangeText={setFeedback}
+                multiline={true}
+                numberOfLines={4}
+              />
+              <Button onPress={submitFeedback} mode='contained' style={styles.modalSubmitButton}>
+                Submit Feedback
+              </Button>
+              <Button onPress={toggleModal} mode='contained' style={styles.modalCloseButton}>
+                Go back
+              </Button>
+            </View>
           </View>
         </Modal>
       </View>
-      <Button  onPress={handleComplete} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Complete Work
-          </Button>
-          <Button  onPress={handleDecline} buttonColor='#01a9e1' textColor='white' mode='contained' style={styles.button}>Decline The Work
-          </Button>
+      <View style={styles.twobuttons}>
+        <TouchableOpacity
+          onPress={handleComplete}
+          activeOpacity={0.8}
+          style={[styles.button1, { backgroundColor: '#01a9e1' }]}
+        >
+          <Text style={styles.buttonText}>Complete Work</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleDecline}
+          activeOpacity={0.8}
+          style={[styles.button1, { backgroundColor: 'red' }]}
+        >
+          <Text style={styles.buttonText}>Decline The Work</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -137,30 +155,69 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  dataContainer: {
-    flexDirection: 'row',
+  twobuttons: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    width: '90%',
   },
-  label: {
-    fontWeight: 'bold',
-    marginRight: 10,
+  button1: {
+    marginTop: Dimensions.get('window').height * 0.05,
+    width: Dimensions.get('window').width * 0.7,
+    height: Dimensions.get('window').height * 0.09,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
   },
-  value: {
+  buttonText: {
+    color: 'white',
+    fontSize: Dimensions.get('window').width * 0.05,
+    fontWeight: '700',
+  },
+  modalContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-    button: {
-    marginTop: 10,
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 8,
+    width: Dimensions.get('window').width * 0.8,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 10,
-    width: 200,
-    },
+  },
+  modalButton: {
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#01a9e1',
+    borderRadius: 4,
+  },
+  modalButtonText: {
+    color: '#01a9e1',
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 10,
+  },
+  modalSubmitButton: {
+    marginTop: 10,
+    backgroundColor: '#01a9e1',
+  },
+  modalCloseButton: {
+    marginTop: 10,
+    backgroundColor: 'gray',
+  },
 });
 
 export default SuperviserCompleteFeedBackForm;

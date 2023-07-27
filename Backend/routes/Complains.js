@@ -1,9 +1,11 @@
 const { Supervisor_Details } = require('../models/Supervisor');
 const { User_Details } = require('../models/User');
 const { Complaine_Details } = require('../models/Complains');
+const{Labour_Details}=require('../models/Labour');
 const express = require('express');
 const router = express.Router();
 require('dotenv/config');
+const mongoose = require('mongoose');
 const setTimeoutPromise = require('util').promisify(setTimeout);
 
 // Add new complaint with timer
@@ -12,13 +14,16 @@ router.post('/add/', async (req, res) => {
     userID: req.body.userID,
     title: req.body.title,
     location: req.body.location,
+    subLocation : req.body.subLocation,
     description: req.body.description,
+    complaineImages: req.body.complaineImages,
     status: req.body.status,
     supervisorID: req.body.supervisorID,
     supervisor_feedback: req.body.supervisor_feedback,
     admin_feedback: req.body.admin_feedback,
     assigned_date: req.body.assigned_date,
     resolved_date: req.body.resolved_date,
+    complaineImages : req.body.complaineImages
   });
 
   console.log('newComplaint: ', newComplaint);
@@ -89,6 +94,57 @@ router.put('/edit/:complaintId', async (req, res) => {
   res.send('Complaint updated successfully');
 });
 
+// // edit complaint without timer
+// router.put('/complainbyid/:complaintId', async (req, res) => {
+
+//   const { complaintId } = req.params;
+//   // console.log('compaint by id', complaintId);
+
+//   const { 
+//     status,
+//     supervisor_feedback,
+//     resolved_date,
+//   } = req.body;
+
+//   // console.log("resolved_date", resolved_date);
+
+//   try {
+//     const updatedComplaint = await Complaine_Details.findByIdAndUpdate(complaintId, {
+//       status,
+//       supervisor_feedback,
+//       resolved_date
+//     });
+  
+//     if (!updatedComplaint) {
+//       return res.status(400).send('Complaint not found');
+//     }
+  
+//     res.send('Complaint updated successfully');
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// });
+
+router.put('/complain/:complaintId', async (req, res) => {
+  const { complaintId } = req.params;
+  const updateFields = req.body;
+
+  try {
+    const updatedComplaint = await Complaine_Details.findByIdAndUpdate(complaintId, updateFields);
+
+    if (!updatedComplaint) {
+      return res.status(400).send('Complaint not found');
+    }
+
+    res.send('Complaint updated successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 
 
@@ -157,11 +213,18 @@ router.get('/list', async (req, res) => {
     ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
 
   }
-  else if (status === 'CompletedS')   //Supervisor   
+  else if (status === 'CompletedS' & role === 'supervisor')   //Supervisor   
   {
-    status = ['CompletedS']
+    status = ['CompletedS','DeclinedS']
 
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
+
+  }
+  else if (status === 'CompletedS' & role === 'admin' )   //admin received by supervisor complete and decline   
+  {
+    status = ['CompletedS', 'DeclinedS']
+
+    ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
 
   }
   else if (status === 'AssignedA' & role !== 'admin')  // Complainer
@@ -188,9 +251,9 @@ router.get('/list', async (req, res) => {
     ComplaineList = await Complaine_Details.find({ status }).sort({ createdAt: -1 });;
   }
 
-  else if (status === 'AssignedL' & role === 'supervisor')  // supervisor
+  else if (status === 'AssignedL' & role === 'supervisor')  // supervisor  inprogress complains
   {
-    status = ['AssignedL', 'CompletedL', 'DeclinedL']
+    status = ['AssignedL']
     ComplaineList = await Complaine_Details.find({ supervisorID: id, status }).sort({ createdAt: -1 });;
   }
   else if (status === 'AssignedL' & role !== 'supervisor')  // labour
@@ -257,8 +320,8 @@ router.put('/update/:complainId/:userId', async (req, res) => {
     const complainId = req.params.complainId;
     const userId = req.params.userId;
 
-    console.log("complainId: ", complainId);
-    console.log("userId: ", userId);
+    // console.log("complainId: ", complainId);
+    // console.log("userId: ", userId);
 
     const complaint = await Complaine_Details.findById(complainId);
 
@@ -291,7 +354,140 @@ router.put('/update/:complainId/:userId', async (req, res) => {
   }
 });
 
+//Assign Complain to Laborers
+//assign complain to supervisor
+router.put('/batchUpdate', async (req, res) => {
+  try {
+    const complainId = req.body.complainID;
+    const LaborerIDs = req.body.laborerIds;
+    console.log('LaborerIDs:', LaborerIDs);
+    console.log('complainId:', complainId);
 
+    const complaint = await Complaine_Details.findById(complainId);
+
+    if (!complaint) {
+      return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    // Update the complaint with the assigned user ID
+      complaint.status = 'AssignedL';
+      complaint.labourerID=LaborerIDs;
+    
+
+      await complaint.save();
+
+    // Update the status of selected laborers in the database
+    
+    try {
+     
+      
+
+     
+      for (const id in LaborerIDs) {
+        const Details = await Labour_Details.findOne({ userID: LaborerIDs[id] });;
+        Details.complains.push(complainId);
+        Details.Assigned=true;
+        await Details.save();
+        console.log("Details: ",Details);
+
+      }
+      
+     
+      
+    } catch (error) {
+      console.error('Error updating Labour_Details:', error);
+      throw error;
+    }}
+  
+
+  catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+
+//Release Labourers
+router.put('/batchReleaseUpdate/:complainID', async (req, res) => {
+  try {
+    const complainId = req.params.complainID;
+    
+    
+
+    const complaint = await Complaine_Details.findById(complainId);
+    const LaborerIDs = complaint.labourerID;
+
+    if (!complaint) {
+      return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    // Update the status of selected laborers in the database
+    
+    try {
+      
+      for (const id in LaborerIDs) {
+        const Details = await Labour_Details.findOne({ userID: LaborerIDs[id] });;
+        Details.Assigned=false;
+        await Details.save();
+        console.log("Details: ",Details);
+
+      }
+      
+     
+      
+    } catch (error) {
+      console.error('Error updating Labour_Details:', error);
+      throw error;
+    }}
+  
+
+  catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+// get all complains for a supervisor by supervisor id
+
+router.get('/supervisorcomplains/:userId', async (req, res) => {
+
+  const supervisorId = req.params.userId;
+
+  const status = ['AssignedS', 'AssignedL', 'CompletedS', 'DeclinedS','CompletedA','DeclinedA','Completed']
+  
+  const supervisor = await Supervisor_Details.findOne({ userID: supervisorId });
+  if (!supervisor) {
+    return res.status(404).json({ success: false, message: 'Supervisor not found' });
+  }
+
+  const complains = await Complaine_Details.find({ supervisorID: supervisorId , status: status });
+  if (!complains) {
+    return res.status(404).json({ success: false, message: 'Complains not found' });
+  }
+
+  return res.status(200).json({ success: true, complains: complains });
+});
+
+
+// get labour current work
+router.get('/labourcomplains/:userId', async (req, res) => {
+
+  const labourId = req.params.userId;
+
+  const status = ['AssignedL']
+
+  const labour = await Labour_Details.findOne({ userID: labourId });
+  if (!labour) {
+    return res.status(404).json({ success: false, message: 'Labour not found' });
+  }
+
+  const complains = await Complaine_Details.find({ labourID: labourId, status: status });
+  if (!complains) {
+    return res.status(404).json({ success: false, message: 'Complains not found' });
+  }
+
+  return res.status(200).json({ success: true, complains: complains });
+});
 
 
 

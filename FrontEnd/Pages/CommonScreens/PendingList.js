@@ -10,9 +10,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 const { width } = Dimensions.get("window");
 
+regId = ''
+
 const PendingList = () => {
 
-      const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const route = useRoute();
   const data = route.params.pendingData;
@@ -46,15 +48,42 @@ const PendingList = () => {
   }, []);
 
   // to delete a request from the pending list
-  const deleteRequest = () => {
-    setVisibleDelete(false)
-    console.log("Deleted!")
+  const deleteRequest = (id) => {
+
+    axios.delete(`${BASE_URL}users/user/${id}`)
+      .then((response) => {
+        Alert.alert(
+          "Succesfully Rejected",
+          "Pending request rejected",
+          [
+            { text: "OK" },
+          ],
+          { cancelable: false }
+        );
+        if (userInfo.role === 'supervisor') navigation.navigate("SupervisorDashboard");
+        else if (userInfo.role === 'admin') navigation.navigate("AdminDashboard");
+
+        console.log(response.data);
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Error",
+          "Something went wrong",
+          [
+            { text: "OK" },
+          ],
+          { cancelable: false }
+        );
+
+        console.error(error);
+      });
   };
 
   // to accept a request from the pending list
   const acceptRequest = () => {
     setVisibleAccept(false)
     console.log("Accepted!")
+    acceptRole(regId);
   };
 
   // open dial pad with the user mobile number dialed when click call button
@@ -71,23 +100,23 @@ const PendingList = () => {
   const acceptRole = (newUserID) => {
     const approvedby = userInfo.userId;
     let role = '';
-  
-    console.log("newUserID", newUserID);
-    console.log("approvedby", approvedby);
-  
+
+    // console.log("newUserID", newUserID);
+    // console.log("approvedby", approvedby);
+
     if (userInfo.role === 'supervisor') {
       role = 'labour';
     } else if (userInfo.role === 'admin') {
       role = 'supervisor';
     }
-  
+
     console.log("role", role);
-  
+
     axios.post(`${BASE_URL}pending/approve/${newUserID}/${role}/${approvedby}`)
       .then((response) => {
         Alert.alert(
           "Success",
-          "User has been approved",
+          "Pending request accepted successfully",
           [
             { text: "OK" },
           ],
@@ -95,7 +124,7 @@ const PendingList = () => {
         );
         if (userInfo.role === 'supervisor') navigation.navigate("SupervisorDashboard");
         else if (userInfo.role === 'admin') navigation.navigate("AdminDashboard");
-        
+
         console.log(response.data);
       })
       .catch((error) => {
@@ -107,11 +136,10 @@ const PendingList = () => {
           ],
           { cancelable: false }
         );
-  
+
         console.error(error);
       });
   };
-  
 
   // open whatsapp with the user mobile number dialed when click whatsapp button
   const openWhatsapp = () => {
@@ -120,6 +148,10 @@ const PendingList = () => {
   }
 
   const renderHeader = (section, index, isActive) => (
+
+    // console.log("section Id -------------------- ", section.user._id),
+
+    regId = section.user._id,
     <Surface style={[isActive ? styles.activeSurface : styles.inactiveSurface, styles.surface]} elevation={2}>
 
       <List.Item
@@ -131,39 +163,33 @@ const PendingList = () => {
         left={() => <Image source={{ uri: 'https://tconglobal.com/wp-content/uploads/2019/10/ewp_blog_header.jpg' }} style={[styles.avatar, { alignSelf: "center" }]} />}
         right={() => (
           <View style={styles.labourRequest}>
-            <IconButton
-              icon={"delete"}
-              iconColor='white' size={18}
-              style={{ backgroundColor: 'red' }}
-              onPress={() => {
-                setVisibleDelete(!visibleDelete);
-              }}
-            />
+
             <Button
-              icon="check"
+              icon="plus"
               mode="outlined"
-              onPress={() => acceptRole(section.user._id)}
+              onPress={() => {
+                Alert.alert(
+                  "Confirm",
+                  "Are you sure to assign this user?",
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel"
+                    },
+                    { text: "OK", onPress: () => acceptRole(section.user._id) }
+                  ],
+                  { cancelable: false }
+                )
+              }}
               borderColor='#01a9e1'
-              labelStyle={{ color: "green", fontSize: 14 }}
+              labelStyle={{ color: "green", fontSize: width * 0.04, fontWeight: "bold" }}
               style={[styles.button, { borderColor: "green" }]} // Use theme colors for border color //  theme.colors.primary //#707070
             >
               Accept
             </Button>
-
-            {/* <IconButton icon={"delete"} iconColor='white' size={18} style={{ backgroundColor: 'red' }} onPress={() => { console.log("Delete Pressed!") }} /> */}
-
           </View>
-          // <Button
-          //   icon="arrow-right"
-          //   mode="outlined"
-          //   onPress={() => navigation.navigate('PendingUserDetailView', { userId: section.user._id })}
-          //   borderColor='#01a9e1'
-          //   color='#f08e25'
-          //   labelStyle={{ color: "#01a9e1", fontSize: 15 }}
-          //   style={[styles.button, { borderColor: "#707070" }]} // Use theme colors for border color //  theme.colors.primary
-          // >
-          //   View
-          // </Button>
+
         )}
       />
     </Surface>
@@ -175,7 +201,29 @@ const PendingList = () => {
         <Text style={styles.description}>Name: {section.user.name}</Text>
         <Text style={styles.description}>Work Type: {section.pendingUser.work_type}</Text>
         <Text style={styles.description}>Mobile No: {section.user.mobile_no}</Text>
-        <Button icon={"phone"} mode='contained' buttonColor={"#19AFE2"} style={styles.callButton} onPress={dialCall}>Call</Button>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Button icon={"phone"} mode='contained' buttonColor={"#19AFE2"} style={styles.callButton} onPress={dialCall}>Call</Button>
+          <Button icon={"minus"} mode='contained' buttonColor={"red"} style={styles.callButton}
+            onPress={() => {
+              Alert.alert(
+                "Confirm",
+                "Are you sure to remove this Supervisor?",
+                [
+                  { text: "Yes", onPress: () => deleteRequest(section.user._id) },
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                  },
+                ],
+                { cancelable: false }
+              )
+            }} >
+            Reject
+          </Button>
+
+        </View>
+
       </View>
     </Surface>
   );
@@ -202,6 +250,7 @@ const PendingList = () => {
             />
           </List.Section>
         </View>
+
         <Portal>
           <Dialog visible={visibleDelete} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
@@ -216,6 +265,7 @@ const PendingList = () => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+
         <Portal>
           <Dialog visible={visibleAccept} dismissable={false}>
             <Dialog.Icon icon={"alert"} />
@@ -229,6 +279,7 @@ const PendingList = () => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+
       </ScrollView>
     </Provider>
   );
@@ -236,43 +287,49 @@ const PendingList = () => {
 
 const styles = StyleSheet.create({
   requestList: {
-    marginTop: 8,
+    marginTop: width * 0.06,
   },
   activeHeader: {
+
     backgroundColor: 'white',
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: width * 0.02,
+    borderBottomRightRadius: width * 0.02,
   },
   inactiveHeader: {
     backgroundColor: 'white',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginLeft: 15,
+    width: width * 0.1,
+    height: width * 0.1,
+    borderRadius: width * 0.05,
+    marginLeft: width * 0.03,
   },
   content: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: width * 0.02,
+    paddingHorizontal: width * 0.04,
     backgroundColor: 'white',
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
+    borderBottomLeftRadius: width * 0.02,
+    borderBottomRightRadius: width * 0.02,
     borderTopWidth: 1,
     borderColor: "#c7c7c7",
   },
   description: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     color: 'gray',
     paddingVertical: width * 0.005,
   },
-  button: {},
+  button: {
+    width: width * 0.38,
+    paddingHorizontal: 0,
+    marginHorizontal: 0,
+
+  },
   surface: {
-    marginHorizontal: 15,
-    borderRadius: 8,
+    marginHorizontal: width * 0.04,
+    borderRadius: width * 0.02,
   },
   contentSurface: {
-    marginBottom: 15,
+    marginBottom: width * 0.03,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
   },
@@ -281,7 +338,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0,
   },
   inactiveSurface: {
-    marginBottom: 15,
+    marginBottom: width * 0.03,
   },
   labourRequest: {
     flexDirection: 'row',
@@ -289,6 +346,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: width * 0.39,
     overflow: 'hidden',
+    marginLeft: width * 0.32,
   },
   callButton: {
     width: width * 0.3,
@@ -298,31 +356,3 @@ const styles = StyleSheet.create({
 
 export default PendingList;
 
-
-
-
-// {
-//     user: {
-//       _id: new ObjectId("64a71a8bded55e1b353879a8"),
-//       name: 'Thisaru Rathnayake',
-//       email: 'thisaru@gmail.com',
-//       mobile_no: '0999999998',
-//       password: '$2b$10$Nd9GfVAMAiX69wYhvU.1ceu7Hl2aAOWMI4xiOJlV2Rdm4Zap8pqMK',
-//       role: 'supervisor',
-//       accepted: false,
-//       complainer_type: 'other',
-//       complains: [],
-//       __v: 0
-//     },
-//     pendingUser: {
-//       _id: new ObjectId("64a71a8bded55e1b353879a9"),
-//       userID: new ObjectId("64a71a8bded55e1b353879a8"),
-//       work_type: 'irigation',
-//       _id: new ObjectId("64a71ad3fc2422d9f32e402e"),
-//       userID: new ObjectId("64a71ad3fc2422d9f32e402d"),
-//       work_type: 'irigation',
-//       complains: [],
-//       approved_date: 2023-07-06T19:49:39.956Z,
-//       __v: 0
-//     }
-//   }
